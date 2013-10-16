@@ -1,0 +1,35 @@
+{
+  "name": "orchestrator",
+  "description": "A system for arranging dependent tasks",
+  "version": "0.0.2",
+  "homepage": "https://github.com/robrich/orchestrator",
+  "repository": "git://github.com/robrich/orchestrator.git",
+  "author": "Rob Richardson (http://robrich.org/)",
+  "main": "./index.js",
+  "keywords": [
+    "async",
+    "task",
+    "parallel",
+    "compose"
+  ],
+  "dependencies": {
+    "event-stream": "3.0.16"
+  },
+  "devDependencies": {
+    "mocha": "~1.13.0",
+    "should": "~2.0.1",
+    "q": "~0.9.7"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "engines": {
+    "node": ">= 0.8"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/robrich/orchestrator/raw/master/LICENSE"
+    }
+  ]
+}
