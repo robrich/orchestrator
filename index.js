@@ -6,16 +6,16 @@ var Orchestrator = function (opts) {
 	opts = opts || {};
 	this.verbose = opts.verbose || false; // show messages as each task runs
 	this.doneCallback = opts.callback; // call this when all tasks in the queue are done
-	this.taskQueue = opts.taskQueue || []; // the order to run the tasks
+	this.seq = opts.seq || []; // the order to run the tasks
 	this.tasks = {}; // task objects: name, dep (list of names of dependencies), fn (the task to run)
-	this.isRunning = false; // is the orchestrator running tasks?
+	this.isRunning = false; // is the orchestrator running tasks? .run() to start, .stop() to end
 };
 
 Orchestrator.prototype = {
 	reset: function () {
 		this.stop(null);
 		this.tasks = {};
-		this.taskQueue = [];
+		this.seq = [];
 		this.isRunning = false;
 		this.doneCallback = undefined;
 		return this;
@@ -49,50 +49,29 @@ Orchestrator.prototype = {
 		}
 		if (this.isRunning) {
 			// if you call run() again while a previous run is still in play
-			// append the new tasks to the existing task queue
-			names = this.taskQueue.concat(names);
+			// prepend the new tasks to the existing task queue
+			// TODO: you probably want to run the tasks you just passed right now then resume the original flow
+			names = names.concat(this.seq);
 		}
 		if (names.length < 1) {
 			// run all tasks
-			for (i = 0; i < this.tasks.length; i++) {
-				names.push(this.tasks[i].name);
+			for (i in this.tasks) {
+				if (this.tasks.hasOwnProperty(i)) {
+					names.push(this.tasks[i].name);
+				}
 			}
 		}
 		seq = [];
 		this.sequence(this.tasks, names, seq, []);
-		this.taskQueue = seq;
+		this.seq = seq;
 		if (this.verbose) {
-			console.log('[taskQueue: '+this.taskQueue.join(',')+']');
+			console.log('[seq: '+this.seq.join(',')+']');
 		}
 		if (!this.isRunning) {
 			this.isRunning = true;
 			this._runStep();
 		}
 		return this;
-	},
-	sequence: require('./lib/sequence'),
-	_runStep: function () {
-		var i, task, allDone = true;
-		if (!this.isRunning) {
-			return; // They aborted it
-		}
-		for (i = 0; i < this.taskQueue.length; i++) {
-			task = this.tasks[this.taskQueue[i]];
-			if (!task.done && !task.running) {
-				if (this._readyToRunTask(task)) {
-					this._runTask(task);
-				}
-			}
-			if (!task.done) {
-				allDone = false;
-			}
-			if (!this.isRunning) {
-				return; // Task failed or user aborted
-			}
-		}
-		if (allDone) {
-			this.stop(null, allDone);
-		}
 	},
 	stop: function (err, allDone) {
 		this.isRunning = false;
@@ -109,8 +88,41 @@ Orchestrator.prototype = {
 			this.doneCallback(err);
 		}
 	},
+	sequence: require('./lib/sequence'),
+	allDone: function () {
+		var i, task, allDone = true; // nothing disputed it yet
+		for (i = 0; i < this.seq.length; i++) {
+			task = this.tasks[this.seq[i]];
+			if (!task.done) {
+				allDone = false;
+				break;
+			}
+		}
+		return allDone;
+	},
+	_runStep: function () {
+		var i, task;
+		if (!this.isRunning) {
+			return; // user aborted, ASSUME: stop called previously
+		}
+		for (i = 0; i < this.seq.length; i++) {
+			task = this.tasks[this.seq[i]];
+			if (!task.done && !task.running && this._readyToRunTask(task)) {
+				this._runTask(task);
+				if (this.seq[i] !== task.name) {
+					i = -1; // the task probably called .run(), re-check the queue
+				}
+			}
+			if (!this.isRunning) {
+				return; // task failed or user aborted, ASSUME: stop called previously
+			}
+		}
+		if (this.allDone()) {
+			this.stop(null, true);
+		}
+	},
 	_readyToRunTask: function (task) {
-		var ready = true, // No one disproved it yet
+		var ready = true, // no one disproved it yet
 			i, name, t;
 		if (task.dep.length) {
 			for (i = 0; i < task.dep.length; i++) {
