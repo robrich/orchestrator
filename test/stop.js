@@ -9,13 +9,32 @@ require('mocha');
 describe('orchestrator stop', function() {
 	describe('stop()', function() {
 
-		it('should call doneCallback', function(done) {
+		it('should call and clear doneCallback', function(done) {
 			var orchestrator, a = 0;
 
 			// Arrange
 			orchestrator = new Orchestrator();
 			orchestrator.doneCallback = function (/*err*/) {
 				a++;
+			};
+
+			// Act
+			orchestrator.stop(null);
+
+			// Assert
+			a.should.equal(1);
+			should.not.exist(orchestrator.doneCallback);
+			done();
+		});
+
+		it('should not recurse when doneCallback calls stop', function(done) {
+			var orchestrator, a = 0;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			orchestrator.doneCallback = function (err) {
+				a++;
+				orchestrator.stop(err);
 			};
 
 			// Act

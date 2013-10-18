@@ -4,7 +4,7 @@
 "use strict";
 
 var Orchestrator = require('../');
-require('should');
+var should = require('should');
 require('mocha');
 
 describe('orchestrator task is ready when dependencies are resolved', function() {
@@ -76,6 +76,32 @@ describe('orchestrator task is ready when dependencies are resolved', function()
 			actual = orchestrator._readyToRunTask(task);
 
 			// Assert
+			actual.should.equal(expected);
+			done();
+		});
+
+		it('should stop() if dependency is missing', function(done) {
+			var orchestrator, task, cb, expected, actual, expectedErr;
+
+			// Arrange
+			expected = false;
+			task = {
+				name: 'a',
+				dep: ['b'] // which doesn't exist
+			};
+			cb = function (err) {
+				expectedErr = err;
+			};
+
+			// Act
+			orchestrator = new Orchestrator();
+			orchestrator.tasks = { a: task };
+			orchestrator.doneCallback = cb;
+			actual = orchestrator._readyToRunTask(task);
+
+			// Assert
+			should.exist(expectedErr);
+			expectedErr.indexOf('exist').should.be.above(-1);
 			actual.should.equal(expected);
 			done();
 		});

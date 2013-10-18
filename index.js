@@ -84,7 +84,10 @@ Orchestrator.prototype = {
 			}
 		}
 		if (this.doneCallback) {
-			this.doneCallback(err);
+			// Avoid calling it multiple times
+			var cb = this.doneCallback;
+			this.doneCallback = null;
+			cb(err);
 		}
 	},
 	sequence: require('./lib/sequence'),
@@ -124,6 +127,12 @@ Orchestrator.prototype = {
 			for (i = 0; i < task.dep.length; i++) {
 				name = task.dep[i];
 				t = this.tasks[name];
+				if (!t) {
+					// FRAGILE: this should never happen
+					this.stop("can't run "+task.name+" because it depends on "+name+" which doesn't exist");
+					ready = false;
+					break;
+				}
 				if (!t.done) {
 					ready = false;
 					break;
