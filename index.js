@@ -90,7 +90,7 @@ Orchestrator.prototype = {
 			cb(err);
 		}
 	},
-	sequence: require('./lib/sequence'),
+	sequence: require('arranger'),
 	allDone: function () {
 		var i, task, allDone = true; // nothing disputed it yet
 		for (i = 0; i < this.seq.length; i++) {

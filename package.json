@@ -13,7 +13,7 @@
     "compose"
   ],
   "dependencies": {
-    "event-stream": "3.0.16"
+    "arranger": "~0.0.3"
   },
   "devDependencies": {
     "mocha": "~1.13.0",
