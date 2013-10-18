@@ -64,16 +64,16 @@ describe('orchestrator tasks', function() {
 			orchestrator = new Orchestrator();
 			a = 0;
 			fn = function() {
-				orchestrator.run('test3');
 				++a;
+				orchestrator.run('test3');
 			};
 			fn2 = function() {
-				aAtFn2 = a;
 				++a;
+				aAtFn2 = a;
 			};
 			fn3 = function() {
-				aAtFn3 = a;
 				++a;
+				aAtFn3 = a;
 			};
 			orchestrator.add('test', fn);
 			orchestrator.add('test2', fn2);
@@ -83,8 +83,8 @@ describe('orchestrator tasks', function() {
 			orchestrator.run('test', 'test2');
 
 			// Assert
-			aAtFn3.should.equal(1); // 1 ran
-			aAtFn2.should.equal(2); // 1 and 3 ran
+			aAtFn3.should.equal(2); // 1 and 3 ran
+			aAtFn2.should.equal(3); // 1, 3, and 2 ran
 			a.should.equal(3);
 			test2pos = orchestrator.seq.indexOf('test2');
 			test3pos = orchestrator.seq.indexOf('test3');

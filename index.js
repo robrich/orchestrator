@@ -50,7 +50,6 @@ Orchestrator.prototype = {
 		if (this.isRunning) {
 			// if you call run() again while a previous run is still in play
 			// prepend the new tasks to the existing task queue
-			// TODO: you probably want to run the tasks you just passed right now then resume the original flow
 			names = names.concat(this.seq);
 		}
 		if (names.length < 1) {
@@ -69,16 +68,16 @@ Orchestrator.prototype = {
 		}
 		if (!this.isRunning) {
 			this.isRunning = true;
-			this._runStep();
 		}
+		this._runStep();
 		return this;
 	},
-	stop: function (err, allDone) {
+	stop: function (err, successfulFinish) {
 		this.isRunning = false;
 		if (this.verbose) {
 			if (err) {
 				console.log('[orchestration failed]');
-			} else if (allDone) {
+			} else if (successfulFinish) {
 				console.log('[orchestration succeeded]');
 			} else {
 				console.log('[orchestration aborted]'); // ASSUME
@@ -109,9 +108,6 @@ Orchestrator.prototype = {
 			task = this.tasks[this.seq[i]];
 			if (!task.done && !task.running && this._readyToRunTask(task)) {
 				this._runTask(task);
-				if (this.seq[i] !== task.name) {
-					i = -1; // the task probably called .run(), re-check the queue
-				}
 			}
 			if (!this.isRunning) {
 				return; // task failed or user aborted, ASSUME: stop called previously
