@@ -1,4 +1,4 @@
-![status](https://secure.travis-ci.org/robrich/orchestsrator.png?branch=master)
+![status](https://secure.travis-ci.org/robrich/orchestrator.png?branch=master)
 
 Orchestrator
 ============
@@ -20,7 +20,7 @@ var orchestrator = new Orchestrator();
 A synchronous task:
 
 ```javascript
-orchestrator.task('thing1', function(){
+orchestrator.add('thing1', function(){
   // do stuff
 });
 ```
@@ -28,7 +28,7 @@ orchestrator.task('thing1', function(){
 An asynchronous task:
 
 ```javascript
-orchestrator.task('thing2', function(callback){
+orchestrator.add('thing2', function(callback){
   // do stuff
   callback(err);
 });
@@ -39,7 +39,7 @@ An asynchronous task using promises:
 ```javascript
 var Q = require('q');
 
-orchestrator.task('thing3', function(){
+orchestrator.add('thing3', function(){
   var deferred = Q.defer();
 
   // do async stuff
@@ -54,7 +54,7 @@ orchestrator.task('thing3', function(){
 A task that requires other tasks be done first:
 
 ```javascript
-orchestrator.task('thing4', ['thing1','thing2','thing3'], function(){
+orchestrator.add('thing4', ['thing1','thing2','thing3'], function(){
   // do stuff
 });
 ```
