@@ -3,7 +3,7 @@
 Orchestrator
 ============
 
-A system for organizing dependent tasks
+A module for sequencing and executing tasks and dependencies in maximum concurrency
 
 Usage
 -----
@@ -81,7 +81,9 @@ orchestrator.run('thing1', function (err) {
 });
 ```
 
-FRAGILE: Orchestrator catches exceptions on sync runs but doesn't hook to process.uncaughtException
+FRAGILE: Orchestrator catches exceptions on sync runs to pass to your callback
+but doesn't hook to process.uncaughtException so it can't pass those exceptions
+to your callback
 
 ### 4. Enjoy!
 
