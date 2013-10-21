@@ -26,7 +26,7 @@ describe('orchestrator tasks', function() {
 			orchestrator.add('test2', fn2);
 
 			// Act
-			orchestrator.run('test', 'test2');
+			orchestrator.start('test', 'test2');
 
 			// Assert
 			a.should.equal(2);
@@ -49,8 +49,8 @@ describe('orchestrator tasks', function() {
 			orchestrator.add('test2', fn2);
 
 			// Act
-			orchestrator.run('test');
-			orchestrator.run('test2');
+			orchestrator.start('test');
+			orchestrator.start('test2');
 
 			// Assert
 			a.should.equal(2);
@@ -65,7 +65,7 @@ describe('orchestrator tasks', function() {
 			a = 0;
 			fn = function() {
 				++a;
-				orchestrator.run('test3');
+				orchestrator.start('test3');
 			};
 			fn2 = function() {
 				++a;
@@ -80,7 +80,7 @@ describe('orchestrator tasks', function() {
 			orchestrator.add('test3', fn3);
 
 			// Act
-			orchestrator.run('test', 'test2');
+			orchestrator.start('test', 'test2');
 
 			// Assert
 			aAtFn3.should.equal(2); // 1 and 3 ran
@@ -110,8 +110,8 @@ describe('orchestrator tasks', function() {
 			orchestrator.add('test2', fn2);
 
 			// Act
-			orchestrator.run('test');
-			orchestrator.run('test2');
+			orchestrator.start('test');
+			orchestrator.start('test2');
 
 			// Assert
 			a.should.equal(2);
@@ -134,7 +134,7 @@ describe('orchestrator tasks', function() {
 			orchestrator.add('test2', fn2);
 
 			// Act
-			orchestrator.run();
+			orchestrator.start();
 
 			// Assert
 			a.should.equal(2);
@@ -167,8 +167,8 @@ describe('orchestrator tasks', function() {
 			orchestrator.add('test2', fn2);
 
 			// Act
-			orchestrator.run('test');
-			orchestrator.run('test2', function () {
+			orchestrator.start('test');
+			orchestrator.start('test2', function () {
 				// Assert
 				orchestrator.isRunning.should.equal(false);
 				a.should.equal(2);
@@ -199,8 +199,8 @@ describe('orchestrator tasks', function() {
 			orchestrator.add('test2', fn2);
 
 			// Act
-			orchestrator.run('test');
-			orchestrator.run('test2', function () {
+			orchestrator.start('test');
+			orchestrator.start('test2', function () {
 				// Assert
 				orchestrator.isRunning.should.equal(false);
 				a.should.equal(2);
@@ -222,7 +222,7 @@ describe('orchestrator tasks', function() {
 			orchestrator.add('test', fn);
 
 			// Act
-			orchestrator.run('test');
+			orchestrator.start('test');
 
 			// Assert
 			a.should.equal(1);

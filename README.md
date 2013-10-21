@@ -61,22 +61,22 @@ orchestrator.add('thing4', ['thing1','thing2','thing3'], function(){
 
 ### 3. Run the tasks:
 
-Specify the tasks you want to run:
+Start the tasks you want to run:
 
 ```javascript
-orchestrator.run('thing1','thing2','thing3', 'thing4');
+orchestrator.start('thing1','thing2','thing3', 'thing4');
 ```
 
-or run all the tasks:
+or start all the tasks:
 
 ```javascript
-orchestrator.run();
+orchestrator.start();
 ```
 
-specify a callback to run when all tasks are complete:
+or specify a callback for when all tasks are complete:
 
 ```javascript
-orchestrator.run('thing1', function (err) {
+orchestrator.start('thing1', function (err) {
   // all done
 });
 ```

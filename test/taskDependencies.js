@@ -11,7 +11,7 @@ require('mocha');
 describe('orchestrator task dependencies', function() {
 
 	describe('run()', function() {
-		// Technically these are duplicated from test/sequence.js,
+		// Technically these are duplicated from require('sequencify'),
 		// but those are unit tests and these are integration tests
 		it('should run tasks in specified order if no dependencies', function(done) {
 			var orchestrator, a, fn, fn2;
@@ -31,7 +31,7 @@ describe('orchestrator task dependencies', function() {
 			orchestrator = new Orchestrator();
 			orchestrator.add('test1', fn);
 			orchestrator.add('test2', fn2);
-			orchestrator.run('test1', 'test2', function () {
+			orchestrator.start('test1', 'test2', function (err) {
 				// Assert
 				a.should.equal(2);
 				done();
@@ -56,7 +56,7 @@ describe('orchestrator task dependencies', function() {
 			orchestrator = new Orchestrator();
 			orchestrator.add('dep', fn);
 			orchestrator.add('test', ['dep'], fn2);
-			orchestrator.run('test');
+			orchestrator.start('test');
 
 			// Assert
 			a.should.equal(2);
@@ -91,7 +91,7 @@ describe('orchestrator task dependencies', function() {
 			orchestrator = new Orchestrator();
 			orchestrator.add('dep', fn);
 			orchestrator.add('test', ['dep'], fn2);
-			orchestrator.run('test', function () {
+			orchestrator.start('test', function () {
 				// Assert
 				orchestrator.isRunning.should.equal(false);
 				a.should.equal(2);
@@ -141,7 +141,7 @@ describe('orchestrator task dependencies', function() {
 			orchestrator.add('fn2', fn2);
 			orchestrator.add('fn3', ['fn1', 'fn2'], fn3);
 			orchestrator.add('fn4', ['fn3'], fn4);
-			orchestrator.run('fn4', function () {
+			orchestrator.start('fn4', function () {
 				// Assert
 				orchestrator.isRunning.should.equal(false);
 				a.should.equal(4);

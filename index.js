@@ -8,7 +8,7 @@ var Orchestrator = function (opts) {
 	this.doneCallback = opts.callback; // call this when all tasks in the queue are done
 	this.seq = opts.seq || []; // the order to run the tasks
 	this.tasks = {}; // task objects: name, dep (list of names of dependencies), fn (the task to run)
-	this.isRunning = false; // is the orchestrator running tasks? .run() to start, .stop() to end
+	this.isRunning = false; // is the orchestrator running tasks? .start() to start, .stop() to stop
 };
 
 Orchestrator.prototype = {
@@ -37,7 +37,7 @@ Orchestrator.prototype = {
 		return this;
 	},
 	// tasks and optionally a callback
-	run: function() {
+	start: function() {
 		var names, lastTask, i, seq = [];
 		names = [].slice.call(arguments, 0);
 		if (names.length) {
@@ -48,7 +48,7 @@ Orchestrator.prototype = {
 			}
 		}
 		if (this.isRunning) {
-			// if you call run() again while a previous run is still in play
+			// if you call start() again while a previous run is still in play
 			// prepend the new tasks to the existing task queue
 			names = names.concat(this.seq);
 		}

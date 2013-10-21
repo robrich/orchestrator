@@ -7,8 +7,8 @@ var Q = require('q');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator run done callback', function() {
-	describe('run()', function() {
+describe('orchestrator done callback', function() {
+	describe('stop() callback', function() {
 
 		it('should have empty error on succeeding tasks', function(done) {
 			var orchestrator, a;
@@ -21,7 +21,7 @@ describe('orchestrator run done callback', function() {
 			});
 
 			// Act
-			orchestrator.run('test', function(err) {
+			orchestrator.start('test', function(err) {
 				// Assert
 				a.should.equal(1);
 				should.not.exist(err);
@@ -42,7 +42,7 @@ describe('orchestrator run done callback', function() {
 			});
 
 			// Act
-			orchestrator.run('test', function(err) {
+			orchestrator.start('test', function(err) {
 				// Assert
 				a.should.equal(1);
 				should.exist(err);
@@ -64,7 +64,7 @@ describe('orchestrator run done callback', function() {
 			});
 
 			// Act
-			orchestrator.run('test', function(err) {
+			orchestrator.start('test', function(err) {
 				// Assert
 				a.should.equal(1);
 				should.exist(err);
@@ -90,7 +90,7 @@ describe('orchestrator run done callback', function() {
 			});
 
 			// Act
-			orchestrator.run('test', function(actualErr) {
+			orchestrator.start('test', function(actualErr) {
 				// Assert
 				a.should.equal(1);
 				should.exist(actualErr);
