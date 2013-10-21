@@ -7,3 +7,4 @@ components
 *.orig
 .idea
 test
+.travis.yml
