@@ -5,7 +5,7 @@
 
 var Orchestrator = require('../');
 var Q = require('q');
-require('should');
+var should = require('should');
 require('mocha');
 
 describe('orchestrator task dependencies', function() {
@@ -19,21 +19,29 @@ describe('orchestrator task dependencies', function() {
 			// Arrange
 			a = 0;
 			fn = function() {
-				a.should.equal(0);
+				a.should.equal(1);
 				++a;
 			};
 			fn2 = function() {
-				a.should.equal(1);
+				a.should.equal(2);
 				++a;
 			};
 
 			// Act
-			orchestrator = new Orchestrator();
+			orchestrator = new Orchestrator({eventListener: function (e) {
+				should.exist(e);
+				if (e.src === 'start') {
+					a.should.equal(0);
+					++a;
+					e.mess.should.startWith('seq: '); // Order is not deterministic, but event should still happen
+				}
+			}});
 			orchestrator.add('test1', fn);
 			orchestrator.add('test2', fn2);
 			orchestrator.start('test1', 'test2', function (err) {
 				// Assert
-				a.should.equal(2);
+				a.should.equal(3);
+				should.not.exist(err);
 				done();
 			});
 		});
@@ -44,22 +52,29 @@ describe('orchestrator task dependencies', function() {
 			// Arrange
 			a = 0;
 			fn = function() {
-				a.should.equal(0);
+				a.should.equal(1);
 				++a;
 			};
 			fn2 = function() {
-				a.should.equal(1);
+				a.should.equal(2);
 				++a;
 			};
 
 			// Act
-			orchestrator = new Orchestrator();
+			orchestrator = new Orchestrator({eventListener: function (e) {
+				should.exist(e);
+				if (e.src === 'start') {
+					a.should.equal(0);
+					++a;
+					e.mess.should.equal('seq: dep,test');
+				}
+			}});
 			orchestrator.add('dep', fn);
 			orchestrator.add('test', ['dep'], fn2);
 			orchestrator.start('test');
 
 			// Assert
-			a.should.equal(2);
+			a.should.equal(3);
 			done();
 		});
 
@@ -71,7 +86,7 @@ describe('orchestrator task dependencies', function() {
 			fn = function() {
 				var deferred = Q.defer();
 				setTimeout(function () {
-					a.should.equal(0);
+					a.should.equal(1);
 					++a;
 					deferred.resolve();
 				},1);
@@ -80,7 +95,7 @@ describe('orchestrator task dependencies', function() {
 			fn2 = function() {
 				var deferred = Q.defer();
 				setTimeout(function () {
-					a.should.equal(1);
+					a.should.equal(2);
 					++a;
 					deferred.resolve();
 				},1);
@@ -88,13 +103,20 @@ describe('orchestrator task dependencies', function() {
 			};
 
 			// Act
-			orchestrator = new Orchestrator();
+			orchestrator = new Orchestrator({eventListener: function (e) {
+				should.exist(e);
+				if (e.src === 'start') {
+					a.should.equal(0);
+					++a;
+					e.mess.should.equal('seq: dep,test');
+				}
+			}});
 			orchestrator.add('dep', fn);
 			orchestrator.add('test', ['dep'], fn2);
 			orchestrator.start('test', function () {
 				// Assert
 				orchestrator.isRunning.should.equal(false);
-				a.should.equal(2);
+				a.should.equal(3);
 				done();
 			});
 			orchestrator.isRunning.should.equal(true);
@@ -136,7 +158,14 @@ describe('orchestrator task dependencies', function() {
 			};
 
 			// Act
-			orchestrator = new Orchestrator();
+			orchestrator = new Orchestrator({eventListener: function (e) {
+				should.exist(e);
+				if (e.src === 'start') {
+					a.should.equal(0);
+					++a;
+					e.mess.should.equal('seq: fn1,fn2,fn3,fn4');
+				}
+			}});
 			orchestrator.add('fn1', fn1);
 			orchestrator.add('fn2', fn2);
 			orchestrator.add('fn3', ['fn1', 'fn2'], fn3);
@@ -144,7 +173,7 @@ describe('orchestrator task dependencies', function() {
 			orchestrator.start('fn4', function () {
 				// Assert
 				orchestrator.isRunning.should.equal(false);
-				a.should.equal(4);
+				a.should.equal(5);
 				done();
 			});
 			orchestrator.isRunning.should.equal(true);

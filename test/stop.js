@@ -78,8 +78,66 @@ describe('orchestrator stop', function() {
 			done();
 		});
 
-		// it('should log the correct reason', function (done) {
-		// TODO: mock console.log()
+		it('should log success', function (done) {
+			var orchestrator, actualLog;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			orchestrator.events.on('log', function (e) {
+				actualLog = e;
+			});
+
+			// Act
+			orchestrator.stop(null, true); // true means success
+
+			// Assert
+			should.exist(actualLog);
+			actualLog.src.should.equal('stop');
+			should.not.exist(actualLog.task);
+			actualLog.mess.should.contain('succeed');
+			done();
+		});
+
+		it('should log failure', function (done) {
+			var orchestrator, actualLog;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			orchestrator.events.on('log', function (e) {
+				actualLog = e;
+			});
+
+			// Act
+			orchestrator.stop(null, false); // false means aborted
+
+			// Assert
+			should.exist(actualLog);
+			actualLog.src.should.equal('stop');
+			should.not.exist(actualLog.task);
+			actualLog.mess.should.contain('abort');
+			done();
+		});
+
+		it('should log exception', function (done) {
+			var orchestrator, actualErr = 'the error', actualLog;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			orchestrator.events.on('log', function (e) {
+				actualLog = e;
+			});
+
+			// Act
+			orchestrator.stop(actualErr); // false means aborted
+
+			// Assert
+			should.exist(actualLog);
+			actualLog.src.should.equal('stop');
+			should.not.exist(actualLog.task);
+			actualLog.mess.should.contain('fail');
+			actualLog.err.should.equal(actualErr);
+			done();
+		});
 
 	});
 });

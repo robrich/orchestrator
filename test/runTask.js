@@ -54,6 +54,32 @@ describe('orchestrator tasks execute as expected', function() {
 			done();
 		});
 
+		it('logs start', function(done) {
+			var orchestrator, task, a = 0;
+
+			// Arrange
+			task = {
+				name: 'test',
+				fn: function() {
+				}
+			};
+
+			// Act
+			orchestrator = new Orchestrator();
+			orchestrator.events.on('log', function (e) {
+				if (e.src === '_runTask' && e.mess.indexOf('start') > -1) {
+					should.exist(e.task);
+					e.task.should.equal('test');
+					++a;
+				}
+			});
+			orchestrator._runTask(task);
+
+			// Assert
+			a.should.equal(1);
+			done();
+		});
+
 		it('sync task sets done after calling function', function(done) {
 			var orchestrator, task, a;
 
@@ -78,6 +104,36 @@ describe('orchestrator tasks execute as expected', function() {
 			should.exist(task.done);
 			task.done.should.equal(true);
 			a.should.equal(0); // It's done so it need not run more
+			done();
+		});
+
+		it('sync task logs finish after calling function', function(done) {
+			var orchestrator, task, a;
+
+			// Arrange
+			a = 0;
+			task = {
+				name: 'test',
+				fn: function() {
+					a.should.equal(0);
+				}
+			};
+
+			// the thing under test
+			orchestrator = new Orchestrator({eventListener: function (e) {
+				if (e.src === '_runTask' && e.mess.indexOf('finish') > -1) {
+					should.exist(e.task);
+					e.task.should.equal('test');
+					++a;
+				}
+			}});
+			orchestrator._runStep = function () {}; // fake
+
+			// Act
+			orchestrator._runTask(task);
+
+			// Assert
+			a.should.equal(1);
 			done();
 		});
 
@@ -116,6 +172,43 @@ describe('orchestrator tasks execute as expected', function() {
 			}, timeout*2);
 		});
 
+		it('async promise task logs finish after task resolves', function(done) {
+			var orchestrator, task, timeout = 5, a;
+
+			// Arrange
+			a = 0;
+			task = {
+				name: 'test',
+				fn: function() {
+					var deferred = Q.defer();
+					setTimeout(function () {
+						a.should.equal(0);
+						deferred.resolve();
+					}, timeout);
+					return deferred.promise;
+				}
+			};
+
+			// the thing under test
+			orchestrator = new Orchestrator({eventListener: function (e) {
+				if (e.src === '_runTask' && e.mess.indexOf('resolve') > -1) {
+					should.exist(e.task);
+					e.task.should.equal('test');
+					++a;
+				}
+			}});
+			orchestrator._runStep = function () {};
+
+			// Act
+			orchestrator._runTask(task);
+
+			// Assert
+			setTimeout(function () {
+				a.should.equal(1);
+				done();
+			}, timeout*2);
+		});
+
 		it('async callback task sets done after task resolves', function(done) {
 			var orchestrator, task, timeout = 5, a;
 
@@ -144,6 +237,41 @@ describe('orchestrator tasks execute as expected', function() {
 			setTimeout(function () {
 				should.exist(task.done);
 				task.done.should.equal(true);
+				a.should.equal(1);
+				done();
+			}, timeout*2);
+		});
+
+		it('async callback task logs finish after task resolves', function(done) {
+			var orchestrator, task, timeout = 5, a;
+
+			// Arrange
+			a = 0;
+			task = {
+				name: 'test',
+				fn: function(cb) {
+					setTimeout(function () {
+						should.not.exist(task.done);
+						cb(null);
+					}, timeout);
+				}
+			};
+
+			// the thing under test
+			orchestrator = new Orchestrator({eventListener: function (e) {
+				if (e.src === '_runTask' && e.mess.indexOf('calledback') > -1) {
+					should.exist(e.task);
+					e.task.should.equal('test');
+					++a;
+				}
+			}});
+			orchestrator._runStep = function () {};
+
+			// Act
+			orchestrator._runTask(task);
+
+			// Assert
+			setTimeout(function () {
 				a.should.equal(1);
 				done();
 			}, timeout*2);

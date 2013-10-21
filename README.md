@@ -15,6 +15,16 @@ var Orchestrator = require('orchestrator');
 var orchestrator = new Orchestrator();
 ```
 
+Optionally listen to it's internals
+
+```javascript
+orchestrator.on('log', function (e) {
+  // e.mess is the log message
+  // e.task is the task name if the message applies to a task else `undefined`
+  // e.src is the method that emitted the event: start, _runTask, or stop
+});
+```
+
 ### 2. Load it up with stuff to do:
 
 A synchronous task:
