@@ -83,7 +83,7 @@ describe('orchestrator stop', function() {
 
 			// Arrange
 			orchestrator = new Orchestrator();
-			orchestrator.events.on('log', function (e) {
+			orchestrator.on('log', function (e) {
 				actualLog = e;
 			});
 
@@ -103,7 +103,7 @@ describe('orchestrator stop', function() {
 
 			// Arrange
 			orchestrator = new Orchestrator();
-			orchestrator.events.on('log', function (e) {
+			orchestrator.on('log', function (e) {
 				actualLog = e;
 			});
 
@@ -123,7 +123,7 @@ describe('orchestrator stop', function() {
 
 			// Arrange
 			orchestrator = new Orchestrator();
-			orchestrator.events.on('log', function (e) {
+			orchestrator.on('log', function (e) {
 				actualLog = e;
 			});
 

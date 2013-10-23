@@ -66,7 +66,7 @@ describe('orchestrator tasks execute as expected', function() {
 
 			// Act
 			orchestrator = new Orchestrator();
-			orchestrator.events.on('log', function (e) {
+			orchestrator.on('log', function (e) {
 				if (e.src === '_runTask' && e.mess.indexOf('start') > -1) {
 					should.exist(e.task);
 					e.task.should.equal('test');
@@ -120,13 +120,14 @@ describe('orchestrator tasks execute as expected', function() {
 			};
 
 			// the thing under test
-			orchestrator = new Orchestrator({eventListener: function (e) {
+			orchestrator = new Orchestrator();
+			orchestrator.on('log', function (e) {
 				if (e.src === '_runTask' && e.mess.indexOf('finish') > -1) {
 					should.exist(e.task);
 					e.task.should.equal('test');
 					++a;
 				}
-			}});
+			});
 			orchestrator._runStep = function () {}; // fake
 
 			// Act
@@ -190,13 +191,14 @@ describe('orchestrator tasks execute as expected', function() {
 			};
 
 			// the thing under test
-			orchestrator = new Orchestrator({eventListener: function (e) {
+			orchestrator = new Orchestrator();
+			orchestrator.on('log', function (e) {
 				if (e.src === '_runTask' && e.mess.indexOf('resolve') > -1) {
 					should.exist(e.task);
 					e.task.should.equal('test');
 					++a;
 				}
-			}});
+			});
 			orchestrator._runStep = function () {};
 
 			// Act
@@ -258,13 +260,14 @@ describe('orchestrator tasks execute as expected', function() {
 			};
 
 			// the thing under test
-			orchestrator = new Orchestrator({eventListener: function (e) {
+			orchestrator = new Orchestrator();
+			orchestrator.on('log', function (e) {
 				if (e.src === '_runTask' && e.mess.indexOf('calledback') > -1) {
 					should.exist(e.task);
 					e.task.should.equal('test');
 					++a;
 				}
-			}});
+			});
 			orchestrator._runStep = function () {};
 
 			// Act

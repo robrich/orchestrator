@@ -28,14 +28,15 @@ describe('orchestrator task dependencies', function() {
 			};
 
 			// Act
-			orchestrator = new Orchestrator({eventListener: function (e) {
+			orchestrator = new Orchestrator();
+			orchestrator.on('log', function (e) {
 				should.exist(e);
 				if (e.src === 'start') {
 					a.should.equal(0);
 					++a;
 					e.mess.should.startWith('seq: '); // Order is not deterministic, but event should still happen
 				}
-			}});
+			});
 			orchestrator.add('test1', fn);
 			orchestrator.add('test2', fn2);
 			orchestrator.start('test1', 'test2', function (err) {
@@ -61,14 +62,15 @@ describe('orchestrator task dependencies', function() {
 			};
 
 			// Act
-			orchestrator = new Orchestrator({eventListener: function (e) {
+			orchestrator = new Orchestrator();
+			orchestrator.on('log', function (e) {
 				should.exist(e);
 				if (e.src === 'start') {
 					a.should.equal(0);
 					++a;
 					e.mess.should.equal('seq: dep,test');
 				}
-			}});
+			});
 			orchestrator.add('dep', fn);
 			orchestrator.add('test', ['dep'], fn2);
 			orchestrator.start('test');
@@ -103,14 +105,15 @@ describe('orchestrator task dependencies', function() {
 			};
 
 			// Act
-			orchestrator = new Orchestrator({eventListener: function (e) {
+			orchestrator = new Orchestrator();
+			orchestrator.on('log', function (e) {
 				should.exist(e);
 				if (e.src === 'start') {
 					a.should.equal(0);
 					++a;
 					e.mess.should.equal('seq: dep,test');
 				}
-			}});
+			});
 			orchestrator.add('dep', fn);
 			orchestrator.add('test', ['dep'], fn2);
 			orchestrator.start('test', function () {
@@ -158,14 +161,15 @@ describe('orchestrator task dependencies', function() {
 			};
 
 			// Act
-			orchestrator = new Orchestrator({eventListener: function (e) {
+			orchestrator = new Orchestrator();
+			orchestrator.on('log', function (e) {
 				should.exist(e);
 				if (e.src === 'start') {
 					a.should.equal(0);
 					++a;
 					e.mess.should.equal('seq: fn1,fn2,fn3,fn4');
 				}
-			}});
+			});
 			orchestrator.add('fn1', fn1);
 			orchestrator.add('fn2', fn2);
 			orchestrator.add('fn3', ['fn1', 'fn2'], fn3);

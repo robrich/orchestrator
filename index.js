@@ -2,30 +2,29 @@
 
 "use strict";
 
+var util = require('util');
 var events = require('events');
+var EventEmitter = events.EventEmitter;
 
 var Orchestrator = function (opts) {
+	EventEmitter.call(this);
 	opts = opts || {};
 	this.doneCallback = opts.callback; // call this when all tasks in the queue are done
 	this.seq = opts.seq || []; // the order to run the tasks
 	this.tasks = {}; // task objects: name, dep (list of names of dependencies), fn (the task to run)
 	this.isRunning = false; // is the orchestrator running tasks? .start() to start, .stop() to stop
-	this.events = new events.EventEmitter();
-	if (opts.eventListener) {
-		this.events.on('log', opts.eventListener);
-	}
 };
+util.inherits(Orchestrator, EventEmitter);
 
-Orchestrator.prototype = {
-	reset: function () {
+	Orchestrator.prototype.reset = function () {
 		this.stop(null);
 		this.tasks = {};
 		this.seq = [];
 		this.isRunning = false;
 		this.doneCallback = undefined;
 		return this;
-	},
-	add: function (name, dep, fn) {
+	};
+	Orchestrator.prototype.add = function (name, dep, fn) {
 		if (!fn) {
 			fn = dep;
 			dep = undefined;
@@ -40,9 +39,9 @@ Orchestrator.prototype = {
 			name: name
 		};
 		return this;
-	},
+	};
 	// tasks and optionally a callback
-	start: function() {
+	Orchestrator.prototype.start = function() {
 		var names, lastTask, i, seq = [];
 		names = [].slice.call(arguments, 0);
 		if (names.length) {
@@ -68,23 +67,23 @@ Orchestrator.prototype = {
 		seq = [];
 		this.sequence(this.tasks, names, seq, []);
 		this.seq = seq;
-		this.events.emit('log', {src:'start', mess:'seq: '+this.seq.join(',')});
+		this.emit('log', {src:'start', mess:'seq: '+this.seq.join(',')});
 		if (!this.isRunning) {
 			this.isRunning = true;
 		}
 		this._runStep();
 		return this;
-	},
-	stop: function (err, successfulFinish) {
+	};
+	Orchestrator.prototype.stop = function (err, successfulFinish) {
 		this.isRunning = false;
 		if (err) {
-			this.events.emit('log', {src:'stop', mess:'orchestration failed', err:err});
+			this.emit('log', {src:'stop', mess:'orchestration failed', err:err});
 		} else if (successfulFinish) {
-			this.events.emit('log', {src:'stop', mess:'orchestration succeeded'});
+			this.emit('log', {src:'stop', mess:'orchestration succeeded'});
 		} else {
 			// ASSUME
 			err = 'orchestration aborted';
-			this.events.emit('log', {src:'stop', mess:'orchestration aborted', err: err});
+			this.emit('log', {src:'stop', mess:'orchestration aborted', err: err});
 		}
 		if (this.doneCallback) {
 			// Avoid calling it multiple times
@@ -92,9 +91,9 @@ Orchestrator.prototype = {
 			this.doneCallback = null;
 			cb(err);
 		}
-	},
-	sequence: require('sequencify'),
-	allDone: function () {
+	};
+	Orchestrator.prototype.sequence = require('sequencify');
+	Orchestrator.prototype.allDone = function () {
 		var i, task, allDone = true; // nothing disputed it yet
 		for (i = 0; i < this.seq.length; i++) {
 			task = this.tasks[this.seq[i]];
@@ -104,8 +103,8 @@ Orchestrator.prototype = {
 			}
 		}
 		return allDone;
-	},
-	_runStep: function () {
+	};
+	Orchestrator.prototype._runStep = function () {
 		var i, task;
 		if (!this.isRunning) {
 			return; // user aborted, ASSUME: stop called previously
@@ -122,8 +121,8 @@ Orchestrator.prototype = {
 		if (this.allDone()) {
 			this.stop(null, true);
 		}
-	},
-	_readyToRunTask: function (task) {
+	};
+	Orchestrator.prototype._readyToRunTask = function (task) {
 		var ready = true, // no one disproved it yet
 			i, name, t;
 		if (task.dep.length) {
@@ -143,15 +142,15 @@ Orchestrator.prototype = {
 			}
 		}
 		return ready;
-	},
-	_runTask: function (task) {
+	};
+	Orchestrator.prototype._runTask = function (task) {
 		var that = this, cb, p;
-		this.events.emit('log', {src:'_runTask', task:task.name, mess:task.name+' started'});
+		this.emit('log', {src:'_runTask', task:task.name, mess:task.name+' started'});
 		task.running = true;
 		cb = function (err) {
 			task.running = false;
 			task.done = true;
-			that.events.emit('log', {src:'_runTask', task:task.name, mess:task.name+' calledback'});
+			that.emit('log', {src:'_runTask', task:task.name, mess:task.name+' calledback'});
 			if (err) {
 				return that.stop.call(that, err);
 			}
@@ -168,23 +167,22 @@ Orchestrator.prototype = {
 			p.done(function () {
 				task.running = false;
 				task.done = true;
-				that.events.emit('log', {src:'_runTask', task:task.name, mess:task.name+' resolved'});
+				that.emit('log', {src:'_runTask', task:task.name, mess:task.name+' resolved'});
 				that._runStep.call(that);
 			}, function(err) {
 				task.running = false;
 				task.done = true;
-				that.events.emit('log', {src:'_runTask', task:task.name, mess:task.name+' rejected'});
+				that.emit('log', {src:'_runTask', task:task.name, mess:task.name+' rejected'});
 				that.stop.call(that, err || task.name+' promise rejected');
 			});
 		} else if (!task.fn.length) {
 			// no promise, no callback, we're done
-			this.events.emit('log', {src:'_runTask', task:task.name, mess:task.name+' finished'});
+			this.emit('log', {src:'_runTask', task:task.name, mess:task.name+' finished'});
 			task.running = false;
 			task.done = true;
 		//} else {
 			// FRAGILE: ASSUME: callback
 		}
-	}
-};
+	};
 
 module.exports = Orchestrator;
