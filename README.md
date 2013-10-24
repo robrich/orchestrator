@@ -15,26 +15,6 @@ var Orchestrator = require('orchestrator');
 var orchestrator = new Orchestrator();
 ```
 
-Optionally listen to it's internals
-
-```javascript
-orchestrator.on('task_start', function (e) {
-  // e.mess is the log message
-  // e.task is the task name if the message applies to a task else `undefined`
-  // e.err is the error if event is 'err' else `undefined`
-});
-```
-
-Events include:
-- start: from start() method, shows you the task sequence
-- stop: from stop() method, the queue finished successfully
-- err: from stop() method, the queue was aborted due to a task error
-- task_start: from _runTask() method, task was started
-- task_stop: from _runTask() method, task completed successfully
-- task_err: from _runTask() method, task errored
-
-Note: fires either *stop or *err but not both.
-
 ### 2. Load it up with stuff to do:
 
 A synchronous task:
@@ -105,7 +85,36 @@ FRAGILE: Orchestrator catches exceptions on sync runs to pass to your callback
 but doesn't hook to process.uncaughtException so it can't pass those exceptions
 to your callback
 
-### 4. Enjoy!
+### 4. Optionally listen to it's internals
+
+```javascript
+orchestrator.on('task_start', function (e) {
+  // e.mess is the log message
+  // e.task is the task name if the message applies to a task else `undefined`
+  // e.err is the error if event is 'err' else `undefined`
+});
+```
+
+Events include:
+- start: from start() method, shows you the task sequence
+- stop: from stop() method, the queue finished successfully
+- err: from stop() method, the queue was aborted due to a task error
+- task_start: from _runTask() method, task was started
+- task_stop: from _runTask() method, task completed successfully
+- task_err: from _runTask() method, task errored
+
+Note: fires either *stop or *err but not both.
+
+*Listen to all events*
+
+```javascript
+orchestrator.onAll(orchestrator, function (e) {
+  // e is the original event args
+  // e.src is event name
+});
+```
+
+### 5. Enjoy!
 
 LICENSE
 -------

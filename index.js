@@ -187,4 +187,25 @@ util.inherits(Orchestrator, EventEmitter);
 		}
 	};
 
+// FRAGILE: ASSUME: this list is an exhaustive list of events emitted
+var events = ['start','stop','err','task_start','task_stop','task_err'];
+
+var listenToEvent = function (target, event, callback) {
+	target.on(event, function (e) {
+		e.src = event;
+		callback(e);
+	});
+};
+
+	Orchestrator.prototype.onAll = function (callback) {
+		var i;
+		if (typeof callback !== 'function') {
+			throw new Error('No callback specified');
+		}
+
+		for (i = 0; i < events.length; i++) {
+			listenToEvent(this, events[i], callback);
+		}
+	};
+
 module.exports = Orchestrator;
