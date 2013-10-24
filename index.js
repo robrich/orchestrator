@@ -6,11 +6,10 @@ var util = require('util');
 var events = require('events');
 var EventEmitter = events.EventEmitter;
 
-var Orchestrator = function (opts) {
+var Orchestrator = function () {
 	EventEmitter.call(this);
-	opts = opts || {};
-	this.doneCallback = opts.callback; // call this when all tasks in the queue are done
-	this.seq = opts.seq || []; // the order to run the tasks
+	this.doneCallback = undefined; // call this when all tasks in the queue are done
+	this.seq = []; // the order to run the tasks
 	this.tasks = {}; // task objects: name, dep (list of names of dependencies), fn (the task to run)
 	this.isRunning = false; // is the orchestrator running tasks? .start() to start, .stop() to stop
 };
