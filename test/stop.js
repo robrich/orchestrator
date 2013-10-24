@@ -83,7 +83,7 @@ describe('orchestrator stop', function() {
 
 			// Arrange
 			orchestrator = new Orchestrator();
-			orchestrator.on('log', function (e) {
+			orchestrator.on('stop', function (e) {
 				actualLog = e;
 			});
 
@@ -92,7 +92,6 @@ describe('orchestrator stop', function() {
 
 			// Assert
 			should.exist(actualLog);
-			actualLog.src.should.equal('stop');
 			should.not.exist(actualLog.task);
 			actualLog.mess.should.contain('succeed');
 			done();
@@ -103,7 +102,7 @@ describe('orchestrator stop', function() {
 
 			// Arrange
 			orchestrator = new Orchestrator();
-			orchestrator.on('log', function (e) {
+			orchestrator.on('err', function (e) {
 				actualLog = e;
 			});
 
@@ -112,7 +111,6 @@ describe('orchestrator stop', function() {
 
 			// Assert
 			should.exist(actualLog);
-			actualLog.src.should.equal('stop');
 			should.not.exist(actualLog.task);
 			actualLog.mess.should.contain('abort');
 			done();
@@ -123,7 +121,7 @@ describe('orchestrator stop', function() {
 
 			// Arrange
 			orchestrator = new Orchestrator();
-			orchestrator.on('log', function (e) {
+			orchestrator.on('err', function (e) {
 				actualLog = e;
 			});
 
@@ -132,7 +130,6 @@ describe('orchestrator stop', function() {
 
 			// Assert
 			should.exist(actualLog);
-			actualLog.src.should.equal('stop');
 			should.not.exist(actualLog.task);
 			actualLog.mess.should.contain('fail');
 			actualLog.err.should.equal(actualErr);

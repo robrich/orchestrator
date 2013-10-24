@@ -67,7 +67,7 @@ util.inherits(Orchestrator, EventEmitter);
 		seq = [];
 		this.sequence(this.tasks, names, seq, []);
 		this.seq = seq;
-		this.emit('log', {src:'start', mess:'seq: '+this.seq.join(',')});
+		this.emit('start', {mess:'seq: '+this.seq.join(',')});
 		if (!this.isRunning) {
 			this.isRunning = true;
 		}
@@ -77,13 +77,13 @@ util.inherits(Orchestrator, EventEmitter);
 	Orchestrator.prototype.stop = function (err, successfulFinish) {
 		this.isRunning = false;
 		if (err) {
-			this.emit('log', {src:'stop', mess:'orchestration failed', err:err});
+			this.emit('err', {mess:'orchestration failed', err:err});
 		} else if (successfulFinish) {
-			this.emit('log', {src:'stop', mess:'orchestration succeeded'});
+			this.emit('stop', {mess:'orchestration succeeded'});
 		} else {
 			// ASSUME
 			err = 'orchestration aborted';
-			this.emit('log', {src:'stop', mess:'orchestration aborted', err: err});
+			this.emit('err', {mess:'orchestration aborted', err: err});
 		}
 		if (this.doneCallback) {
 			// Avoid calling it multiple times
@@ -145,20 +145,22 @@ util.inherits(Orchestrator, EventEmitter);
 	};
 	Orchestrator.prototype._runTask = function (task) {
 		var that = this, cb, p;
-		this.emit('log', {src:'_runTask', task:task.name, mess:task.name+' started'});
+		this.emit('task_start', {task:task.name, mess:task.name+' started'});
 		task.running = true;
 		cb = function (err) {
 			task.running = false;
 			task.done = true;
-			that.emit('log', {src:'_runTask', task:task.name, mess:task.name+' calledback'});
 			if (err) {
+				that.emit('task_err', {task:task.name, mess:task.name+' calledback', err: err});
 				return that.stop.call(that, err);
 			}
+			that.emit('task_stop', {task:task.name, mess:task.name+' calledback'});
 			that._runStep.call(that);
 		};
 		try {
 			p = task.fn.call(this, cb);
 		} catch (err) {
+			this.emit('task_err', {task:task.name, mess:task.name+' threw an exception', err: err});
 			this.stop(err || task.name+' threw an exception');
 		}
 		if (p && p.done) {
@@ -167,17 +169,17 @@ util.inherits(Orchestrator, EventEmitter);
 			p.done(function () {
 				task.running = false;
 				task.done = true;
-				that.emit('log', {src:'_runTask', task:task.name, mess:task.name+' resolved'});
+				that.emit('task_stop', {task:task.name, mess:task.name+' resolved'});
 				that._runStep.call(that);
 			}, function(err) {
 				task.running = false;
 				task.done = true;
-				that.emit('log', {src:'_runTask', task:task.name, mess:task.name+' rejected'});
+				that.emit('task_err', {task:task.name, mess:task.name+' rejected', err: err});
 				that.stop.call(that, err || task.name+' promise rejected');
 			});
 		} else if (!task.fn.length) {
 			// no promise, no callback, we're done
-			this.emit('log', {src:'_runTask', task:task.name, mess:task.name+' finished'});
+			this.emit('task_stop', {task:task.name, mess:task.name+' finished'});
 			task.running = false;
 			task.done = true;
 		//} else {

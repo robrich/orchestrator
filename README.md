@@ -18,12 +18,22 @@ var orchestrator = new Orchestrator();
 Optionally listen to it's internals
 
 ```javascript
-orchestrator.on('log', function (e) {
+orchestrator.on('task_start', function (e) {
   // e.mess is the log message
   // e.task is the task name if the message applies to a task else `undefined`
-  // e.src is the method that emitted the event: start, _runTask, or stop
+  // e.err is the error if event is 'err' else `undefined`
 });
 ```
+
+Events include:
+- start: from start() method, shows you the task sequence
+- stop: from stop() method, the queue finished successfully
+- err: from stop() method, the queue was aborted due to a task error
+- task_start: from _runTask() method, task was started
+- task_stop: from _runTask() method, task completed successfully
+- task_err: from _runTask() method, task errored
+
+Note: fires either *stop or *err but not both.
 
 ### 2. Load it up with stuff to do:
 
