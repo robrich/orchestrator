@@ -85,6 +85,13 @@ FRAGILE: Orchestrator catches exceptions on sync runs to pass to your callback
 but doesn't hook to process.uncaughtException so it can't pass those exceptions
 to your callback
 
+FRAGILE: Orchestrator will ensure each task and each dependency is run once during an orchestration run
+even if you specify it to run more than once. (e.g. `orchestrator.start('thing1', 'thing1')`
+will only run 'thing1' once.) If you need it to run a task multiple times, wait for
+the orchestration to end (start's callback) then call start again.
+(e.g. `orchestrator.start('thing1', function () {orchestrator.start('thing1');})`.)
+Alternatively create a second orchestrator instance.
+
 ### 4. Optionally listen to it's internals
 
 ```javascript

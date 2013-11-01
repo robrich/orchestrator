@@ -230,5 +230,74 @@ describe('orchestrator tasks', function() {
 			done();
 		});
 
+		// FRAGILE: It resets task.done at `.start()` so if task isn't finished when you call `start()` again, it won't run again
+
+		it('should run task multiple times when call run(task) multiple times', function(done) {
+			var orchestrator, a, fn;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			a = 0;
+			fn = function() {
+				++a;
+			};
+			orchestrator.add('test', fn);
+
+			// Act
+			orchestrator.start('test');
+			orchestrator.start('test');
+
+			// Assert
+			a.should.equal(2);
+			done();
+		});
+
+		it('should run task dependencies multiple times when call run(task) multiple times', function(done) {
+			var orchestrator, a, fn, dep;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			a = 0;
+			dep = function() {
+				++a;
+			};
+			fn = function() {
+			};
+			orchestrator.add('dep', dep);
+			orchestrator.add('test', ['dep'], fn);
+
+			// Act
+			orchestrator.start('test');
+			orchestrator.start('test');
+
+			// Assert
+			a.should.equal(2);
+			done();
+		});
+
+		it('should run task multiple times when call run() (default) multiple times', function(done) {
+			var orchestrator, a, fn;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			a = 0;
+			fn = function() {
+				++a;
+			};
+			orchestrator.add('test', fn);
+			orchestrator.add('default', ['test'], function () {});
+
+			// Act
+			orchestrator.start(function () {
+				// Finished first run, now run a second time
+				orchestrator.start(function () {
+
+					// Assert
+					a.should.equal(2);
+					done();
+				});
+			});
+		});
+
 	});
 });

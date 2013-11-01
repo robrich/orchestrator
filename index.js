@@ -51,6 +51,13 @@ util.inherits(Orchestrator, EventEmitter);
 			}
 		}
 		if (this.isRunning) {
+			// reset specified tasks (and dependencies) as not run
+			this._resetSpecificTasks(names);
+		} else {
+			// reset all tasks as not run
+			this._resetAllTasks();
+		}
+		if (this.isRunning) {
 			// if you call start() again while a previous run is still in play
 			// prepend the new tasks to the existing task queue
 			names = names.concat(this.seq);
@@ -102,6 +109,36 @@ util.inherits(Orchestrator, EventEmitter);
 			}
 		}
 		return allDone;
+	};
+	Orchestrator.prototype._resetAllTasks = function() {
+		var task;
+		for (task in this.tasks) {
+			if (this.tasks.hasOwnProperty(task)) {
+				if (this.tasks[task].done) {
+					this.tasks[task].done = false;
+				}
+			}
+		}
+	};
+	Orchestrator.prototype._resetSpecificTasks = function (names) {
+		var i, name, t;
+
+		if (names && names.length) {
+			for (i = 0; i < names.length; i++) {
+				name = names[i];
+				t = this.tasks[name];
+				if (t) {
+					if (t.done) {
+						t.done = false;
+					}
+					if (t.dep && t.dep.length) {
+						this._resetSpecificTasks(t.dep); // recurse
+					}
+				//} else {
+					// FRAGILE: ignore that the task doesn't exist
+				}
+			}
+		}
 	};
 	Orchestrator.prototype._runStep = function () {
 		var i, task;
