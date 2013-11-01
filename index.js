@@ -28,13 +28,28 @@ util.inherits(Orchestrator, EventEmitter);
 			fn = dep;
 			dep = undefined;
 		}
+		dep = dep || [];
 		if (!name || !fn) {
 			throw new Error('Task requires a name and a function to execute');
 		}
-		// TODO: validate name is a string, dep is an array of strings, and fn is a function
+		// validate name is a string, dep is an array of strings, and fn is a function
+		if (typeof name !== 'string') {
+			throw new Error('Task requires a name that is a string');
+		}
+		if (typeof fn !== 'function') {
+			throw new Error('Task '+name+' requires a function that is a function');
+		}
+		if (!Array.isArray(dep)) {
+			throw new Error('Task '+name+' can\'t support dependencies that is not an array of strings');
+		}
+		dep.forEach(function (item) {
+			if (typeof item !== 'string') {
+				throw new Error('Task '+name+' dependency '+item+' is not a string');
+			}
+		});
 		this.tasks[name] = {
 			fn: fn,
-			dep: dep || [],
+			dep: dep,
 			name: name
 		};
 		return this;
