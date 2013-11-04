@@ -1,7 +1,7 @@
 {
   "name": "orchestrator",
   "description": "A module for sequencing and executing tasks and dependencies in maximum concurrency",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "homepage": "https://github.com/robrich/orchestrator",
   "repository": "git://github.com/robrich/orchestrator.git",
   "author": "Rob Richardson (http://robrich.org/)",
