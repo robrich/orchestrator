@@ -122,7 +122,7 @@ describe('orchestrator tasks execute as expected', function() {
 			orchestrator.on('task_stop', function (e) {
 				should.exist(e.task);
 				e.task.should.equal('test');
-				if (e.mess.indexOf('finish')) {
+				if (e.message.indexOf('finish')) {
 					++a;
 				}
 			});
@@ -193,7 +193,7 @@ describe('orchestrator tasks execute as expected', function() {
 			orchestrator.on('task_stop', function (e) {
 				should.exist(e.task);
 				e.task.should.equal('test');
-				if (e.mess.indexOf('resolve') > -1) {
+				if (e.message.indexOf('resolve') > -1) {
 					++a;
 				}
 			});
@@ -262,7 +262,7 @@ describe('orchestrator tasks execute as expected', function() {
 			orchestrator.on('task_stop', function (e) {
 				should.exist(e.task);
 				e.task.should.equal('test');
-				if (e.mess.indexOf('calledback') > -1) {
+				if (e.message.indexOf('calledback') > -1) {
 					++a;
 				}
 			});

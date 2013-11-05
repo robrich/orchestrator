@@ -96,7 +96,7 @@ Alternatively create a second orchestrator instance.
 
 ```javascript
 orchestrator.on('task_start', function (e) {
-  // e.mess is the log message
+  // e.message is the log message
   // e.task is the task name if the message applies to a task else `undefined`
   // e.err is the error if event is 'err' else `undefined`
 });

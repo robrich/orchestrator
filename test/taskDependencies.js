@@ -33,7 +33,7 @@ describe('orchestrator task dependencies', function() {
 				should.exist(e);
 				a.should.equal(0);
 				++a;
-				e.mess.should.startWith('seq: '); // Order is not deterministic, but event should still happen
+				e.message.should.startWith('seq: '); // Order is not deterministic, but event should still happen
 			});
 			orchestrator.add('test1', fn);
 			orchestrator.add('test2', fn2);
@@ -65,7 +65,7 @@ describe('orchestrator task dependencies', function() {
 				should.exist(e);
 				a.should.equal(0);
 				++a;
-				e.mess.should.equal('seq: dep,test');
+				e.message.should.equal('seq: dep,test');
 			});
 			orchestrator.add('dep', fn);
 			orchestrator.add('test', ['dep'], fn2);
@@ -106,7 +106,7 @@ describe('orchestrator task dependencies', function() {
 				should.exist(e);
 				a.should.equal(0);
 				++a;
-				e.mess.should.equal('seq: dep,test');
+				e.message.should.equal('seq: dep,test');
 			});
 			orchestrator.add('dep', fn);
 			orchestrator.add('test', ['dep'], fn2);
@@ -160,7 +160,7 @@ describe('orchestrator task dependencies', function() {
 				should.exist(e);
 				a.should.equal(0);
 				++a;
-				e.mess.should.equal('seq: fn1,fn2,fn3,fn4');
+				e.message.should.equal('seq: fn1,fn2,fn3,fn4');
 			});
 			orchestrator.add('fn1', fn1);
 			orchestrator.add('fn2', fn2);

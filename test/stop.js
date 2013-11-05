@@ -93,7 +93,7 @@ describe('orchestrator stop', function() {
 			// Assert
 			should.exist(actualLog);
 			should.not.exist(actualLog.task);
-			actualLog.mess.should.contain('succeed');
+			actualLog.message.should.contain('succeed');
 			done();
 		});
 
@@ -112,7 +112,7 @@ describe('orchestrator stop', function() {
 			// Assert
 			should.exist(actualLog);
 			should.not.exist(actualLog.task);
-			actualLog.mess.should.contain('abort');
+			actualLog.message.should.contain('abort');
 			done();
 		});
 
@@ -131,7 +131,7 @@ describe('orchestrator stop', function() {
 			// Assert
 			should.exist(actualLog);
 			should.not.exist(actualLog.task);
-			actualLog.mess.should.contain('fail');
+			actualLog.message.should.contain('fail');
 			actualLog.err.should.equal(actualErr);
 			done();
 		});
