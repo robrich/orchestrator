@@ -125,13 +125,21 @@ util.inherits(Orchestrator, EventEmitter);
 		}
 		return allDone;
 	};
+	Orchestrator.prototype._resetTask = function(task) {
+		if (task) {
+			if (task.done) {
+				task.done = false;
+			}
+			delete task.start;
+			delete task.stop;
+			delete task.span;
+		}
+	};
 	Orchestrator.prototype._resetAllTasks = function() {
 		var task;
 		for (task in this.tasks) {
 			if (this.tasks.hasOwnProperty(task)) {
-				if (this.tasks[task].done) {
-					this.tasks[task].done = false;
-				}
+				this._resetTask(this.tasks[task]);
 			}
 		}
 	};
@@ -143,9 +151,7 @@ util.inherits(Orchestrator, EventEmitter);
 				name = names[i];
 				t = this.tasks[name];
 				if (t) {
-					if (t.done) {
-						t.done = false;
-					}
+					this._resetTask(t);
 					if (t.dep && t.dep.length) {
 						this._resetSpecificTasks(t.dep); // recurse
 					}
@@ -194,45 +200,75 @@ util.inherits(Orchestrator, EventEmitter);
 		}
 		return ready;
 	};
+	Orchestrator.prototype._stopTask = function (task) {
+		task.stop = new Date();
+		task.running = false;
+		task.done = true;
+		if (task.start) {
+			task.span = (task.stop.getTime() - task.start.getTime()) / 1000.0; // seconds
+		}
+	};
+	Orchestrator.prototype._emitTaskDone = function (task, message, err) {
+		var obj = {task:task.name, span:task.span, message:task.name+' '+message};
+		var evt = 'stop';
+		if (err) {
+			obj.err = err;
+			evt = 'err';
+		}
+		// 'task_stop' or 'task_err'
+		this.emit('task_'+evt, obj);
+	};
 	Orchestrator.prototype._runTask = function (task) {
 		var that = this, cb, p;
 		this.emit('task_start', {task:task.name, message:task.name+' started'});
 		task.running = true;
 		cb = function (err) {
-			task.running = false;
-			task.done = true;
+			that._stopTask(task);
+			that._emitTaskDone.call(that, task, 'calledback', err);
 			if (err) {
-				that.emit('task_err', {task:task.name, message:task.name+' calledback', err: err});
 				return that.stop.call(that, err);
 			}
-			that.emit('task_stop', {task:task.name, message:task.name+' calledback'});
 			that._runStep.call(that);
 		};
 		try {
+			task.start = new Date();
 			p = task.fn.call(this, cb);
 		} catch (err) {
-			this.emit('task_err', {task:task.name, message:task.name+' threw an exception', err: err});
+			this._stopTask(task);
+			this._emitTaskDone.call(that, task, 'threw an exception', err);
 			this.stop(err || task.name+' threw an exception');
 		}
-		if (p && p.done) {
+		if (p && typeof p.done === 'function') {
 			// wait for promise to resolve
 			// FRAGILE: ASSUME: Promises/A+, see http://promises-aplus.github.io/promises-spec/
 			p.done(function () {
-				task.running = false;
-				task.done = true;
-				that.emit('task_stop', {task:task.name, message:task.name+' resolved'});
+				that._stopTask(task);
+				that._emitTaskDone.call(that, task, 'resolved');
 				that._runStep.call(that);
 			}, function(err) {
-				task.running = false;
-				task.done = true;
-				that.emit('task_err', {task:task.name, message:task.name+' rejected', err: err});
+				that._stopTask(task);
+				that._emitTaskDone.call(that, task, 'rejected', err);
 				that.stop.call(that, err || task.name+' promise rejected');
+			});
+		} else if (p && typeof p.on === 'function' && typeof p.once === 'function' && typeof p.end === 'function' && p.pipe) {
+			p.once('error', function (err) {
+				that._stopTask(task);
+				that._emitTaskDone.call(that, task, 'stream error', err);
+				that.stop.call(that, err || task.name+' stream error');
+			});
+			p.once('end', function () {
+				if (task.running) {
+					that._stopTask(task);
+					that._emitTaskDone.call(that, task, 'stream ended');
+					that._runStep.call(that);
+				//} else {
+					// it errored and was closed previously
+				}
 			});
 		} else if (!task.fn.length) {
 			// no promise, no callback, we're done
-			this.emit('task_stop', {task:task.name, message:task.name+' finished'});
-			task.running = false;
-			task.done = true;
+			this._stopTask(task);
+			this._emitTaskDone.call(that, task, 'finished');
 		//} else {
 			// FRAGILE: ASSUME: callback
 		}

@@ -5,6 +5,7 @@
 
 var Orchestrator = require('../');
 var Q = require('q');
+var es = require('event-stream');
 var should = require('should');
 require('mocha');
 
@@ -263,6 +264,83 @@ describe('orchestrator tasks execute as expected', function() {
 				should.exist(e.task);
 				e.task.should.equal('test');
 				if (e.message.indexOf('calledback') > -1) {
+					++a;
+				}
+			});
+			orchestrator._runStep = function () {};
+
+			// Act
+			orchestrator._runTask(task);
+
+			// Assert
+			setTimeout(function () {
+				a.should.equal(1);
+				done();
+			}, timeout*2);
+		});
+
+		it('async stream task sets done after task resolves', function(done) {
+			var orchestrator, task, timeout = 5, a;
+
+			// Arrange
+			a = 0;
+			task = {
+				name: 'test',
+				fn: function() {
+					var s = es.map(function (f, cb) {
+						cb(null, f);
+					});
+					setTimeout(function () {
+						s.write({a:'a'});
+						s.end();
+					}, timeout);
+					return s;
+				}
+			};
+
+			// Act
+			orchestrator = new Orchestrator();
+			orchestrator._runStep = function () {
+				a.should.equal(0);
+				a++;
+			};
+			orchestrator._runTask(task);
+
+			// Assert
+			should.not.exist(task.done);
+			setTimeout(function () {
+				should.exist(task.done);
+				task.done.should.equal(true);
+				a.should.equal(1);
+				done();
+			}, timeout*2);
+		});
+
+		it('async stream task logs finish after task resolves', function(done) {
+			var orchestrator, task, timeout = 5, a;
+
+			// Arrange
+			a = 0;
+			task = {
+				name: 'test',
+				fn: function() {
+					var s = es.map(function (f, cb) {
+						cb(null, f);
+					});
+					setTimeout(function () {
+						s.write({a:'a'});
+						s.end();
+					}, timeout);
+					return s;
+				}
+			};
+
+			// the thing under test
+			orchestrator = new Orchestrator();
+			orchestrator.on('task_stop', function (e) {
+				should.exist(e.task);
+				e.task.should.equal('test');
+				if (e.message.indexOf('stream ended') > -1) {
 					++a;
 				}
 			});

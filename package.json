@@ -1,7 +1,7 @@
 {
   "name": "orchestrator",
   "description": "A module for sequencing and executing tasks and dependencies in maximum concurrency",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "homepage": "https://github.com/robrich/orchestrator",
   "repository": "git://github.com/robrich/orchestrator.git",
   "author": "Rob Richardson (http://robrich.org/)",
@@ -19,7 +19,8 @@
   "devDependencies": {
     "mocha": "~1.13.0",
     "should": "~2.0.1",
-    "q": "~0.9.7"
+    "q": "~0.9.7",
+    "event-stream": "~3.0.16"
   },
   "scripts": {
     "test": "mocha"
