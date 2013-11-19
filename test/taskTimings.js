@@ -8,8 +8,8 @@ var should = require('should');
 require('mocha');
 
 describe('orchestrator task timings', function() {
-
 	describe('_runTask()', function() {
+
 		it('should set span to 1 when task takes 1 second', function(done) {
 			var orchestrator, a, fn, timeout;
 

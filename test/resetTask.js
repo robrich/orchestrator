@@ -114,6 +114,27 @@ describe('orchestrator reset task', function() {
 			done();
 		});
 
+		it('should remove args', function(done) {
+			var orchestrator, task;
+
+			// Arrange
+			task = {
+				name: 'test',
+				fn: function() {},
+				args: {}
+			};
+
+			// the thing under test
+			orchestrator = new Orchestrator();
+
+			// Act
+			orchestrator._resetTask(task);
+
+			// Assert
+			should.not.exist(task.args);
+			done();
+		});
+
 		it('should not die if not passed a task', function(done) {
 			// Arrange
 			var orchestrator = new Orchestrator();

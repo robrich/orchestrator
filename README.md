@@ -51,6 +51,20 @@ orchestrator.add('thing3', function(){
 });
 ```
 
+An asynchronous task using streams: (task is marked complete when stream ends)
+
+```javascript
+var es = require('event-stream');
+
+orchestrator.add('thing4', function(){
+  var stream = es.map(function (args, cb) {
+    cb(null, args);
+  });
+  // do stream stuff
+  return stream;
+});
+```
+
 A task that requires other tasks be done first:
 
 ```javascript
@@ -99,6 +113,12 @@ orchestrator.on('task_start', function (e) {
   // e.message is the log message
   // e.task is the task name if the message applies to a task else `undefined`
   // e.err is the error if event is 'err' else `undefined`
+});
+// for task_end and task_err:
+orchestrator.on('task_stop', function (e) {
+  // e is the same object from task_start
+  // e.message is updated to show how the task ended
+  // e.span is the task run duration (in seconds)
 });
 ```
 

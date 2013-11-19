@@ -133,6 +133,7 @@ util.inherits(Orchestrator, EventEmitter);
 			delete task.start;
 			delete task.stop;
 			delete task.span;
+			delete task.args;
 		}
 	};
 	Orchestrator.prototype._resetAllTasks = function() {
@@ -209,18 +210,23 @@ util.inherits(Orchestrator, EventEmitter);
 		}
 	};
 	Orchestrator.prototype._emitTaskDone = function (task, message, err) {
-		var obj = {task:task.name, span:task.span, message:task.name+' '+message};
+		if (!task.args) {
+			task.args = {task:task.name};
+		}
+		task.args.span = task.span;
+		task.args.message = task.name+' '+message;
 		var evt = 'stop';
 		if (err) {
-			obj.err = err;
+			task.args.err = err;
 			evt = 'err';
 		}
 		// 'task_stop' or 'task_err'
-		this.emit('task_'+evt, obj);
+		this.emit('task_'+evt, task.args);
 	};
 	Orchestrator.prototype._runTask = function (task) {
 		var that = this, cb, p;
-		this.emit('task_start', {task:task.name, message:task.name+' started'});
+		task.args = {task:task.name, message:task.name+' started'};
+		this.emit('task_start', task.args);
 		task.running = true;
 		cb = function (err) {
 			that._stopTask(task);
