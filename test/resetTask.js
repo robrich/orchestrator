@@ -93,14 +93,14 @@ describe('orchestrator reset task', function() {
 			done();
 		});
 
-		it('should remove span', function(done) {
+		it('should remove duration', function(done) {
 			var orchestrator, task;
 
 			// Arrange
 			task = {
 				name: 'test',
 				fn: function() {},
-				span: new Date()
+				duration: new Date()
 			};
 
 			// the thing under test
@@ -110,7 +110,7 @@ describe('orchestrator reset task', function() {
 			orchestrator._resetTask(task);
 
 			// Assert
-			should.not.exist(task.span);
+			should.not.exist(task.duration);
 			done();
 		});
 

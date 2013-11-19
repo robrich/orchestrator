@@ -58,17 +58,17 @@ describe('orchestrator done emitter', function() {
 			orchestrator._emitTaskDone(task, message, err);
 		});
 
-		it('should pass task, message, span', function(done) {
-			var orchestrator, taskName, task, message, span, err;
+		it('should pass task, message, duration', function(done) {
+			var orchestrator, taskName, task, message, duration, err;
 
 			// Arrange
 			taskName = 'test';
 			message = 'test message';
-			span = 1.1;
+			duration = 1.1;
 			task = {
 				name: taskName,
 				fn: function() {},
-				span: span
+				duration: duration
 			};
 			//err = undefined;
 
@@ -78,7 +78,7 @@ describe('orchestrator done emitter', function() {
 			orchestrator.on('task_stop', function (args) {
 				// Assert
 				args.task.should.equal(taskName);
-				args.span.should.equal(span);
+				args.duration.should.equal(duration);
 				args.message.should.equal(taskName+' '+message);
 				done();
 			});

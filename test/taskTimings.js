@@ -10,7 +10,7 @@ require('mocha');
 describe('orchestrator task timings', function() {
 	describe('_runTask()', function() {
 
-		it('should set span to 1 when task takes 1 second', function(done) {
+		it('should set duration to 1 when task takes 1 second', function(done) {
 			var orchestrator, a, fn, timeout;
 
 			// Arrange
@@ -28,8 +28,8 @@ describe('orchestrator task timings', function() {
 
 			orchestrator.on('task_stop', function (args) {
 				// Assert
-				args.span.should.be.approximately(timeout, 0.02);
-				args.span.should.be.above(0);
+				args.duration.should.be.approximately(timeout, 0.02);
+				args.duration.should.be.above(0);
 				++a;
 			});
 

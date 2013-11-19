@@ -118,7 +118,7 @@ orchestrator.on('task_start', function (e) {
 orchestrator.on('task_stop', function (e) {
   // e is the same object from task_start
   // e.message is updated to show how the task ended
-  // e.span is the task run duration (in seconds)
+  // e.duration is the task run duration (in seconds)
 });
 ```
 

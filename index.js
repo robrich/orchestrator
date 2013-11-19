@@ -132,7 +132,7 @@ util.inherits(Orchestrator, EventEmitter);
 			}
 			delete task.start;
 			delete task.stop;
-			delete task.span;
+			delete task.duration;
 			delete task.args;
 		}
 	};
@@ -206,14 +206,14 @@ util.inherits(Orchestrator, EventEmitter);
 		task.running = false;
 		task.done = true;
 		if (task.start) {
-			task.span = (task.stop.getTime() - task.start.getTime()) / 1000.0; // seconds
+			task.duration = (task.stop.getTime() - task.start.getTime()) / 1000.0; // seconds
 		}
 	};
 	Orchestrator.prototype._emitTaskDone = function (task, message, err) {
 		if (!task.args) {
 			task.args = {task:task.name};
 		}
-		task.args.span = task.span;
+		task.args.duration = task.duration;
 		task.args.message = task.name+' '+message;
 		var evt = 'stop';
 		if (err) {

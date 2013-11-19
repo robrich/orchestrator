@@ -71,7 +71,7 @@ describe('orchestrator stop task', function() {
 			done();
 		});
 
-		it('should set task.span if task.start', function(done) {
+		it('should set task.duration if task.start', function(done) {
 			var orchestrator, task;
 
 			// Arrange
@@ -88,15 +88,15 @@ describe('orchestrator stop task', function() {
 			orchestrator._stopTask(task);
 
 			// Assert
-			(typeof task.span).should.equal('number');
-			task.span.should.be.below(1.0); // ASSUME: it took less than 1 seconds to run this test
-			if (task.span < 0.0) {
-				task.span.should.be.above(0.0); // FRAGILE: >= 0
+			(typeof task.duration).should.equal('number');
+			task.duration.should.be.below(1.0); // ASSUME: it took less than 1 seconds to run this test
+			if (task.duration < 0.0) {
+				task.duration.should.be.above(0.0); // FRAGILE: >= 0
 			}
 			done();
 		});
 
-		it('should not set task.span if no task.start', function(done) {
+		it('should not set task.duration if no task.start', function(done) {
 			var orchestrator, task;
 
 			// Arrange
@@ -113,7 +113,7 @@ describe('orchestrator stop task', function() {
 			orchestrator._stopTask(task);
 
 			// Assert
-			should.not.exist(task.span);
+			should.not.exist(task.duration);
 			done();
 		});
 
