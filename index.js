@@ -56,13 +56,23 @@ util.inherits(Orchestrator, EventEmitter);
 	};
 	// tasks and optionally a callback
 	Orchestrator.prototype.start = function() {
-		var names, lastTask, i, seq = [];
-		names = [].slice.call(arguments, 0);
-		if (names.length) {
-			lastTask = names[names.length-1];
+		var args, arg, names = [], lastTask, i, seq = [];
+		args = Array.prototype.slice.call(arguments, 0);
+		if (args.length) {
+			lastTask = args[args.length-1];
 			if (typeof lastTask === 'function') {
 				this.doneCallback = lastTask;
-				names.pop();
+				args.pop();
+			}
+			for (i = 0; i < args.length; i++) {
+				arg = args[i];
+				if (typeof arg === 'string') {
+					names.push(arg);
+				} else if (Array.isArray(arg)) {
+					names.concat(arg); // FRAGILE: ASSUME: it's an array of strings
+				} else {
+					throw new Error('pass strings or arrays of strings');
+				}
 			}
 		}
 		if (this.isRunning) {

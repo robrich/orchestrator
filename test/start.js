@@ -33,6 +33,29 @@ describe('orchestrator tasks', function() {
 			done();
 		});
 
+		it('should run multiple tasks as array', function(done) {
+			var orchestrator, a, fn, fn2;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			a = 0;
+			fn = function() {
+				++a;
+			};
+			fn2 = function() {
+				++a;
+			};
+			orchestrator.add('test', fn);
+			orchestrator.add('test2', fn2);
+
+			// Act
+			orchestrator.start(['test', 'test2']);
+
+			// Assert
+			a.should.equal(2);
+			done();
+		});
+
 		it('should run all tasks when call run() multiple times', function(done) {
 			var orchestrator, a, fn, fn2;
 

@@ -74,12 +74,23 @@ orchestrator.add('thing4', ['thing1','thing2','thing3'], function(){
 });
 ```
 
+*Note:* Are your tasks running before the dependencies are complete?  Make sure your dependency tasks
+are correctly using the async run hints: take in a callback or return a promise or event stream.
+
 ### 3. Run the tasks:
 
 Start the tasks you want to run:
 
+as arguments:
+
 ```javascript
-orchestrator.start('thing1','thing2','thing3', 'thing4');
+orchestrator.start('thing1', 'thing2', 'thing3', 'thing4');
+```
+
+or as arrays:
+
+```javascript
+orchestrator.start(['thing1','thing2'], ['thing3','thing4']);
 ```
 
 or start all the tasks:
