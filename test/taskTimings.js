@@ -7,8 +7,8 @@ var Orchestrator = require('../');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator task timings', function() {
-	describe('_runTask()', function() {
+describe('orchestrator', function() {
+	describe('_runTask() task timings', function() {
 
 		it('should set duration to 1 when task takes 1 second', function(done) {
 			var orchestrator, a, fn, timeout;

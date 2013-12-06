@@ -7,7 +7,7 @@ var Orchestrator = require('../');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator events', function() {
+describe('orchestrator', function() {
 	describe('onAll()', function() {
 
 		it('should wire up event listener', function(done) {

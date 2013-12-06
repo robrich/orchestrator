@@ -9,8 +9,8 @@ var es = require('event-stream');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator runTask waits for done correctly', function() {
-	describe('_runTask()', function() {
+describe('orchestrator', function() {
+	describe('_runTask() waits for done correctly', function() {
 
 		it('sync task sets done after calling function', function(done) {
 			var orchestrator, task, a;

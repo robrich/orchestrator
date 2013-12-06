@@ -9,8 +9,8 @@ var es = require('event-stream');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator tasks execute as expected', function() {
-	describe('_runTask()', function() {
+describe('orchestrator', function() {
+	describe('_runTask() tasks execute as expected', function() {
 
 		it('calls task function', function(done) {
 			var orchestrator, a, task;

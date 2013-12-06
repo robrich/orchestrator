@@ -7,8 +7,8 @@ var Q = require('q');
 require('should');
 require('mocha');
 
-describe('orchestrator tasks', function() {
-	describe('run()', function() {
+describe('orchestrator', function() {
+	describe('run() tasks', function() {
 
 		it('should run multiple tasks', function(done) {
 			var orchestrator, a, fn, fn2;

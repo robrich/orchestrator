@@ -7,7 +7,7 @@ var Orchestrator = require('../');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator tasks', function() {
+describe('orchestrator', function() {
 	describe('add()', function() {
 
 		it('should define a task', function(done) {

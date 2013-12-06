@@ -6,7 +6,7 @@ var Orchestrator = require('../');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator stop', function() {
+describe('orchestrator', function() {
 	describe('stop()', function() {
 
 		it('should call and clear doneCallback', function(done) {

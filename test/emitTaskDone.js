@@ -7,7 +7,7 @@ var Orchestrator = require('../');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator done emitter', function() {
+describe('orchestrator', function() {
 	describe('_emitTaskDone()', function() {
 
 		it('should emit task_stop if no err', function(done) {

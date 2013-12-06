@@ -6,7 +6,7 @@ var Orchestrator = require('../');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator reset task', function() {
+describe('orchestrator', function() {
 	describe('_resetTask()', function() {
 
 		it('should set done = false on done task', function(done) {

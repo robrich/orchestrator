@@ -7,7 +7,7 @@ var Q = require('q');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator done callback', function() {
+describe('orchestrator', function() {
 	describe('stop() callback', function() {
 
 		it('should have empty error on succeeding tasks', function(done) {

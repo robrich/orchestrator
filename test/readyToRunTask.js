@@ -7,8 +7,8 @@ var Orchestrator = require('../');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator task is ready when dependencies are resolved', function() {
-	describe('_readyToRunTask()', function() {
+describe('orchestrator', function() {
+	describe('_readyToRunTask() task is ready when dependencies are resolved', function() {
 
 		it('should be ready if no dependencies', function(done) {
 			var orchestrator, task, expected, actual;

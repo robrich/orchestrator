@@ -8,9 +8,8 @@ var Q = require('q');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator task dependencies', function() {
-
-	describe('run()', function() {
+describe('orchestrator', function() {
+	describe('run() task dependencies', function() {
 		// Technically these are duplicated from require('sequencify'),
 		// but those are unit tests and these are integration tests
 		it('should run tasks in specified order if no dependencies', function(done) {
