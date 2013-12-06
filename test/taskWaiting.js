@@ -35,7 +35,7 @@ describe('orchestrator', function() {
 			// Assert
 			should.exist(task.done);
 			task.done.should.equal(true);
-			a.should.equal(0); // It's done so it need not run more
+			a.should.equal(1);
 			done();
 		});
 
@@ -127,7 +127,7 @@ describe('orchestrator', function() {
 			orchestrator.on('task_stop', function (e) {
 				should.exist(e.task);
 				e.task.should.equal('test');
-				if (e.message.indexOf('resolve') > -1) {
+				if (e.message.indexOf('promise') > -1) {
 					++a;
 				}
 			});
@@ -196,7 +196,7 @@ describe('orchestrator', function() {
 			orchestrator.on('task_stop', function (e) {
 				should.exist(e.task);
 				e.task.should.equal('test');
-				if (e.message.indexOf('calledback') > -1) {
+				if (e.message.indexOf('callback') > -1) {
 					++a;
 				}
 			});
@@ -220,16 +220,14 @@ describe('orchestrator', function() {
 			task = {
 				name: 'test',
 				fn: function() {
-					var s = es.map(function (f, cb) {
-						cb(null, f);
+					return es.map(function (f, cb) {
+						setTimeout(function () {
+							cb(null, f);
+						}, timeout);
 					});
-					setTimeout(function () {
-						s.write({a:'a'});
-						s.end();
-					}, timeout);
-					return s;
 				}
 			};
+			should.not.exist(task.done);
 
 			// Act
 			orchestrator = new Orchestrator();
@@ -240,7 +238,6 @@ describe('orchestrator', function() {
 			orchestrator._runTask(task);
 
 			// Assert
-			should.not.exist(task.done);
 			setTimeout(function () {
 				should.exist(task.done);
 				task.done.should.equal(true);
@@ -257,14 +254,11 @@ describe('orchestrator', function() {
 			task = {
 				name: 'test',
 				fn: function() {
-					var s = es.map(function (f, cb) {
-						cb(null, f);
+					return es.map(function (f, cb) {
+						setTimeout(function () {
+							cb(null, f);
+						}, timeout);
 					});
-					setTimeout(function () {
-						s.write({a:'a'});
-						s.end();
-					}, timeout);
-					return s;
 				}
 			};
 
@@ -273,7 +267,7 @@ describe('orchestrator', function() {
 			orchestrator.on('task_stop', function (e) {
 				should.exist(e.task);
 				e.task.should.equal('test');
-				if (e.message.indexOf('stream ended') > -1) {
+				if (e.message.indexOf('stream') > -1) {
 					++a;
 				}
 			});

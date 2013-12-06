@@ -5,6 +5,7 @@
 var util = require('util');
 var events = require('events');
 var EventEmitter = events.EventEmitter;
+var execify = require('execify');
 
 var Orchestrator = function () {
 	EventEmitter.call(this);
@@ -143,6 +144,7 @@ util.inherits(Orchestrator, EventEmitter);
 			delete task.start;
 			delete task.stop;
 			delete task.duration;
+			delete task.hrDuration;
 			delete task.args;
 		}
 	};
@@ -211,19 +213,18 @@ util.inherits(Orchestrator, EventEmitter);
 		}
 		return ready;
 	};
-	Orchestrator.prototype._stopTask = function (task) {
-		task.stop = new Date();
+	Orchestrator.prototype._stopTask = function (task, meta) {
+		task.duration = meta.duration;
+		task.hrDuration = meta.hrDuration;
 		task.running = false;
 		task.done = true;
-		if (task.start) {
-			task.duration = (task.stop.getTime() - task.start.getTime()) / 1000.0; // seconds
-		}
 	};
 	Orchestrator.prototype._emitTaskDone = function (task, message, err) {
 		if (!task.args) {
 			task.args = {task:task.name};
 		}
 		task.args.duration = task.duration;
+		task.args.hrDuration = task.hrDuration;
 		task.args.message = task.name+' '+message;
 		var evt = 'stop';
 		if (err) {
@@ -234,60 +235,20 @@ util.inherits(Orchestrator, EventEmitter);
 		this.emit('task_'+evt, task.args);
 	};
 	Orchestrator.prototype._runTask = function (task) {
-		var that = this, cb, p;
+		var that = this;
+
 		task.args = {task:task.name, message:task.name+' started'};
 		this.emit('task_start', task.args);
 		task.running = true;
-		cb = function (err) {
-			that._stopTask(task);
-			that._emitTaskDone.call(that, task, 'calledback', err);
+
+		execify.asCallback(task.fn.bind(this), function (err, results, meta) {
+			that._stopTask.call(that, task, meta);
+			that._emitTaskDone.call(that, task, meta.runMethod, err);
 			if (err) {
 				return that.stop.call(that, err);
 			}
 			that._runStep.call(that);
-		};
-		try {
-			task.start = new Date();
-			p = task.fn.call(this, cb);
-		} catch (err) {
-			this._stopTask(task);
-			this._emitTaskDone.call(that, task, 'threw an exception', err);
-			this.stop(err || task.name+' threw an exception');
-		}
-		if (p && typeof p.done === 'function') {
-			// wait for promise to resolve
-			// FRAGILE: ASSUME: Promises/A+, see http://promises-aplus.github.io/promises-spec/
-			p.done(function () {
-				that._stopTask(task);
-				that._emitTaskDone.call(that, task, 'resolved');
-				that._runStep.call(that);
-			}, function(err) {
-				that._stopTask(task);
-				that._emitTaskDone.call(that, task, 'rejected', err);
-				that.stop.call(that, err || task.name+' promise rejected');
-			});
-		} else if (p && typeof p.on === 'function' && typeof p.once === 'function' && typeof p.end === 'function' && p.pipe) {
-			p.once('error', function (err) {
-				that._stopTask(task);
-				that._emitTaskDone.call(that, task, 'stream error', err);
-				that.stop.call(that, err || task.name+' stream error');
-			});
-			p.once('end', function () {
-				if (task.running) {
-					that._stopTask(task);
-					that._emitTaskDone.call(that, task, 'stream ended');
-					that._runStep.call(that);
-				//} else {
-					// it errored and was closed previously
-				}
-			});
-		} else if (!task.fn.length) {
-			// no promise, no callback, we're done
-			this._stopTask(task);
-			this._emitTaskDone.call(that, task, 'finished');
-		//} else {
-			// FRAGILE: ASSUME: callback
-		}
+		});
 	};
 
 // FRAGILE: ASSUME: this list is an exhaustive list of events emitted

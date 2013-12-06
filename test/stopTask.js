@@ -3,26 +3,30 @@
 "use strict";
 
 var Orchestrator = require('../');
-var should = require('should');
+require('should');
 require('mocha');
 
-describe('orchestrator stop task', function() {
+describe('orchestrator', function() {
 	describe('_stopTask()', function() {
 
 		it('should set done = true', function(done) {
-			var orchestrator, task;
+			var orchestrator, task, meta;
 
 			// Arrange
 			task = {
 				name: 'test',
 				fn: function() {}
 			};
+			meta = {
+				duration: 2,
+				hrDuration: [2,2]
+			};
 
 			// the thing under test
 			orchestrator = new Orchestrator();
 
 			// Act
-			orchestrator._stopTask(task);
+			orchestrator._stopTask(task, meta);
 
 			// Assert
 			task.done.should.equal(true);
@@ -30,7 +34,7 @@ describe('orchestrator stop task', function() {
 		});
 
 		it('should set running = false', function(done) {
-			var orchestrator, task;
+			var orchestrator, task, meta;
 
 			// Arrange
 			task = {
@@ -38,82 +42,46 @@ describe('orchestrator stop task', function() {
 				fn: function() {},
 				running: true
 			};
+			meta = {
+				duration: 2,
+				hrDuration: [2,2]
+			};
 
 			// the thing under test
 			orchestrator = new Orchestrator();
 
 			// Act
-			orchestrator._stopTask(task);
+			orchestrator._stopTask(task, meta);
 
 			// Assert
 			task.running.should.equal(false);
 			done();
 		});
 
-		it('should set stop date', function(done) {
-			var orchestrator, task;
+		it('should set task.duration', function(done) {
+			var orchestrator, duration, task, meta;
 
 			// Arrange
-			task = {
-				name: 'test',
-				fn: function() {}
-			};
-
-			// the thing under test
-			orchestrator = new Orchestrator();
-
-			// Act
-			orchestrator._stopTask(task);
-
-			// Assert
-			should.exist(task.stop);
-			(task.stop instanceof Date).should.equal(true);
-			done();
-		});
-
-		it('should set task.duration if task.start', function(done) {
-			var orchestrator, task;
-
-			// Arrange
+			duration = 2;
 			task = {
 				name: 'test',
 				fn: function() {},
 				start: new Date()
 			};
-
-			// the thing under test
-			orchestrator = new Orchestrator();
-
-			// Act
-			orchestrator._stopTask(task);
-
-			// Assert
-			(typeof task.duration).should.equal('number');
-			task.duration.should.be.below(1.0); // ASSUME: it took less than 1 seconds to run this test
-			if (task.duration < 0.0) {
-				task.duration.should.be.above(0.0); // FRAGILE: >= 0
-			}
-			done();
-		});
-
-		it('should not set task.duration if no task.start', function(done) {
-			var orchestrator, task;
-
-			// Arrange
-			task = {
-				name: 'test',
-				fn: function() {},
-				// no start
+			meta = {
+				duration: duration,
+				hrDuration: [2,2]
 			};
 
 			// the thing under test
 			orchestrator = new Orchestrator();
 
 			// Act
-			orchestrator._stopTask(task);
+			orchestrator._stopTask(task, meta);
 
 			// Assert
-			should.not.exist(task.duration);
+			(typeof task.duration).should.equal('number');
+			task.duration.should.equal(duration);
 			done();
 		});
 
