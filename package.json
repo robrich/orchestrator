@@ -1,7 +1,7 @@
 {
   "name": "orchestrator",
   "description": "A module for sequencing and executing tasks and dependencies in maximum concurrency",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/robrich/orchestrator",
   "repository": "git://github.com/robrich/orchestrator.git",
   "author": "Rob Richardson (http://robrich.org/)",
@@ -13,9 +13,9 @@
     "compose"
   ],
   "dependencies": {
-    "execify": "0.0.1",
-    "sequencify": "0.0.5",
-    "events": "0.5.0"
+    "execify": "~0.0.1",
+    "sequencify": "~0.0.5",
+    "events": "~0.5.0"
   },
   "devDependencies": {
     "mocha": "~1.15.1",
