@@ -25,13 +25,14 @@ util.inherits(Orchestrator, EventEmitter);
 		return this;
 	};
 	Orchestrator.prototype.add = function (name, dep, fn) {
-		if (!fn) {
+		if (!fn && typeof dep === 'function') {
 			fn = dep;
 			dep = undefined;
 		}
 		dep = dep || [];
-		if (!name || !fn) {
-			throw new Error('Task requires a name and a function to execute');
+		fn = fn || function () {}; // no-op
+		if (!name) {
+			throw new Error('Task requires a name');
 		}
 		// validate name is a string, dep is an array of strings, and fn is a function
 		if (typeof name !== 'string') {

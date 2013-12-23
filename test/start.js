@@ -322,5 +322,19 @@ describe('orchestrator', function() {
 			});
 		});
 
+		it('should run no-op task', function(done) {
+			var orchestrator;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			orchestrator.add('test');
+
+			// Act
+			orchestrator.start(function () {
+				// Assert
+				done();
+			});
+		});
+
 	});
 });

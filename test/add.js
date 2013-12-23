@@ -107,5 +107,22 @@ describe('orchestrator', function() {
 			done();
 		});
 
+		it('should accept dependencies with no function', function (done) {
+			var orchestrator, name, dep;
+
+			// Arrange
+			name = "name";
+			dep = ['name'];
+
+			// Act
+			orchestrator = new Orchestrator();
+			orchestrator.add(name, dep);
+
+			// Assert
+			should.exist(orchestrator.tasks.name);
+			orchestrator.tasks.name.dep.should.equal(dep);
+			done();
+		});
+
 	});
 });
