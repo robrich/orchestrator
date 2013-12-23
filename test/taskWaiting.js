@@ -220,11 +220,14 @@ describe('orchestrator', function() {
 			task = {
 				name: 'test',
 				fn: function() {
-					return es.map(function (f, cb) {
+					return es.readable(function(/*count, callback*/) {
+						this.emit('data', {a:'rgs'});
+						this.emit('end');
+					}).pipe(es.map(function (f, cb) {
 						setTimeout(function () {
 							cb(null, f);
 						}, timeout);
-					});
+					}));
 				}
 			};
 			should.not.exist(task.done);
@@ -254,11 +257,14 @@ describe('orchestrator', function() {
 			task = {
 				name: 'test',
 				fn: function() {
-					return es.map(function (f, cb) {
+					return es.readable(function(/*count, callback*/) {
+						this.emit('data', {a:'rgs'});
+						this.emit('end');
+					}).pipe(es.map(function (f, cb) {
 						setTimeout(function () {
 							cb(null, f);
 						}, timeout);
-					});
+					}));
 				}
 			};
 
