@@ -220,6 +220,7 @@ Event name to listen to:
 - task_stop: from _runTask() method, task completed successfully
 - task_err: from _runTask() method, task errored
 - task_not_found: from start() method, you're trying to start a task that doesn't exist
+- task_recursion: from start() method, there are recursive dependencies in your task list
 
 #### cb
 Type: `function`: `function (e) {`

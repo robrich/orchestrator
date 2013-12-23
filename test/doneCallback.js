@@ -100,5 +100,61 @@ describe('orchestrator', function() {
 			});
 		});
 
+		it('should have error on missing task', function(done) {
+			var orchestrator, name, a, expectedErr;
+
+			// Arrange
+			name = 'test';
+			a = 0;
+			orchestrator = new Orchestrator();
+			// no 'test' task defined
+
+			// Act
+			orchestrator.on('task_not_found', function (e) {
+				a++;
+				e.task.should.equal(name);
+				e.message.should.match(/not defined/i, e.message+' should include not defined');
+				should.exist(e.err);
+				expectedErr = e.err;
+			});
+			orchestrator.start(name, function(actualErr) {
+				// Assert
+				a.should.equal(1);
+				should.exist(actualErr);
+				actualErr.should.equal(expectedErr);
+				orchestrator.isRunning.should.equal(false);
+				done();
+			});
+		});
+
+		it('should have error on recursive tasks', function(done) {
+			var orchestrator, name, a, expectedErr;
+
+			// Arrange
+			name = 'test';
+			a = 0;
+			orchestrator = new Orchestrator();
+			orchestrator.add(name, [name]);
+
+			// Act
+			orchestrator.on('task_recursion', function (e) {
+				a++;
+				e.recursiveTasks.length.should.equal(2);
+				e.recursiveTasks[0].should.equal(name);
+				e.recursiveTasks[1].should.equal(name);
+				e.message.should.match(/recursive/i, e.message+' should include recursive');
+				should.exist(e.err);
+				expectedErr = e.err;
+			});
+			orchestrator.start(name, function(actualErr) {
+				// Assert
+				a.should.equal(1);
+				should.exist(actualErr);
+				actualErr.should.equal(expectedErr);
+				orchestrator.isRunning.should.equal(false);
+				done();
+			});
+		});
+
 	});
 });

@@ -109,7 +109,21 @@ util.inherits(Orchestrator, EventEmitter);
 			}
 		}
 		seq = [];
-		this.sequence(this.tasks, names, seq, []);
+		try {
+			this.sequence(this.tasks, names, seq, []);
+		} catch (err) {
+			// Is this a known error?
+			if (err) {
+				if (err.missingTask) {
+					this.emit('task_not_found', {message: err.message, task:err.missingTask, err: err});
+				}
+				if (err.recursiveTasks) {
+					this.emit('task_recursion', {message: err.message, recursiveTasks:err.recursiveTasks, err: err});
+				}
+			}
+			this.stop(err);
+			return this;
+		}
 		this.seq = seq;
 		this.emit('start', {message:'seq: '+this.seq.join(',')});
 		if (!this.isRunning) {
@@ -264,7 +278,7 @@ util.inherits(Orchestrator, EventEmitter);
 	};
 
 // FRAGILE: ASSUME: this list is an exhaustive list of events emitted
-var events = ['start','stop','err','task_start','task_stop','task_err'];
+var events = ['start','stop','err','task_start','task_stop','task_err','task_not_found','task_recursion'];
 
 var listenToEvent = function (target, event, callback) {
 	target.on(event, function (e) {
