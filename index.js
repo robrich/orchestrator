@@ -56,6 +56,17 @@ util.inherits(Orchestrator, EventEmitter);
 		};
 		return this;
 	};
+	Orchestrator.prototype.task = function (name, dep, fn) {
+		if (dep || fn) {
+			// alias for add, return nothing rather than this
+			this.add(name, dep, fn);
+		} else {
+			return this.tasks[name];
+		}
+	};
+	Orchestrator.prototype.hasTask = function (name) {
+		return !!this.tasks[name];
+	};
 	// tasks and optionally a callback
 	Orchestrator.prototype.start = function() {
 		var args, arg, names = [], lastTask, i, seq = [];
