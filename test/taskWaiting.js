@@ -5,6 +5,7 @@
 
 var Orchestrator = require('../');
 var Q = require('q');
+var map = require('map-stream');
 var es = require('event-stream');
 var should = require('should');
 require('mocha');
@@ -223,7 +224,7 @@ describe('orchestrator', function() {
 					return es.readable(function(/*count, callback*/) {
 						this.emit('data', {a:'rgs'});
 						this.emit('end');
-					}).pipe(es.map(function (f, cb) {
+					}).pipe(map(function (f, cb) {
 						setTimeout(function () {
 							cb(null, f);
 						}, timeout);

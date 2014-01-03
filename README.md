@@ -106,10 +106,10 @@ orchestrator.add('thing3', function(){
 **Return a stream:** (task is marked complete when stream ends)
 
 ```javascript
-var es = require('event-stream');
+var map = require('map-stream');
 
 orchestrator.add('thing4', function(){
-  var stream = es.map(function (args, cb) {
+  var stream = map(function (args, cb) {
     cb(null, args);
   });
   // do stream stuff

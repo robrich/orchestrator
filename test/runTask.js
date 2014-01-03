@@ -4,8 +4,6 @@
 "use strict";
 
 var Orchestrator = require('../');
-var Q = require('q');
-var es = require('event-stream');
 var should = require('should');
 require('mocha');
 
