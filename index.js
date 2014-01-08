@@ -148,6 +148,9 @@ util.inherits(Orchestrator, EventEmitter);
 			var cb = this.doneCallback;
 			this.doneCallback = null;
 			cb(err);
+		} else if (err && !this.listeners('err').length) {
+			// No one is listening for the error so speak louder
+			throw err;
 		}
 	};
 	Orchestrator.prototype.sequence = require('sequencify');

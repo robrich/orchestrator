@@ -27,24 +27,6 @@ describe('orchestrator', function() {
 			done();
 		});
 
-		it('should not recurse when doneCallback calls stop', function(done) {
-			var orchestrator, a = 0;
-
-			// Arrange
-			orchestrator = new Orchestrator();
-			orchestrator.doneCallback = function (err) {
-				a++;
-				orchestrator.stop(err);
-			};
-
-			// Act
-			orchestrator.stop(null);
-
-			// Assert
-			a.should.equal(1);
-			done();
-		});
-
 		it('should pass error to doneCallback', function(done) {
 			var orchestrator, actualError, expectedError = 'This is a test error';
 
@@ -71,7 +53,7 @@ describe('orchestrator', function() {
 			orchestrator.isRunning = true;
 
 			// Act
-			orchestrator.stop(null);
+			orchestrator.stop(null, true); // true means success
 
 			// Assert
 			orchestrator.isRunning.should.equal(false);
@@ -133,6 +115,25 @@ describe('orchestrator', function() {
 			should.not.exist(actualLog.task);
 			actualLog.message.should.contain('fail');
 			actualLog.err.should.equal(actualErr);
+			done();
+		});
+
+		it('should throw if no callback and no err handler', function (done) {
+			var orchestrator, expectedErr = 'the error', actualErr;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+
+			// Act
+			try {
+				orchestrator.stop(expectedErr);
+
+				// Assert
+			} catch (err) {
+				actualErr = err;
+			}
+
+			actualErr.should.equal(expectedErr);
 			done();
 		});
 
