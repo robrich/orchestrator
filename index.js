@@ -5,7 +5,7 @@
 var util = require('util');
 var events = require('events');
 var EventEmitter = events.EventEmitter;
-var execify = require('execify');
+var runTask = require('./lib/runTask');
 
 var Orchestrator = function () {
 	EventEmitter.call(this);
@@ -270,7 +270,7 @@ util.inherits(Orchestrator, EventEmitter);
 		this.emit('task_start', task.args);
 		task.running = true;
 
-		execify.asCallback(task.fn.bind(this), function (err, results, meta) {
+		runTask(task.fn.bind(this), function (err, meta) {
 			that._stopTask.call(that, task, meta);
 			that._emitTaskDone.call(that, task, meta.runMethod, err);
 			if (err) {
