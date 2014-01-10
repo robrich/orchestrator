@@ -17,10 +17,10 @@
     "sequencify": "~0.0.7"
   },
   "devDependencies": {
-    "mocha": "~1.16.1",
+    "mocha": "~1.17.0",
     "should": "~2.1.1",
-    "q": "~0.9.7",
-    "map-stream": "~0.0.4",
+    "q": "~1.0.0",
+    "map-stream": "~0.1.0"
   },
   "scripts": {
     "test": "mocha"
