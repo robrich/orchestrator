@@ -9,7 +9,7 @@ require('mocha');
 describe('orchestrator', function() {
 	describe('stop()', function() {
 
-		it('should call and clear doneCallback', function(done) {
+		it('should call doneCallback', function(done) {
 			var orchestrator, a = 0;
 
 			// Arrange
@@ -23,7 +23,6 @@ describe('orchestrator', function() {
 
 			// Assert
 			a.should.equal(1);
-			should.not.exist(orchestrator.doneCallback);
 			done();
 		});
 

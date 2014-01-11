@@ -156,5 +156,40 @@ describe('orchestrator', function() {
 			});
 		});
 
+		it('should have error when calling callback too many times', function(done) {
+			var orchestrator, a, timeout = 30;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			a = 0;
+			orchestrator.add('test', function (cb) {
+				cb(null);
+				cb(null);
+			});
+
+			// Act
+			orchestrator.start('test', function(err) {
+				// Assert
+				switch (a) {
+					case 0:
+						// first finish
+						should.not.exist(err);
+						break;
+					case 1:
+						// second finish
+						should.exist(err);
+						err.message.should.contain('too many times');
+						break;
+					default:
+						done('finished too many times');
+				}
+				a++;
+			});
+			setTimeout(function () {
+				a.should.equal(2);
+				done();
+			}, timeout);
+		});
+
 	});
 });
