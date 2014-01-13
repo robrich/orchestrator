@@ -13,13 +13,13 @@
     "compose"
   ],
   "dependencies": {
-    "event-stream": "~3.1.0",
     "sequencify": "~0.0.7"
   },
   "devDependencies": {
     "mocha": "~1.17.0",
     "should": "~2.1.1",
     "q": "~1.0.0",
+    "event-stream": "~3.1.0",
     "map-stream": "~0.1.0"
   },
   "scripts": {
