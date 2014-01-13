@@ -17,7 +17,9 @@ var Orchestrator = function () {
 util.inherits(Orchestrator, EventEmitter);
 
 	Orchestrator.prototype.reset = function () {
-		this.stop(null);
+		if (this.isRunning) {
+			this.stop(null);
+		}
 		this.tasks = {};
 		this.seq = [];
 		this.isRunning = false;
