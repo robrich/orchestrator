@@ -13,6 +13,7 @@ var Orchestrator = function () {
 	this.seq = []; // the order to run the tasks
 	this.tasks = {}; // task objects: name, dep (list of names of dependencies), fn (the task to run)
 	this.isRunning = false; // is the orchestrator running tasks? .start() to start, .stop() to stop
+	this.taskTimeout = 20*1000; // ms until the task fails
 };
 util.inherits(Orchestrator, EventEmitter);
 
@@ -270,7 +271,7 @@ util.inherits(Orchestrator, EventEmitter);
 		this.emit('task_start', task.args);
 		task.running = true;
 
-		runTask(task.fn.bind(this), function (err, meta) {
+		runTask(task.fn.bind(this), task.name, this.taskTimeout, function (err, meta) {
 			that._stopTask.call(that, task, meta);
 			that._emitTaskDone.call(that, task, meta.runMethod, err);
 			if (err) {
