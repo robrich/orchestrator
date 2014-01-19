@@ -178,7 +178,7 @@ describe('orchestrator', function() {
 					case 1:
 						// second finish
 						should.exist(err);
-						err.message.should.contain('too many times');
+						err.message.indexOf('too many times').should.be.above(-1);
 						break;
 					default:
 						done('finished too many times');
