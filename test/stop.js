@@ -74,7 +74,7 @@ describe('orchestrator', function() {
 			// Assert
 			should.exist(actualLog);
 			should.not.exist(actualLog.task);
-			actualLog.message.should.contain('succeed');
+			actualLog.message.indexOf('succeed').should.be.above(-1);
 			done();
 		});
 
@@ -93,7 +93,7 @@ describe('orchestrator', function() {
 			// Assert
 			should.exist(actualLog);
 			should.not.exist(actualLog.task);
-			actualLog.message.should.contain('abort');
+			actualLog.message.indexOf('abort').should.be.above(-1);
 			done();
 		});
 
@@ -112,7 +112,7 @@ describe('orchestrator', function() {
 			// Assert
 			should.exist(actualLog);
 			should.not.exist(actualLog.task);
-			actualLog.message.should.contain('fail');
+			actualLog.message.indexOf('fail').should.be.above(-1);
 			actualLog.err.should.equal(actualErr);
 			done();
 		});
