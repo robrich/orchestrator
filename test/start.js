@@ -34,7 +34,7 @@ describe('orchestrator', function() {
 		});
 
 		it('should run multiple tasks as array', function(done) {
-			var orchestrator, a, fn, fn2;
+			var orchestrator, a, fn, fn2, fn3;
 
 			// Arrange
 			orchestrator = new Orchestrator();
@@ -45,8 +45,12 @@ describe('orchestrator', function() {
 			fn2 = function() {
 				++a;
 			};
+			fn3 = function() {
+				throw new Error('run wrong task');
+			};
 			orchestrator.add('test', fn);
 			orchestrator.add('test2', fn2);
+			orchestrator.add('test3', fn3);
 
 			// Act
 			orchestrator.start(['test', 'test2']);
