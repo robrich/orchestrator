@@ -27,10 +27,6 @@ util.inherits(Orchestrator, EventEmitter);
 		return this;
 	};
 	Orchestrator.prototype.add = function (name, dep, fn, desc) {
-		/**
-		* fn === undefined or string
-		* -> 
-		*/
 		if (typeof fn === 'string' && typeof desc === 'undefined') {
 			desc = fn;
 			fn = undefined;
