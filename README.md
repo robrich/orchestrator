@@ -21,10 +21,10 @@ var orchestrator = new Orchestrator();
 ```javascript
 orchestrator.add('thing1', function(){
   // do stuff
-});
+}, 'some descripton for thing1');
 orchestrator.add('thing2', function(){
   // do stuff
-});
+}, 'some descripton for thing2');
 ```
 
 ### 3. Run the tasks:
@@ -38,7 +38,7 @@ orchestrator.start('thing1', 'thing2', function (err) {
 API
 ---
 
-### orchestrator.add(name[, deps][, function]);
+### orchestrator.add(name[, deps][, function][, desc]);
 
 Define a task
 
@@ -74,6 +74,12 @@ The function that performs the task's operations.  For asynchronous tasks, you n
 
 - Take in a callback
 - Return a stream or a promise
+
+#### desc
+Type: `string`
+
+A string description for task
+
 
 #### examples:
 
@@ -115,6 +121,15 @@ orchestrator.add('thing4', function(){
   // do stream stuff
   return stream;
 });
+```
+
+**Have a description:**
+
+```javascript
+orchestrator.add('thing2', function(callback){
+  // do stuff
+  callback(err);
+}, 'hey you!');
 ```
 
 **Note:** By default, tasks run with maximum concurrency -- e.g. it launches all the tasks at once and waits for nothing.
