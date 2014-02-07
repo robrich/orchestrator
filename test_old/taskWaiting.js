@@ -1,7 +1,7 @@
 /*jshint node:true */
 /*global describe:false, it:false */
 
-"use strict";
+'use strict';
 
 var Orchestrator = require('../');
 var Q = require('q');
@@ -266,6 +266,92 @@ describe('orchestrator', function() {
 							cb(null, f);
 						}, timeout);
 					}));
+				}
+			};
+
+			// the thing under test
+			orchestrator = new Orchestrator();
+			orchestrator.on('task_stop', function (e) {
+				should.exist(e.task);
+				e.task.should.equal('test');
+				if (e.message.indexOf('stream') > -1) {
+					++a;
+				}
+			});
+			orchestrator._runStep = function () {};
+
+			// Act
+			orchestrator._runTask(task);
+
+			// Assert
+			setTimeout(function () {
+				a.should.equal(1);
+				done();
+			}, timeout*2);
+		});
+
+		it('async stream task logs fail on unhandled stream error', function(done) {
+			var orchestrator, task, timeout = 5, a;
+
+			// Arrange
+			a = 0;
+			task = {
+				name: 'test',
+				fn: function() {
+					return es.readable(function(/*count, callback*/) {
+						this.emit('data', {a:'rgs'});
+						this.emit('end');
+					}).pipe(es.map(function (f, cb) {
+						cb({e:'rror'});
+					}));
+				}
+			};
+
+			// the thing under test
+			orchestrator = new Orchestrator();
+			orchestrator.on('task_err', function (e) {
+				should.exist(e.task);
+				e.task.should.equal('test');
+				if (e.message.indexOf('stream') > -1) {
+					++a;
+				}
+			});
+			orchestrator._runStep = function () {};
+
+			// Act
+			orchestrator._runTask(task);
+
+			// Assert
+			setTimeout(function () {
+				a.should.equal(1);
+				done();
+			}, timeout*2);
+		});
+
+		it('async stream task logs successful finish if stream error is handled', function(done) {
+			var orchestrator, task, timeout = 5, a, b;
+
+			// Arrange
+			a = 0;
+			b = 0;
+			task = {
+				name: 'test',
+				fn: function() {
+					return es.readable(function(/*count, callback*/) {
+						this.emit('data', {a:'rgs'});
+						this.emit('data', {a:'rgs'});
+						this.emit('end');
+					}).pipe(es.map(function (f, cb) {
+						// fail first one, succeed second one
+						if (b < 1) {
+							cb({e:'rror'});
+						} else {
+							cb(null, f);
+						}
+						b++;
+					})).on('error', function (/*err*/) {
+						// swallow it
+					});
 				}
 			};
 

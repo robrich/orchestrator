@@ -1,7 +1,7 @@
 /*jshint node:true */
 /*global describe:false, it:false */
 
-'use strict';
+"use strict";
 
 var Orchestrator = require('../');
 var should = require('should');
@@ -32,7 +32,7 @@ describe('orchestrator', function() {
 			done();
 		});
 
-		it('should return undefined if there is no such task', function(done) {
+		it('should return false if there is no such task', function(done) {
 			var orchestrator, name, task1, actual;
 
 			// Arrange
@@ -71,52 +71,6 @@ describe('orchestrator', function() {
 			should.not.exist(actual);
 			should.exist(orchestrator.tasks[name]);
 			orchestrator.tasks[name].name.should.equal(name);
-			done();
-		});
-
-		it('should create a task with dependencies if passed a third arg', function(done) {
-			var orchestrator, name, dep, fn, actual;
-
-			// Arrange
-			name = 'task1';
-			dep = ['task2'];
-			fn = function () {};
-
-			// the thing under test
-			orchestrator = new Orchestrator();
-
-			// Act
-			actual = orchestrator.task(name, dep, fn);
-
-			// Assert
-			should.not.exist(actual);
-			should.exist(orchestrator.tasks[name]);
-			orchestrator.tasks[name].name.should.equal(name);
-			orchestrator.tasks[name].dep.should.equal(dep);
-			done();
-		});
-
-		it('should throw if passed an invalid arg', function(done) {
-			var orchestrator, name, dep, fn, actual;
-
-			// Arrange
-			name = 'task1';
-			fn = 42;
-
-			// the thing under test
-			orchestrator = new Orchestrator();
-
-			// Act
-			try {
-				orchestrator.task(name, dep, fn);
-			} catch (err) {
-				actual = err;
-			}
-
-			// Assert
-			should.exist(actual);
-			should.exist(actual.message);
-			actual.message.indexOf('function').should.be.above(-1);
 			done();
 		});
 
