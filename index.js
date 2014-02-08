@@ -147,7 +147,9 @@ util.inherits(Orchestrator, EventEmitter);
 		}
 		if (this.doneCallback) {
 			// Avoid calling it multiple times
-			this.doneCallback(err);
+			var doneCallback = this.doneCallback;
+			delete this.doneCallback;
+			doneCallback(err);
 		} else if (err && !this.listeners('err').length) {
 			// No one is listening for the error so speak louder
 			throw err;

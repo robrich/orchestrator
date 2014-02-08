@@ -336,5 +336,33 @@ describe('orchestrator', function() {
 			});
 		});
 
+		it('should run subsequent tasks', function(done) {
+			var orchestrator, fn1, fn2, fn3;
+
+			var a = 0;
+			fn1 = function() {
+				a++;
+				orchestrator.start('fn2');
+			}
+
+			fn2 = function() {
+				a++;
+				orchestrator.start('fn3');
+			}
+
+			fn3 = function() {
+				a.should.equal(2);
+				done();
+			}
+			// Arrange
+			orchestrator = new Orchestrator();
+			orchestrator.add('fn1', fn1);
+			orchestrator.add('fn2', fn2);
+			orchestrator.add('fn3', fn3);
+
+			// Act
+			orchestrator.start('fn1');
+		});
+
 	});
 });
