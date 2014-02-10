@@ -3,6 +3,7 @@
 "use strict";
 
 var util = require('util');
+var domain = require('domain');
 var events = require('events');
 var EventEmitter = events.EventEmitter;
 var runTask = require('./lib/runTask');
@@ -270,13 +271,21 @@ util.inherits(Orchestrator, EventEmitter);
 		this.emit('task_start', task.args);
 		task.running = true;
 
-		runTask(task.fn.bind(this), function (err, meta) {
-			that._stopTask.call(that, task, meta);
-			that._emitTaskDone.call(that, task, meta.runMethod, err);
-			if (err) {
-				return that.stop.call(that, err);
-			}
-			that._runStep.call(that);
+		var d = domain.create();
+
+		d.on('error', function (err) {
+			that.stop(err);
+		});
+
+		d.run(function () {
+			runTask(task.fn.bind(this), function (err, meta) {
+				that._stopTask.call(that, task, meta);
+				that._emitTaskDone.call(that, task, meta.runMethod, err);
+				if (err) {
+					return that.stop.call(that, err);
+				}
+				that._runStep.call(that);
+			});
 		});
 	};
 
