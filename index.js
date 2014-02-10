@@ -271,22 +271,22 @@ util.inherits(Orchestrator, EventEmitter);
 		this.emit('task_start', task.args);
 		task.running = true;
 
-    var d = domain.create();
+		var d = domain.create();
 
-    d.on('error', function (err) {
-      that.stop(err);
-    });
+		d.on('error', function (err) {
+			that.stop(err);
+		});
 
-    d.run(function () {
-      runTask(task.fn.bind(this), function (err, meta) {
-        that._stopTask.call(that, task, meta);
-        that._emitTaskDone.call(that, task, meta.runMethod, err);
-        if (err) {
-          return that.stop.call(that, err);
-        }
-        that._runStep.call(that);
-      });
-    });
+		d.run(function () {
+			runTask(task.fn.bind(this), function (err, meta) {
+				that._stopTask.call(that, task, meta);
+				that._emitTaskDone.call(that, task, meta.runMethod, err);
+				if (err) {
+					return that.stop.call(that, err);
+				}
+				that._runStep.call(that);
+			});
+		});
 	};
 
 // FRAGILE: ASSUME: this list is an exhaustive list of events emitted
