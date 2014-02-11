@@ -1,6 +1,4 @@
-/*jshint node:true */
-
-"use strict";
+'use strict';
 
 var util = require('util');
 var events = require('events');
@@ -13,14 +11,10 @@ var Orchestrator = function () {
 };
 util.inherits(Orchestrator, EventEmitter);
 
-Orchestrator.prototype.task = require('./lib/task');
-Orchestrator.prototype.hasTask = function (name) {
-	return !!this.tasks[name];
-};
-Orchestrator.prototype.reset = function () {
-	this.tasks = {};
-	return this;
-};
+Orchestrator.prototype.task = require('./lib/task/task');
+Orchestrator.prototype.hasTask = require('./lib/task/hasTask');
+Orchestrator.prototype.taskNames = require('./lib/task/taskNames');
+Orchestrator.prototype.reset = require('./lib/task/reset');
 Orchestrator.prototype.run = require('./lib/run');
 Orchestrator.prototype.onAll = require('./lib/listen/onAll');
 
