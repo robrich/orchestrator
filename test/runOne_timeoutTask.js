@@ -25,34 +25,13 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			timeoutTask.run(task.fn, function (err/*, outArgs*/) {
+			timeoutTask.run(task.fn, args, function (err) {
 
 				// assert
 				should.not.exist(err);
 
 				done();
-			}, args);
-		});
-
-		it('passes args to callback', function(done) {
-
-			// arrange
-			var task = {
-				fn: function (cb) {
-					cb();
-				}
-			};
-			var args = makeArgs(task, fakeOrchestrator);
-
-			// act
-			timeoutTask.run(task.fn, function (err, outArgs) {
-
-				// assert
-				should.not.exist(err);
-				outArgs.should.equal(args);
-
-				done();
-			}, args);
+			});
 		});
 
 		it('aborts task on timeout', function(done) {
@@ -78,9 +57,9 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, orchestrator);
 
 			// act
-			timeoutTask.run(task.fn, function (/*err, outArgs*/) {
+			timeoutTask.run(task.fn, args, function (/*err*/) {
 				a++;
-			}, args);
+			});
 
 			setTimeout(function () {
 
@@ -89,7 +68,7 @@ describe('lib/runOne/', function() {
 				task.err.message.indexOf('timed out').should.be.above(-1);
 				should.exist(task.runMethod);
 				task.runMethod.should.equal('timeout');
-				a.should.equal(3); // task, run callback twice
+				a.should.equal(2); // task, run callback
 
 				done();
 			}, taskTimeout*2);
@@ -122,9 +101,9 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, orchestrator);
 
 			// act
-			timeoutTask.run(task.fn, function (/*err, outArgs*/) {
+			timeoutTask.run(task.fn, args, function (/*err*/) {
 				a++;
-			}, args);
+			});
 
 			setTimeout(function () {
 
@@ -134,7 +113,7 @@ describe('lib/runOne/', function() {
 				should.exist(task.runMethod);
 				task.runMethod.should.equal(expectedRunMethod);
 
-				a.should.equal(3); // task, run callback twice
+				a.should.equal(2); // task, run callback
 
 				done();
 			}, taskTimeout*2);
@@ -159,9 +138,9 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, orchestrator);
 
 			// act
-			timeoutTask.run(task.fn, function (/*err, outArgs*/) {
+			timeoutTask.run(task.fn, args, function (/*err*/) {
 				a++;
-			}, args);
+			});
 
 			setTimeout(function () {
 

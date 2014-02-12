@@ -14,37 +14,12 @@ describe('lib/runOne/', function() {
 	describe('runTask()', function() {
 		var fakeOrchestrator = {};
 
-		it('passes args to callback', function(done) {
-			var a, task, args;
-
-			// arrange
-			a = 0;
-			task = {
-				fn: function(cb) {
-					a++;
-					cb();
-				}
-			};
-			args = makeArgs(task, fakeOrchestrator);
-
-			// act
-			runTask(function (err, outArgs) {
-
-				// assert
-				a.should.equal(1);
-				outArgs.should.equal(args);
-
-				done();
-			}, args);
-		});
-
 		it('runs fn scoped to task', function(done) {
-			var a, name, task, args;
 
 			// arrange
-			a = 0;
-			name = 'scoped to task';
-			task = {
+			var a = 0;
+			var name = 'scoped to task';
+			var task = {
 				name: name,
 				fn: function(cb) {
 					a++;
@@ -55,86 +30,83 @@ describe('lib/runOne/', function() {
 					cb();
 				}
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/*err, args*/) {
+			runTask(args, function (/*err*/) {
 
 				// assert
 				a.should.equal(1);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('overwrites task.err on error', function (done) {
-			var a, err, newErr, task, args;
 
 			// arrange
-			a = 0;
-			err = 'original error';
-			newErr = 'new error';
-			task = {
+			var a = 0;
+			var err = 'original error';
+			var newErr = 'new error';
+			var task = {
 				err: err,
 				fn: function(cb) {
 					a++;
 					cb(newErr);
 				}
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/*err, args*/) {
+			runTask(args, function (/*err*/) {
 
 				// assert
 				task.err.should.equal(newErr);
 				a.should.equal(1);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('keeps task.err on success', function (done) {
-			var a, err, task, args;
 
 			// arrange
-			a = 0;
-			err = 'original error';
-			task = {
+			var a = 0;
+			var err = 'original error';
+			var task = {
 				err: err,
 				fn: function(cb) {
 					a++;
 					cb();
 				},
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/*err, args*/) {
+			runTask(args, function (/*err*/) {
 
 				// assert
 				task.err.should.equal(err);
 				a.should.equal(1);
 
 				done();
-			}, args);
+			});
 		});
 
 
 		it('sync task succeeds', function(done) {
-			var a, task, args;
 
 			// arrange
-			a = 0;
-			task = {
+			var a = 0;
+			var task = {
 				fn: function() {
 					a++;
 				}
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/*err, args*/) {
+			runTask(args, function (/*err*/) {
 
 				// assert
 				should.not.exist(task.err);
@@ -142,25 +114,24 @@ describe('lib/runOne/', function() {
 				a.should.equal(1);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('sync task throws', function(done) {
-			var a, task, message, args;
 
 			// arrange
-			a = 0;
-			message = 'testing';
-			task = {
+			var a = 0;
+			var message = 'testing';
+			var task = {
 				fn: function() {
 					a++;
 					throw new Error(message);
 				}
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/*err, args*/) {
+			runTask(args, function (/*err*/) {
 
 				// assert
 				should.exist(task.err);
@@ -169,15 +140,14 @@ describe('lib/runOne/', function() {
 				a.should.equal(1);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('async promise task succeeds', function(done) {
-			var a, task, args;
 
 			// arrange
-			a = 0;
-			task = {
+			var a = 0;
+			var task = {
 				fn: function() {
 					a++;
 					var deferred = Q.defer();
@@ -188,10 +158,10 @@ describe('lib/runOne/', function() {
 					return deferred.promise;
 				}
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/*err, args*/) {
+			runTask(args, function (/*err*/) {
 
 				// assert
 				should.not.exist(task.err);
@@ -199,16 +169,15 @@ describe('lib/runOne/', function() {
 				a.should.equal(2);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('async promise task fails', function(done) {
-			var a, task, message, args;
 
 			// arrange
-			a = 0;
-			message = 'testing';
-			task = {
+			var a = 0;
+			var message = 'testing';
+			var task = {
 				fn: function() {
 					a++;
 					var deferred = Q.defer();
@@ -219,10 +188,10 @@ describe('lib/runOne/', function() {
 					return deferred.promise;
 				}
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/*err, args*/) {
+			runTask(args, function (/*err*/) {
 
 				// assert
 				should.exist(task.err);
@@ -231,15 +200,14 @@ describe('lib/runOne/', function() {
 				a.should.equal(2);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('async callback task succeeds', function(done) {
-			var a, task, args;
 
 			// arrange
-			a = 0;
-			task = {
+			var a = 0;
+			var task = {
 				fn: function(cb) {
 					a++;
 					process.nextTick(function () {
@@ -248,10 +216,10 @@ describe('lib/runOne/', function() {
 					});
 				}
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/*err, args*/) {
+			runTask(args, function (/*err*/) {
 
 				// assert
 				should.not.exist(task.err);
@@ -259,16 +227,15 @@ describe('lib/runOne/', function() {
 				a.should.equal(2);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('async callback task fails', function(done) {
-			var a, task, message, args;
 
 			// arrange
-			a = 0;
-			message = 'testing';
-			task = {
+			var a = 0;
+			var message = 'testing';
+			var task = {
 				fn: function(cb) {
 					a++;
 					process.nextTick(function () {
@@ -277,10 +244,10 @@ describe('lib/runOne/', function() {
 					});
 				}
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/*err, args*/) {
+			runTask(args, function (/*err*/) {
 
 				// assert
 				should.exist(task.err);
@@ -289,15 +256,14 @@ describe('lib/runOne/', function() {
 				a.should.equal(2);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('async stream task succeeds', function(done) {
-			var a, task, args;
 
 			// arrange
-			a = 0;
-			task = {
+			var a = 0;
+			var task = {
 				fn: function() {
 					return es.readable(function(/*count, callback*/) {
 						a++;
@@ -311,10 +277,10 @@ describe('lib/runOne/', function() {
 					}));
 				}
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/*err, args*/) {
+			runTask(args, function (/*err*/) {
 
 				// assert
 				should.not.exist(task.err);
@@ -322,17 +288,16 @@ describe('lib/runOne/', function() {
 				a.should.equal(2);
 
 				done();
-			}, args);
+			});
 		});
 
 		/*
 		it('async stream task fails', function(done) {
-			var a, task, message, args;
 
 			// arrange
-			a = 0;
-			message = 'testing';
-			task = {
+			var a = 0;
+			var message = 'testing';
+			var task = {
 				fn: function() {
 					return es.readable(function() {
 						a++;
@@ -346,10 +311,10 @@ describe('lib/runOne/', function() {
 					}));
 				}
 			};
-			args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			runTask(function (/ *err, args* /) {
+			runTask(args, function (/ *err* /) {
 
 				// assert
 				should.exist(task.err);
@@ -358,7 +323,7 @@ describe('lib/runOne/', function() {
 				a.should.equal(2);
 
 				done();
-			}, args);
+			});
 		});
 		*/
 

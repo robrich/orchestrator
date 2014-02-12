@@ -18,30 +18,13 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			doneOnce.run(function (err/*, outArgs*/) {
+			doneOnce.run(args, function (err) {
 
 				// assert
 				should.not.exist(err);
 
 				done();
-			}, args);
-		});
-
-		it('passes args to callback', function(done) {
-
-			// arrange
-			var task = {};
-			var args = makeArgs(task, fakeOrchestrator);
-
-			// act
-			doneOnce.run(function (err, outArgs) {
-
-				// assert
-				should.not.exist(err);
-				outArgs.should.equal(args);
-
-				done();
-			}, args);
+			});
 		});
 
 		it('sets task.isDone to true', function(done) {
@@ -51,14 +34,14 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			doneOnce.run(function (/*err, args*/) {
+			doneOnce.run(args, function (/*err*/) {
 
 				// assert
 				should.exist(task.isDone);
 				task.isDone.should.equal(true);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('sets task.err if task.isDone was true', function(done) {
@@ -71,14 +54,14 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			doneOnce.run(function (/*err, args*/) {
+			doneOnce.run(args, function (/*err*/) {
 
 				// assert
 				should.exist(task.err);
 				task.err.message.indexOf('too many times').should.be.above(-1);
 				
 				done();
-			}, args);
+			});
 		});
 
 		it('doesn\'t set task.err if task.isDone was true and task.err was set', function(done) {
@@ -92,14 +75,14 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			doneOnce.run(function (/*err, args*/) {
+			doneOnce.run(args, function (/*err*/) {
 
 				// assert
 				should.exist(task.err);
 				task.err.should.equal(expectedErr);
 				
 				done();
-			}, args);
+			});
 		});
 
 		it('sets task.err if called twice', function(done) {
@@ -111,15 +94,15 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			doneOnce.run(function (err, firstArgs) {
-				doneOnce.run(function () {
+			doneOnce.run(args, function (/*err*/) {
+				doneOnce.run(args, function (/*err*/) {
 
 					// assert
 					task.err.message.indexOf('too many times').should.be.above(-1);
 
 					done();
-				}, firstArgs);
-			}, args);
+				});
+			});
 		});
 
 	});

@@ -10,12 +10,6 @@ require('mocha');
 describe('lib/runOne/', function() {
 	describe('index()', function() {
 
-		/*
-		- runs fn
-		- scoped to task
-		- emits events
-		*/
-
 		it('runs a successful task', function (done) {
 
 			// arrange
@@ -31,6 +25,7 @@ describe('lib/runOne/', function() {
 				}
 			};
 			var orchestrator = {
+				taskTimeout: 2000, // ms
 				emit: function (name, emitArgs) {
 					a++;
 
@@ -38,10 +33,8 @@ describe('lib/runOne/', function() {
 					emitArgs.should.equal(task);
 					switch(name) {
 						case 'taskStart':
-							// great
 							break;
 						case 'taskEnd':
-							// great
 							break;
 						default:
 							// fail
@@ -56,6 +49,8 @@ describe('lib/runOne/', function() {
 			runOne(args, function (err) {
 
 				// assert
+				task.isDone.should.equal(true);
+				task.runMethod.should.equal('callback');
 				a.should.equal(3); // fn, taskStart, taskEnd
 				should.not.exist(err);
 
@@ -63,16 +58,110 @@ describe('lib/runOne/', function() {
 			});
 		});
 
-
-
 		it('runs a failing task', function (done) {
-			''.should.equal('write this');
-			done();
+			
+			// arrange
+			var a = 0;
+			var expectedErr = 'task fail error';
+			var task = {
+				name: 'failing',
+				dep: [],
+				fn: function(cb) {
+					a++;
+					should.exist(this);
+					this.should.equal(task);
+					cb(expectedErr);
+				}
+			};
+			var orchestrator = {
+				taskTimeout: 2000, // ms
+				emit: function (name, emitArgs) {
+					a++;
+
+					// assert
+					emitArgs.should.equal(task);
+					switch(name) {
+						case 'taskStart':
+							break;
+						case 'taskEnd':
+							break;
+						case 'taskError':
+							break;
+						default:
+							// fail
+							name.should.equal('taskStart');
+							break;
+					}
+				}
+			};
+			var args = makeArgs(task, orchestrator);
+
+			// act
+			runOne(args, function (err) {
+
+				// assert
+				task.isDone.should.equal(true);
+				task.runMethod.should.equal('callback');
+				a.should.equal(4); // fn, taskStart, taskError, taskEnd
+				should.exist(err);
+				err.should.equal(expectedErr);
+
+				done();
+			});
 		});
 
 		it('runs a timeout task', function (done) {
-			''.should.equal('write this');
-			done();
+			
+			// arrange
+			var a = 0;
+			var timeout = 10; // ms
+			var task = {
+				name: 'failing',
+				dep: [],
+				fn: function(cb) {
+					a++;
+					should.exist(this);
+					this.should.equal(task);
+					setTimeout(function () {
+						cb();
+					}, timeout * 2);
+				}
+			};
+			var orchestrator = {
+				taskTimeout: timeout, // ms
+				emit: function (name, emitArgs) {
+					a++;
+
+					// assert
+					emitArgs.should.equal(task);
+					switch(name) {
+						case 'taskStart':
+							break;
+						case 'taskEnd':
+							break;
+						case 'taskError':
+							break;
+						default:
+							// fail
+							name.should.equal('taskStart');
+							break;
+					}
+				}
+			};
+			var args = makeArgs(task, orchestrator);
+
+			// act
+			runOne(args, function (err) {
+
+				// assert
+				task.isDone.should.equal(true);
+				task.runMethod.should.equal('timeout');
+				a.should.equal(4); // fn, taskStart, taskError, taskEnd
+				should.exist(err);
+				err.message.indexOf('timed out').should.be.above(-1);
+
+				done();
+			});
 		});
 
 	});

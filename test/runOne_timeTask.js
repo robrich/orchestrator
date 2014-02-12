@@ -18,42 +18,20 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			timeTask.start(function (err, startArgs) {
-
-				// act
-				timeTask.end(function (err/*, endArgs*/) {
-
-					// assert
-					should.not.exist(err);
-
-					done();
-				}, startArgs);
-			}, args);
-		});
-
-		it('passes args to callback', function(done) {
-
-			// arrange
-			var task = {};
-			var args = makeArgs(task, fakeOrchestrator);
-
-			// act
-			timeTask.start(function (err, startArgs) {
+			timeTask.start(args, function (err) {
 
 				// assert
 				should.not.exist(err);
-				startArgs.should.equal(args);
 
 				// act
-				timeTask.end(function (err, endArgs) {
+				timeTask.end(args, function (err) {
 
 					// assert
 					should.not.exist(err);
-					endArgs.should.equal(args);
 
 					done();
-				}, startArgs);
-			}, args);
+				});
+			});
 		});
 
 		it('sets start time', function(done) {
@@ -63,14 +41,14 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			timeTask.start(function (/*err, startArgs*/) {
+			timeTask.start(args, function (/*err*/) {
 
 				// assert
 				should.exist(task.start);
 				Array.isArray(task.start).should.equal(true);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('sets duration', function(done) {
@@ -80,16 +58,16 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			timeTask.start(function (err, startArgs) {
-				timeTask.end(function (/*err, endArgs*/) {
+			timeTask.start(args, function (/*err*/) {
+				timeTask.end(args, function (/*err*/) {
 
 					// assert
 					should.exist(task.duration);
 					Array.isArray(task.duration).should.equal(true);
 
 					done();
-				}, startArgs);
-			}, args);
+				});
+			});
 		});
 
 		it('duration makes sense', function(done) {
@@ -102,9 +80,9 @@ describe('lib/runOne/', function() {
 			var args = makeArgs(task, fakeOrchestrator);
 
 			// act
-			timeTask.start(function (err, startArgs) {
+			timeTask.start(args, function (/*err*/) {
 				setTimeout(function () {
-					timeTask.end(function (/*err, endArgs*/) {
+					timeTask.end(args, function (/*err*/) {
 
 						// assert
 						task.duration[0].should.equal(0);
@@ -112,9 +90,9 @@ describe('lib/runOne/', function() {
 						(task.duration[1]/10e5).should.be.below(duration+lag);
 
 						done();
-					}, startArgs);
+					});
 				}, duration);
-			}, args);
+			});
 		});
 
 	});
