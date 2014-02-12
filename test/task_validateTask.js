@@ -1,4 +1,3 @@
-/*jshint node:true */
 /*global describe:false, it:false */
 
 'use strict';
