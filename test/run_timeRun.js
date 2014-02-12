@@ -15,41 +15,20 @@ describe('lib/run/', function() {
 			var args = {};
 
 			// act
-			timeRun.start(function (err, startArgs) {
-
-				// act
-				timeRun.end(function (err/*, endArgs*/) {
-
-					// assert
-					should.not.exist(err);
-
-					done();
-				}, startArgs);
-			}, args);
-		});
-
-		it('passes args to callback', function(done) {
-
-			// arrange
-			var args = {};
-
-			// act
-			timeRun.start(function (err, startArgs) {
+			timeRun.start(args, function (err) {
 
 				// assert
 				should.not.exist(err);
-				startArgs.should.equal(args);
 
 				// act
-				timeRun.end(function (err, endArgs) {
+				timeRun.end(args, function (err) {
 
 					// assert
 					should.not.exist(err);
-					endArgs.should.equal(args);
 
 					done();
-				}, startArgs);
-			}, args);
+				});
+			});
 		});
 
 		it('sets start time', function(done) {
@@ -58,14 +37,14 @@ describe('lib/run/', function() {
 			var args = {};
 
 			// act
-			timeRun.start(function (/*err, startArgs*/) {
+			timeRun.start(args, function (/*err*/) {
 
 				// assert
 				should.exist(args.start);
 				Array.isArray(args.start).should.equal(true);
 
 				done();
-			}, args);
+			});
 		});
 
 		it('sets duration', function(done) {
@@ -74,16 +53,16 @@ describe('lib/run/', function() {
 			var args = {};
 
 			// act
-			timeRun.start(function (err, startArgs) {
-				timeRun.end(function (/*err, endArgs*/) {
+			timeRun.start(args, function (/*err*/) {
+				timeRun.end(args, function (/*err*/) {
 
 					// assert
 					should.exist(args.duration);
 					Array.isArray(args.duration).should.equal(true);
 
 					done();
-				}, startArgs);
-			}, args);
+				});
+			});
 		});
 
 		it('duration makes sense', function(done) {
@@ -95,9 +74,9 @@ describe('lib/run/', function() {
 			var args = {};
 
 			// act
-			timeRun.start(function (err, startArgs) {
+			timeRun.start(args, function (/*err*/) {
 				setTimeout(function () {
-					timeRun.end(function (/*err, endArgs*/) {
+					timeRun.end(args, function (/*err*/) {
 
 						// assert
 						args.duration[0].should.equal(0);
@@ -105,9 +84,9 @@ describe('lib/run/', function() {
 						(args.duration[1]/10e5).should.be.below(duration+lag);
 
 						done();
-					}, startArgs);
+					});
 				}, duration);
-			}, args);
+			});
 		});
 
 	});
