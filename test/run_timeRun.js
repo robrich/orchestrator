@@ -69,7 +69,7 @@ describe('lib/run/', function() {
 
 			// arrange
 			var duration = 10; // how long are we waiting between start and stop?
-			var lag = 15; // how many ms should this test take?
+			var lag = 25; // how many ms should this test take?
 			var lowLag = 1; // not sure how setTimeout could happen faster than duration but ok
 			var args = {};
 

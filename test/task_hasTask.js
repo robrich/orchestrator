@@ -10,46 +10,46 @@ describe('orchestrator', function() {
 	describe('hasTask()', function() {
 
 		it('should return true if there is a task', function(done) {
-			var orchestrator, name, task1, actual;
 
-			// Arrange
-			name = 'task1';
-			task1 = {
+			// arrange
+			var name = 'task1';
+			var task1 = {
 				name: name,
 				fn: function() {}
 			};
 
 			// the thing under test
-			orchestrator = new Orchestrator();
+			var orchestrator = new Orchestrator();
 			orchestrator.tasks[name] = task1;
 
-			// Act
-			actual = orchestrator.hasTask(name);
+			// act
+			var actual = orchestrator.hasTask(name);
 
-			// Assert
+			// assert
 			actual.should.equal(true);
+
 			done();
 		});
 
 		it('should return false if there is no such task', function(done) {
-			var orchestrator, name, task1, actual;
 
-			// Arrange
-			name = 'task1';
-			task1 = {
+			// arrange
+			var name = 'task1';
+			var task1 = {
 				name: name,
 				fn: function() {}
 			};
 
 			// the thing under test
-			orchestrator = new Orchestrator();
+			var orchestrator = new Orchestrator();
 			orchestrator.tasks[name] = task1;
 
-			// Act
-			actual = orchestrator.hasTask('not'+name);
+			// act
+			var actual = orchestrator.hasTask('not'+name);
 
-			// Assert
+			// assert
 			actual.should.equal(false);
+			
 			done();
 		});
 

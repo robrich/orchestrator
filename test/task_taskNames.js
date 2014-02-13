@@ -18,40 +18,40 @@ describe('orchestrator', function() {
 		};
 
 		it('should return two task names', function(done) {
-			var orchestrator, name1, name2, actual;
 
-			// Arrange
-			name1 = 'task1';
-			name2 = 'task2';
+			// arrange
+			var name1 = 'task1';
+			var name2 = 'task2';
 
 			// the thing under test
-			orchestrator = new Orchestrator();
+			var orchestrator = new Orchestrator();
 			addTask(orchestrator, name1);
 			addTask(orchestrator, name2);
 
-			// Act
-			actual = orchestrator.taskNames();
+			// act
+			var actual = orchestrator.taskNames();
 
-			// Assert
+			// assert
 			actual.length.should.equal(2);
 			actual[0].should.equal(name1);
 			actual[1].should.equal(name2);
+
 			done();
 		});
 
 		it('should return no tasks when the task queue is empty', function(done) {
-			var orchestrator, actual;
 
-			// Arrange
+			// arrange
 
 			// the thing under test
-			orchestrator = new Orchestrator();
+			var orchestrator = new Orchestrator();
 
-			// Act
-			actual = orchestrator.taskNames();
+			// act
+			var actual = orchestrator.taskNames();
 
-			// Assert
+			// assert
 			actual.length.should.equal(0);
+
 			done();
 		});
 

@@ -11,47 +11,49 @@ describe('orchestrator', function() {
 	describe('onAll()', function() {
 
 		it('should wire up end event', function(done) {
-			var orchestrator, src, fn, count = 0;
 
-			// Arrange
-			src = 'end';
-			fn = function (e) {
+			// arrange
+			var count = 0;
+			var src = 'end';
+			var fn = function (e) {
 				count++;
 				e.src.should.equal(src);
 			};
 
 			// the thing under test
-			orchestrator = new Orchestrator();
+			var orchestrator = new Orchestrator();
 
-			// Act
+			// act
 			orchestrator.onAll(fn);
 			orchestrator.emit(src, {});
 
-			// Assert
+			// assert
 			count.should.equal(1);
+
 			done();
 		});
 
 		it('should wire up all events', function(done) {
-			var orchestrator, src, fn, count = 0;
 
-			// Arrange
-			src = 'error';
-			fn = function () {
+			// arrange
+			var count = 0;
+			var src = 'error';
+			var fn = function () {
 				count++;
 			};
 
 			// the thing under test
-			orchestrator = new Orchestrator();
+			var orchestrator = new Orchestrator();
 
-			// Act
+			// act
 			orchestrator.onAll(fn);
 			onAll.events.forEach(function (e) {
 				orchestrator.emit(e, {});
 			});
 
-			// Assert
+			// assert
 			count.should.equal(onAll.events.length);
+			
 			done();
 		});
 

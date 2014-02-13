@@ -10,84 +10,89 @@ describe('lib/task/', function() {
 	describe('validateTask()', function() {
 
 		it('should return nothing on valid task', function(done) {
-			var name, dep, fn;
 
-			// Arrange
-			name = 'task1';
-			dep = [];
-			fn = function () {};
+			// arrange
+			var name = 'task1';
+			var dep = [];
+			var fn = function () {};
 
-			// Act
+			// act
 			validateTask(name, dep, fn);
 
-			// Assert
+			// assert
 			// if it didn't throw, it worked
 			done();
 		});
 
 		it('should throw if passed a null name', function(done) {
-			var name, dep, fn, actual;
 
-			// Arrange
-			//name stays undefined
-			dep = [];
-			fn = function () {};
+			// arrange
+			var name; // stays undefined
+			var dep = [];
+			var fn = function () {};
+			var actual;
 
-			// Act
+			// act
 			try {
 				validateTask(name, dep, fn);
 			} catch (err) {
 				actual = err;
 			}
 
-			// Assert
+			// assert
 			should.exist(actual);
+			true.should.equal(actual.invalidTask);
 			should.exist(actual.message);
 			actual.message.indexOf('name').should.be.above(-1);
+			actual.invalid.should.equal('name');
 			done();
 		});
 
 		it('should throw if passed an invalid dep', function(done) {
-			var name, dep, fn, actual;
 
-			// Arrange
-			name = 'task1';
-			dep = 42;
-			fn = function () {};
+			// arrange
+			var name = 'task1';
+			var dep = 42;
+			var fn = function () {};
+			var actual;
 
-			// Act
+			// act
 			try {
 				validateTask(name, dep, fn);
 			} catch (err) {
 				actual = err;
 			}
 
-			// Assert
+			// assert
 			should.exist(actual);
+			true.should.equal(actual.invalidTask);
 			should.exist(actual.message);
 			actual.message.indexOf('dependenc').should.be.above(-1);
+			actual.invalid.should.equal('dependencies');
 			done();
 		});
 
 		it('should throw if passed an invalid fn', function(done) {
-			var name, dep, fn, actual;
 
-			// Arrange
-			name = 'task1';
-			dep = [];
-			fn = 42;
+			// arrange
+			var name = 'task1';
+			var dep = [];
+			var fn = 42;
+			var actual;
 
-			// Act
+			// act
 			try {
 				validateTask(name, dep, fn);
 			} catch (err) {
 				actual = err;
 			}
 
-			// Assert
+			// assert
 			should.exist(actual);
+			true.should.equal(actual.invalidTask);
 			should.exist(actual.message);
 			actual.message.indexOf('function').should.be.above(-1);
+			actual.invalid.should.equal('function');
 			done();
 		});
 

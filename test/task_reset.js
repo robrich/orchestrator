@@ -10,26 +10,26 @@ describe('orchestrator', function() {
 	describe('reset()', function() {
 
 		it('should clear all tasks', function(done) {
-			var orchestrator, name1, name2, fn;
 
-			// Arrange
-			name1 = 'task1';
-			name2 = 'task2';
-			fn = function() {};
+			// arrange
+			var name1 = 'task1';
+			var name2 = 'task2';
+			var fn = function() {};
 
 			// the thing under test
-			orchestrator = new Orchestrator();
+			var orchestrator = new Orchestrator();
 			orchestrator.task(name1, fn);
 			orchestrator.task(name2, fn);
 			orchestrator.hasTask(name1).should.equal(true);
 			orchestrator.hasTask(name2).should.equal(true);
 
-			// Act
+			// act
 			orchestrator.reset();
 
-			// Assert
+			// assert
 			orchestrator.hasTask(name1).should.equal(false);
 			orchestrator.hasTask(name2).should.equal(false);
+
 			done();
 		});
 
