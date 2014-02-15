@@ -268,7 +268,7 @@ describe('orchestrator', function() {
 				// assert
 				a.should.equal(2);
 				done();
-			}, 200);
+			}, 30);
 		});
 
 		it('should run task dependencies multiple times when call run(task) multiple times', function(done) {
@@ -293,7 +293,7 @@ describe('orchestrator', function() {
 				// assert
 				a.should.equal(2);
 				done();
-			}, 200);
+			}, 30);
 		});
 
 		it('should run task multiple times when call run() (default) multiple times', function(done) {

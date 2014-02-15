@@ -8,7 +8,7 @@ require('mocha');
 
 describe('orchestrator', function() {
 	var gulp = new Orchestrator();
-	describe('task() integration tests', function() {
+	describe('gulp tests', function() {
 		it('should define a task', function(done) {
 			var fn;
 			fn = function() {};
@@ -55,7 +55,7 @@ describe('orchestrator', function() {
 				a.should.equal(2);
 				gulp.reset();
 				done();
-			}, 200);
+			}, 30);
 		});
 		it('should run all async promise tasks', function(done) {
 			var a, fn, fn2;
