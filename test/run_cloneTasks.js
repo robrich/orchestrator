@@ -1,7 +1,6 @@
-/*jshint node:true */
 /*global describe:false, it:false */
 
-"use strict";
+'use strict';
 
 var cloneTasks = require('../lib/run/cloneTasks');
 var should = require('should');

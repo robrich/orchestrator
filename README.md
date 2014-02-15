@@ -30,7 +30,7 @@ orchestrator.task('thing2', function(){
 ### 3. Run the tasks:
 
 ```javascript
-orchestrator.run('thing1', 'thing2', function (err) {
+orchestrator.run('thing1', 'thing2', function (err, stats) {
   // all done
 });
 ```
@@ -173,18 +173,23 @@ Type: `String` or `Array` of `String`s
 Tasks to be executed. You may pass any number of tasks as individual arguments.
 
 #### cb
-Type: `function`: `function (err) {`
+Type: `function`: `function (err, stats) {`
 
 Callback to call after run completed.
 
-Passes single argument: `err`: did the orchestration succeed?
+Passes arguments:
 
-**Note:** Orchestrator uses [`sequencify`](https://github.com/robrich/sequencify) to resolve dependencies before running, and therefore may not start in order.
+- `err`: did the orchestration succeed?
+
+- `stats`: Type: `Object`, {tasks:[], message:'succeeded', duration:[process.hrDuration]}
+
+**Note:** Orchestrator uses [`async.auto`](https://github.com/caolan/async) to resolve dependencies, so tasks may not run in the specfied order.
 Listen to orchestration events to watch task running.
 
 ```javascript
-orchestrator.run('thing1', 'thing2', 'thing3', 'thing4', function (err) {
+orchestrator.run('thing1', 'thing2', 'thing3', 'thing4', function (err, stats) {
   // all done
+  console.log('ran '+stats.tasks.join(', ')+' in '+require('pretty-hrTime')(stats.duration));
 });
 ```
 ```javascript
@@ -197,8 +202,7 @@ to your callback
 
 **FRAGILE:** Orchestrator will ensure each task and each dependency is run once during an orchestration run
 even if you specify it to run more than once. (e.g. `orchestrator.run('thing1', 'thing1')`
-will only run 'thing1' once.) If you need it to run a task multiple times, wait for
-the orchestration to end (start's callback) then call start again.
+will only run 'thing1' once.) If you need it to run a task multiple times, call `.run()` a second time.
 (e.g. `orchestrator.run('thing1', function () {orchestrator.run('thing1');})`.)
 Alternatively create a second orchestrator instance.
 
@@ -210,14 +214,12 @@ Listen to orchestrator internals
 Type: `String`
 
 Event name to listen to:
-- run: starting a run
-- error: the run was aborted due to a task error
+- start: starting a run
+- error: the run was aborted due to an error
 - end: the queue finished
-- taskRun: task was started
+- taskStart: task was started
 - taskError: task errored
 - taskEnd: task completed
-- taskNotFound: you're trying to start a task that doesn't exist
-- taskRecursion: there are recursive dependencies in your task list
 
 #### cb
 Type: `function`: `function (e) {`
@@ -225,12 +227,12 @@ Type: `function`: `function (e) {`
 Passes single argument: `e`: event details
 
 ```javascript
-orchestrator.on('task_start', function (e) {
+orchestrator.on('tasStart', function (e) {
   // e.message is the log message
   // e.task is the task name if the message applies to a task else `undefined`
   // e.err is the error if event is 'error' else `undefined`
 });
-// for task_end and task_err:
+// for taskEnd and taskErr:
 orchestrator.on('taskEnd', function (e) {
   // e is the same object from task_start
   // e.message is updated to show how the task ended

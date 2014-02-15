@@ -1,7 +1,6 @@
-/*jshint node:true */
 /*global describe:false, it:false */
 
-"use strict";
+'use strict';
 
 var pluckTasks = require('../lib/run/pluckTasks');
 var should = require('should');
@@ -53,9 +52,9 @@ describe('lib/run/', function() {
 
 				// assert
 				should.exist(args.runTasks);
-				args.runTasks.length.should.equal(2);
-				args.runTasks[0].should.equal(tasks.task1);
-				args.runTasks[1].should.equal(tasks.task2);
+				Object.keys(args.runTasks).length.should.equal(2);
+				args.runTasks.task1.should.equal(tasks.task1);
+				args.runTasks.task2.should.equal(tasks.task2);
 				should.not.exist(err);
 
 				done();
@@ -74,7 +73,7 @@ describe('lib/run/', function() {
 
 				// assert
 				should.exist(args.runTasks);
-				args.runTasks.length.should.equal(0);
+				Object.keys(args.runTasks).length.should.equal(0);
 				should.not.exist(err);
 
 				done();

@@ -1,7 +1,6 @@
-/*jshint node:true */
 /*global describe:false, it:false */
 
-"use strict";
+'use strict';
 
 var resolveDependencies = require('../lib/run/resolveDependencies');
 var should = require('should');

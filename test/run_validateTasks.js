@@ -1,7 +1,6 @@
-/*jshint node:true */
 /*global describe:false, it:false */
 
-"use strict";
+'use strict';
 
 var validateTasks = require('../lib/run/validateTasks');
 var should = require('should');
@@ -34,7 +33,6 @@ describe('lib/run/', function() {
 		it('finds two tasks', function(done) {
 
 			// arrange
-			var runTaskNames = ['task1', 'task2'];
 			var tasks = {
 				task1: {
 					name: 'task1',
@@ -46,7 +44,7 @@ describe('lib/run/', function() {
 					dep: [],
 					fn: function () {}
 				}
-			}
+			};
 			var args = makeArgs(tasks);
 
 			// act
@@ -85,8 +83,32 @@ describe('lib/run/', function() {
 
 			// arrange
 			var tasks = {
-				test: {}
-			}
+				test: {
+					name: 'test'
+				}
+			};
+			var args = makeArgs(tasks);
+
+			// act
+			validateTasks(args, function (err) {
+
+				// assert
+				should.exist(err);
+				should.exist(err.invalidTask);
+				err.invalidTask.should.equal(true);
+
+				done();
+			});
+		});
+
+		it('error on name mismatch', function(done) {
+
+			// arrange
+			var tasks = {
+				test: {
+					name: 'not-test'
+				}
+			};
 			var args = makeArgs(tasks);
 
 			// act
