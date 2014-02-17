@@ -63,7 +63,7 @@ describe('async', function() {
 			});
 		});
 
-		it('supresses callback called twice', function(done) {
+		it('suppresses callback called twice', function(done) {
 
 			// arrange
 			var a = 0;
@@ -86,7 +86,7 @@ describe('async', function() {
 			});
 		});
 
-		it('doesn\'t supress erroring callback called twice', function(done) {
+		it('doesn\'t suppress erroring callback called twice', function(done) {
 
 			// arrange
 			var a = 0;
@@ -110,6 +110,58 @@ describe('async', function() {
 				done();
 			});
 		});
+
+		/* short answer: it doesn't handle it
+		it('recursive dependencies', function(done) {
+
+			// arrange
+			var a = 0;
+			var tasks = {
+				task1: ['task2', function (cb) {
+					a++;
+					cb(null);
+				}],
+				task2: ['task1', function (cb) {
+					a++;
+					cb(null);
+				}]
+			};
+
+			// act
+			async.auto(tasks, function (err) {
+
+				// assert
+				should.exist(err);
+				a.should.equal(0);
+
+				done();
+			});
+		});
+		*/
+
+		/* short answer: it doesn't
+		it('missing dependencies', function(done) {
+
+			// arrange
+			var a = 0;
+			var tasks = {
+				task1: ['task2', function (cb) {
+					a++;
+					cb(null);
+				}]
+			};
+
+			// act
+			async.auto(tasks, function (err) {
+
+				// assert
+				should.exist(err);
+				a.should.equal(0);
+
+				done();
+			});
+		});
+		*/
 
 	});
 });

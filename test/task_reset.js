@@ -6,7 +6,7 @@ var Orchestrator = require('../');
 require('should');
 require('mocha');
 
-describe('orchestrator', function() {
+describe('lib/task/', function() {
 	describe('reset()', function() {
 
 		it('should clear all tasks', function(done) {

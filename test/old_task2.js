@@ -40,7 +40,7 @@ describe('orchestrator', function() {
 
 			// assert
 			should.exist(actualErr);
-			should.ok(actualErr.message.indexOf('Task') > -1);
+			actualErr.message.indexOf('Task').should.be.above(-1);
 		};
 
 		it('should error if name is not a string', function (done) {
@@ -59,8 +59,8 @@ describe('orchestrator', function() {
 			var name, dep, fn;
 
 			// arrange
-			name = "name";
-			dep = 9; // not an array
+			name = 'name';
+			dep = 9; // not an array and not an object
 			fn = function () {};
 
 			// act & Assert
@@ -72,8 +72,8 @@ describe('orchestrator', function() {
 			var name, dep, fn;
 
 			// arrange
-			name = "name";
-			dep = 9; // not an array
+			name = 'name';
+			dep = [9]; // not an array and not an object
 			fn = function () {};
 
 			// act & Assert
@@ -85,7 +85,7 @@ describe('orchestrator', function() {
 			var name, fn;
 
 			// arrange
-			name = "name";
+			name = 'name';
 			fn = 9; // not a function
 
 			// act & Assert
@@ -97,7 +97,7 @@ describe('orchestrator', function() {
 			var name, dep, fn;
 
 			// arrange
-			name = "name";
+			name = 'name';
 			dep = ['name'];
 			fn = 9; // not a function
 
@@ -110,7 +110,7 @@ describe('orchestrator', function() {
 			var orchestrator, name, dep;
 
 			// arrange
-			name = "name";
+			name = 'name';
 			dep = ['name'];
 
 			// act
@@ -119,7 +119,7 @@ describe('orchestrator', function() {
 
 			// assert
 			should.exist(orchestrator.tasks.name);
-			orchestrator.tasks.name.dep.should.equal(dep);
+			orchestrator.tasks.name.before.should.equal(dep);
 			done();
 		});
 

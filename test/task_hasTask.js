@@ -6,7 +6,7 @@ var Orchestrator = require('../');
 require('should');
 require('mocha');
 
-describe('orchestrator', function() {
+describe('lib/task/', function() {
 	describe('hasTask()', function() {
 
 		it('should return true if there is a task', function(done) {

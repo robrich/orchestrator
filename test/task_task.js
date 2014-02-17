@@ -6,7 +6,7 @@ var Orchestrator = require('../');
 var should = require('should');
 require('mocha');
 
-describe('orchestrator', function() {
+describe('lib/task/', function() {
 	describe('task()', function() {
 
 		it('should return task if there is a task', function(done) {
@@ -90,7 +90,7 @@ describe('orchestrator', function() {
 			should.not.exist(actual);
 			should.exist(orchestrator.tasks[name]);
 			orchestrator.tasks[name].name.should.equal(name);
-			orchestrator.tasks[name].dep.should.equal(dep);
+			orchestrator.tasks[name].before.should.equal(dep);
 
 			done();
 		});

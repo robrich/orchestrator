@@ -2,12 +2,12 @@
 
 'use strict';
 
-var resolveDependencies = require('../lib/run/resolveDependencies');
+var discoverDependencies = require('../lib/run/discoverDependencies');
 var should = require('should');
 require('mocha');
 
 describe('lib/run/', function() {
-	describe('resolveDependencies()', function() {
+	describe('discoverDependencies()', function() {
 
 		var makeArgs = function (tasks, runTaskNames) {
 			return {
@@ -24,7 +24,7 @@ describe('lib/run/', function() {
 			var args = makeArgs({}, []);
 
 			// act
-			resolveDependencies(args, function (err) {
+			discoverDependencies(args, function (err) {
 
 				// assert
 				should.not.exist(err);
@@ -42,17 +42,19 @@ describe('lib/run/', function() {
 			var tasks = {
 				test1: {
 					name: 'test1',
-					dep: []
+					before: [],
+					after: []
 				},
 				test2: {
 					name: 'test2',
-					dep: []
+					before: [],
+					after: []
 				}
 			};
 			var args = makeArgs(tasks, runTaskNames);
 
 			// act
-			resolveDependencies(args, function (err) {
+			discoverDependencies(args, function (err) {
 
 				// assert
 				args.runTaskNames.length.should.equal(2);
@@ -71,22 +73,55 @@ describe('lib/run/', function() {
 			var tasks = {
 				dep: {
 					name: 'dep',
-					dep: []
+					before: [],
+					after: []
 				},
 				test: {
 					name: 'test',
-					dep: ['dep']
+					before: ['dep'],
+					after: []
 				}
 			};
 			var args = makeArgs(tasks, runTaskNames);
 
 			// act
-			resolveDependencies(args, function (err) {
+			discoverDependencies(args, function (err) {
 
 				// assert
 				args.runTaskNames.length.should.equal(2);
-				args.runTaskNames[0].should.equal('dep');
-				args.runTaskNames[1].should.equal('test');
+				args.runTaskNames.indexOf('dep').should.be.above(-1);
+				args.runTaskNames.indexOf('test').should.be.above(-1);
+				should.not.exist(err);
+
+				done();
+			});
+		});
+
+		it('discovers post dependency', function(done) {
+
+			// arrange
+			var runTaskNames = ['test'];
+			var tasks = {
+				dep: {
+					name: 'dep',
+					before: [],
+					after: []
+				},
+				test: {
+					name: 'test',
+					before: [],
+					after: ['dep']
+				}
+			};
+			var args = makeArgs(tasks, runTaskNames);
+
+			// act
+			discoverDependencies(args, function (err) {
+
+				// assert
+				args.runTaskNames.length.should.equal(2);
+				args.runTaskNames.indexOf('dep').should.be.above(-1);
+				args.runTaskNames.indexOf('test').should.be.above(-1);
 				should.not.exist(err);
 
 				done();
@@ -100,75 +135,44 @@ describe('lib/run/', function() {
 			var tasks = {
 				test: {
 					name: 'test',
-					dep: ['dep']
+					before: ['dep'],
+					after: []
 				}
 			};
 			var args = makeArgs(tasks, runTaskNames);
 
 			// act
-			resolveDependencies(args, function (err) {
+			discoverDependencies(args, function (err) {
 
 				// assert
 				should.exist(err);
-				should.exist(err.missingTask);
-				err.missingTask.should.equal('dep');
+				should.exist(err.missingTasks);
+				err.missingTasks[0].should.equal('dep');
 
 				done();
 			});
 		});
 
-		it('error on recursive dependency', function(done) {
+		it('error on missing post-dependency', function(done) {
 
 			// arrange
 			var runTaskNames = ['test'];
 			var tasks = {
-				dep: {
-					name: 'dep',
-					dep: ['test']
-				},
 				test: {
 					name: 'test',
-					dep: ['dep']
+					before: [],
+					after: ['dep']
 				}
 			};
 			var args = makeArgs(tasks, runTaskNames);
 
 			// act
-			resolveDependencies(args, function (err) {
+			discoverDependencies(args, function (err) {
 
 				// assert
 				should.exist(err);
-				should.exist(err.recursiveTasks);
-				err.recursiveTasks.join(',').should.equal('test,dep,test');
-
-				done();
-			});
-		});
-
-		it('sequences dependency first', function(done) {
-
-			// arrange
-			var runTaskNames = ['test', 'dep'];
-			var tasks = {
-				dep: {
-					name: 'dep',
-					dep: []
-				},
-				test: {
-					name: 'test',
-					dep: ['dep']
-				}
-			};
-			var args = makeArgs(tasks, runTaskNames);
-
-			// act
-			resolveDependencies(args, function (err) {
-
-				// assert
-				args.runTaskNames.length.should.equal(2);
-				args.runTaskNames[0].should.equal('dep');
-				args.runTaskNames[1].should.equal('test');
-				should.not.exist(err);
+				should.exist(err.missingTasks);
+				err.missingTasks[0].should.equal('dep');
 
 				done();
 			});
@@ -181,32 +185,36 @@ describe('lib/run/', function() {
 			var tasks = {
 				fn1: {
 					name: 'fn1',
-					dep: []
+					before: [],
+					after: []
 				},
 				fn2: {
 					name: 'fn2',
-					dep: []
+					before: [],
+					after: []
 				},
 				fn3: {
 					name: 'fn3',
-					dep: ['fn1', 'fn2']
+					before: ['fn1', 'fn2'],
+					after: []
 				},
 				fn4: {
 					name: 'fn4',
-					dep: ['fn3']
+					before: ['fn3'],
+					after: []
 				}
 			};
 			var args = makeArgs(tasks, runTaskNames);
 
 			// act
-			resolveDependencies(args, function (err) {
+			discoverDependencies(args, function (err) {
 
 				// assert
 				args.runTaskNames.length.should.equal(4);
-				args.runTaskNames[0].should.equal('fn1');
-				args.runTaskNames[1].should.equal('fn2');
-				args.runTaskNames[2].should.equal('fn3');
-				args.runTaskNames[3].should.equal('fn4');
+				args.runTaskNames.indexOf('fn1').should.be.above(-1);
+				args.runTaskNames.indexOf('fn2').should.be.above(-1);
+				args.runTaskNames.indexOf('fn3').should.be.above(-1);
+				args.runTaskNames.indexOf('fn4').should.be.above(-1);
 				should.not.exist(err);
 
 				done();

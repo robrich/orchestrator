@@ -113,8 +113,9 @@ describe('orchestrator', function() {
 			gulp.on('error', function(e){
 				var err = e.err;
 				should.exist(err);
-				should.exist(err.missingTask);
-				err.missingTask.should.equal('test');
+				should.exist(err.missingTasks);
+				err.missingTasks.length.should.equal(1);
+				err.missingTasks[0].should.equal('test');
 			});
 			gulp.run('test', function (err) {
 				should.exist(err);

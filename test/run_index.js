@@ -34,7 +34,7 @@ describe('lib/run/', function() {
 				a += 10;
 				cb(null);
 			});
-			orchestrator.onAll(function (e) {
+			orchestrator.onAll(function () {
 				a++; // start, taskStart, taskEnd, end
 			});
 
@@ -62,7 +62,7 @@ describe('lib/run/', function() {
 				a += 10;
 				cb(expectedErr);
 			});
-			orchestrator.onAll(function (e) {
+			orchestrator.onAll(function () {
 				a++; // start, taskStart, taskError, taskEnd, error, end
 			});
 
@@ -90,7 +90,7 @@ describe('lib/run/', function() {
 				a += 10;
 				cb(null);
 			});
-			orchestrator.onAll(function (e) {
+			orchestrator.onAll(function () {
 				a++; // error, end (never starts)
 			});
 
@@ -99,7 +99,37 @@ describe('lib/run/', function() {
 
 				// assert
 				a.should.equal(2);
-				err.missingTask.should.equal(missingTaskName);
+				err.missingTasks.length.should.equal(1);
+				err.missingTasks[0].should.equal(missingTaskName);
+				should.exist(args.duration[0]);
+				args.message.indexOf('fail').should.be.above(-1);
+
+				done();
+			});
+		});
+
+		it('fails on run task with missing post-dependency', function(done) {
+
+			// arrange
+			var a = 0;
+			var taskName = 'runFailed';
+			var missingTaskName = 'missing';
+			var orchestrator = new Orchestrator();
+			orchestrator.task(taskName, {after:[missingTaskName]}, function (cb) {
+				a += 10;
+				cb(null);
+			});
+			orchestrator.onAll(function () {
+				a++; // error, end (never starts)
+			});
+
+			// act
+			orchestrator.run(taskName, function (err, args) {
+
+				// assert
+				a.should.equal(2);
+				err.missingTasks.length.should.equal(1);
+				err.missingTasks[0].should.equal(missingTaskName);
 				should.exist(args.duration[0]);
 				args.message.indexOf('fail').should.be.above(-1);
 

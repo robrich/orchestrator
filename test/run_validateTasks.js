@@ -36,12 +36,14 @@ describe('lib/run/', function() {
 			var tasks = {
 				task1: {
 					name: 'task1',
-					dep: [],
+					before: [],
+					after: [],
 					fn: function () {}
 				},
 				task2: {
 					name: 'task2',
-					dep: [],
+					before: [],
+					after: [],
 					fn: function () {}
 				}
 			};

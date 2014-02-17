@@ -9,15 +9,25 @@ require('mocha');
 describe('lib/task/', function() {
 	describe('validateTask()', function() {
 
+		var makeTask = function (name, dep, fn) {
+			return {
+				name: name,
+				before: dep,
+				after: [],
+				fn: fn
+			};
+		}
+
 		it('should return nothing on valid task', function(done) {
 
 			// arrange
 			var name = 'task1';
 			var dep = [];
 			var fn = function () {};
+			var task = makeTask(name, dep, fn);
 
 			// act
-			validateTask(name, dep, fn);
+			validateTask(task);
 
 			// assert
 			// if it didn't throw, it worked
@@ -30,11 +40,12 @@ describe('lib/task/', function() {
 			var name; // stays undefined
 			var dep = [];
 			var fn = function () {};
+			var task = makeTask(name, dep, fn);
 			var actual;
 
 			// act
 			try {
-				validateTask(name, dep, fn);
+				validateTask(task);
 			} catch (err) {
 				actual = err;
 			}
@@ -54,11 +65,12 @@ describe('lib/task/', function() {
 			var name = 'task1';
 			var dep = 42;
 			var fn = function () {};
+			var task = makeTask(name, dep, fn);
 			var actual;
 
 			// act
 			try {
-				validateTask(name, dep, fn);
+				validateTask(task);
 			} catch (err) {
 				actual = err;
 			}
@@ -78,11 +90,12 @@ describe('lib/task/', function() {
 			var name = 'task1';
 			var dep = [];
 			var fn = 42;
+			var task = makeTask(name, dep, fn);
 			var actual;
 
 			// act
 			try {
-				validateTask(name, dep, fn);
+				validateTask(task);
 			} catch (err) {
 				actual = err;
 			}

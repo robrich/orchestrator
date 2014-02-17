@@ -118,7 +118,8 @@ describe('orchestrator', function() {
 			orchestrator.on('error', function (e) {
 				a++;
 				should.exist(e.err);
-				e.err.missingTask.should.equal(name);
+				e.err.missingTasks.length.should.equal(1);
+				e.err.missingTasks[0].should.equal(name);
 				e.err.message.should.match(/not defined/i, e.message+' should include not defined');
 				expectedErr = e.err;
 			});

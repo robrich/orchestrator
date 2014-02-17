@@ -36,15 +36,17 @@ describe('lib/run/', function() {
 			var tasks = {
 				task1: {
 					name: 'task1',
-					dep: [],
+					before: [],
+					after: [],
 					fn: function () {}
 				},
 				task2: {
 					name: 'task2',
-					dep: [],
+					before: [],
+					after: [],
 					fn: function () {}
 				}
-			}
+			};
 			var args = makeArgs(tasks);
 
 			// act
@@ -73,19 +75,21 @@ describe('lib/run/', function() {
 			var tasks = {
 				task1: {
 					name: 'task1',
-					dep: [],
+					before: [],
+					after: [],
 					fn: function () {},
 					other: 'content',
 					gets: 'cloned'
 				},
 				task2: {
 					name: 'task2',
-					dep: [],
+					before: [],
+					after: [],
 					fn: function () {},
 					interesting: 'content',
 					doubled: 'here'
 				}
-			}
+			};
 			var args = makeArgs(tasks);
 
 			// act
@@ -113,21 +117,23 @@ describe('lib/run/', function() {
 			});
 		});
 
-		it('clones dependency array', function(done) {
+		it('clones dependency arrays', function(done) {
 			
 			// arrange
 			var tasks = {
 				task1: {
 					name: 'task1',
-					dep: ['stuff'],
+					before: ['stuff'],
+					after: ['otherstuff'],
 					fn: function () {}
 				},
 				task2: {
 					name: 'task2',
-					dep: ['lots','of','dependencies'],
+					before: ['lots','of','dependencies'],
+					after: [],
 					fn: function () {}
 				}
-			}
+			};
 			var args = makeArgs(tasks);
 
 			// act
@@ -138,19 +144,24 @@ describe('lib/run/', function() {
 				Object.keys(args.runTasks).length.should.equal(2);
 				args.runTasks.task1.name.should.equal(tasks.task1.name);
 				args.runTasks.task2.name.should.equal(tasks.task2.name);
-				args.runTasks.task1.dep.length.should.equal(tasks.task1.dep.length);
-				args.runTasks.task2.dep.length.should.equal(tasks.task2.dep.length);
-				args.runTasks.task1.dep[0].should.equal(tasks.task1.dep[0]);
-				args.runTasks.task2.dep[2].should.equal(tasks.task2.dep[2]);
+				args.runTasks.task1.before.length.should.equal(tasks.task1.before.length);
+				args.runTasks.task1.after.length.should.equal(tasks.task1.after.length);
+				args.runTasks.task2.before.length.should.equal(tasks.task2.before.length);
+				args.runTasks.task2.after.length.should.equal(tasks.task2.after.length);
+				args.runTasks.task1.before[0].should.equal(tasks.task1.before[0]);
+				args.runTasks.task1.after[0].should.equal(tasks.task1.after[0]);
+				args.runTasks.task2.before[2].should.equal(tasks.task2.before[2]);
 				// change it and make sure the other didn't change -- lazy man's '== but not ==='
 				tasks.task1.different = true;
 				tasks.task2.different = true;
 				should.not.exist(args.runTasks.task1.different);
 				should.not.exist(args.runTasks.task2.different);
-				tasks.task1.dep.push('another');
-				tasks.task2.dep.push('another');
-				args.runTasks.task1.dep.length.should.not.equal(tasks.task1.dep.length);
-				args.runTasks.task2.dep.length.should.not.equal(tasks.task2.dep.length);
+				tasks.task1.before.push('another');
+				tasks.task1.after.push('another');
+				tasks.task2.before.push('another');
+				args.runTasks.task1.before.length.should.not.equal(tasks.task1.before.length);
+				args.runTasks.task1.after.length.should.not.equal(tasks.task1.after.length);
+				args.runTasks.task2.before.length.should.not.equal(tasks.task2.before.length);
 
 				should.not.exist(err);
 
