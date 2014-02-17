@@ -3,28 +3,26 @@
 'use strict';
 
 var Orchestrator = require('../');
-var onAll = require('../lib/listen/onAll');
 require('should');
 require('mocha');
 
-describe('orchestrator', function() {
-	describe('onAll()', function() {
+describe('EventEmitter2', function() {
+	describe('onAny()', function() {
 
 		it('should wire up end event', function(done) {
 
 			// arrange
 			var count = 0;
 			var src = 'end';
-			var fn = function (e) {
+			var fn = function () {
 				count++;
-				e.src.should.equal(src);
 			};
 
 			// the thing under test
 			var orchestrator = new Orchestrator();
 
 			// act
-			orchestrator.onAll(fn);
+			orchestrator.onAny(fn);
 			orchestrator.emit(src, {});
 
 			// assert
@@ -37,7 +35,7 @@ describe('orchestrator', function() {
 
 			// arrange
 			var count = 0;
-			var src = 'error';
+			var events = ['start','stop','error'];
 			var fn = function () {
 				count++;
 			};
@@ -46,13 +44,13 @@ describe('orchestrator', function() {
 			var orchestrator = new Orchestrator();
 
 			// act
-			orchestrator.onAll(fn);
-			onAll.events.forEach(function (e) {
+			orchestrator.onAny(fn);
+			events.forEach(function (e) {
 				orchestrator.emit(e, {});
 			});
 
 			// assert
-			count.should.equal(onAll.events.length);
+			count.should.equal(events.length);
 			
 			done();
 		});

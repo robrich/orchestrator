@@ -34,7 +34,7 @@ describe('lib/run/', function() {
 				a += 10;
 				cb(null);
 			});
-			orchestrator.onAll(function () {
+			orchestrator.onAny(function () {
 				a++; // start, taskStart, taskEnd, end
 			});
 
@@ -62,7 +62,7 @@ describe('lib/run/', function() {
 				a += 10;
 				cb(expectedErr);
 			});
-			orchestrator.onAll(function () {
+			orchestrator.onAny(function () {
 				a++; // start, taskStart, taskError, taskEnd, error, end
 			});
 
@@ -90,7 +90,7 @@ describe('lib/run/', function() {
 				a += 10;
 				cb(null);
 			});
-			orchestrator.onAll(function () {
+			orchestrator.onAny(function () {
 				a++; // error, end (never starts)
 			});
 
@@ -119,7 +119,7 @@ describe('lib/run/', function() {
 				a += 10;
 				cb(null);
 			});
-			orchestrator.onAll(function () {
+			orchestrator.onAny(function () {
 				a++; // error, end (never starts)
 			});
 
