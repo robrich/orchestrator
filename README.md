@@ -206,9 +206,11 @@ will only run 'thing1' once.) If you need it to run a task multiple times, call 
 (e.g. `orchestrator.run('thing1', function () {orchestrator.run('thing1');})`.)
 Alternatively create a second orchestrator instance.
 
+**Note:** Orchestrator descends from [`EventEmitter2`](https://github.com/asyncly/EventEmitter2). See EventEmitter2's [docs](https://github.com/asyncly/EventEmitter2) for more event listeners.
+
 ### orchestrator.on(event, cb);
 
-Listen to orchestrator internals
+Listen to orchestrator events
 
 #### event
 Type: `String`
@@ -237,22 +239,6 @@ orchestrator.on('taskEnd', function (e) {
   // e is the same object from task_start
   // e.message is updated to show how the task ended
   // e.duration is the task run duration (in seconds)
-});
-```
-
-### orchestrator.onAll(cb);
-
-Listen to all orchestrator events from one callback
-
-#### cb
-Type: `function`: `function (e) {`
-
-Passes single argument: `e`: event details
-
-```javascript
-orchestrator.onAll(orchestrator, function (e) {
-  // e is the original event args
-  // e.src is event name
 });
 ```
 

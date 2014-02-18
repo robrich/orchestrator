@@ -38,14 +38,12 @@ describe('lib/run/', function() {
 			var tasks = {
 				task1: {
 					name: 'task1',
-					before: [],
-					after: [],
+					dep: [],
 					fnAuto: function () {}
 				},
 				task2: {
 					name: 'task2',
-					before: [],
-					after: [],
+					dep: [],
 					fnAuto: function () {}
 				}
 			};
@@ -71,8 +69,7 @@ describe('lib/run/', function() {
 			var tasks = {
 				theTask: {
 					name: 'theTask',
-					before: ['theDep'],
-					after: [],
+					dep: ['theDep'],
 					fnAuto: function () {}
 				}
 			};
@@ -97,8 +94,7 @@ describe('lib/run/', function() {
 			var tasks = {
 				theTask: {
 					name: 'theTask',
-					before: ['theDep'],
-					after: [],
+					dep: ['theDep'],
 					fnAuto: function () {}
 				}
 			};
@@ -108,8 +104,8 @@ describe('lib/run/', function() {
 			shimToAuto(args, function (err) {
 
 				// assert
-				tasks.theTask.before.length.should.equal(1);
-				tasks.theTask.before[0].should.equal('theDep');
+				tasks.theTask.dep.length.should.equal(1);
+				tasks.theTask.dep[0].should.equal('theDep');
 				should.not.exist(err);
 
 				done();

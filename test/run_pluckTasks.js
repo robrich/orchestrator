@@ -44,7 +44,7 @@ describe('lib/run/', function() {
 				task2: {
 					name: 'task2'
 				}
-			}
+			};
 			var args = makeArgs(tasks, runTaskNames);
 
 			// act
@@ -90,7 +90,7 @@ describe('lib/run/', function() {
 					name: 'test',
 					dep: ['dep']
 				}
-			}
+			};
 			var args = makeArgs(tasks, runTaskNames);
 
 			// act
@@ -98,8 +98,9 @@ describe('lib/run/', function() {
 
 				// assert
 				should.exist(err);
-				should.exist(err.missingTask);
-				err.missingTask.should.equal(taskName);
+				should.exist(err.missingTasks);
+				err.missingTasks.length.should.equal(1);
+				err.missingTasks[0].should.equal(taskName);
 				// IGNORE: args.runTasks
 
 				done();
