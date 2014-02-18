@@ -59,7 +59,7 @@ Type: `Array`
 An array of task names to be executed and completed before your task will run.
 
 ```javascript
-orchestrator.add('mytask', ['array', 'of', 'task', 'names'], function() {
+orchestrator.task('mytask', ['array', 'of', 'task', 'names'], function() {
   // Do stuff
 });
 ```
@@ -80,7 +80,7 @@ The function that performs the task's operations.  For asynchronous tasks, you n
 **Accept a callback:**
 
 ```javascript
-orchestrator.add('thing2', function(callback){
+orchestrator.task('thing2', function(callback){
   // do stuff
   callback(err);
 });
@@ -91,7 +91,7 @@ orchestrator.add('thing2', function(callback){
 ```javascript
 var Q = require('q');
 
-orchestrator.add('thing3', function(){
+orchestrator.task('thing3', function(){
   var deferred = Q.defer();
 
   // do async stuff
@@ -108,7 +108,7 @@ orchestrator.add('thing3', function(){
 ```javascript
 var map = require('map-stream');
 
-orchestrator.add('thing4', function(){
+orchestrator.task('thing4', function(){
   var stream = map(function (args, cb) {
     cb(null, args);
   });
@@ -179,9 +179,23 @@ Callback to call after run completed.
 
 Passes arguments:
 
-- `err`: did the orchestration succeed?
+1. `err`: error if orchestration failed
 
-- `stats`: Type: `Object`, {tasks:[], message:'succeeded', duration:[process.hrDuration]}
+Type: `Object`
+
+For missing tasks, `err` has `missingTasks` array of task names
+
+For recursive dependencies, `err` has `recursiveTasks` array of the recursive task sequence discovered
+
+2. `stats`: Type: `Object`
+
+```javascript
+{
+  tasks:[], // list of tasks that were queued to run
+  message:'succeeded' // a descriptive message
+  duration:[] // a process.hrDuration, require('pretty-hrtime') to turn it into words
+}
+```
 
 **Note:** Orchestrator uses [`async.auto`](https://github.com/caolan/async) to resolve dependencies, so tasks may not run in the specfied order.
 Listen to orchestration events to watch task running.
@@ -216,9 +230,6 @@ Listen to orchestrator events
 Type: `String`
 
 Event name to listen to:
-- start: starting a run
-- error: the run was aborted due to an error
-- end: the queue finished
 - taskStart: task was started
 - taskError: task errored
 - taskEnd: task completed

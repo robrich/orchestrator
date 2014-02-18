@@ -35,14 +35,14 @@ describe('lib/run/', function() {
 				cb(null);
 			});
 			orchestrator.onAny(function () {
-				a++; // start, taskStart, taskEnd, end
+				a++; // taskStart, taskEnd
 			});
 
 			// act
 			orchestrator.run(taskName, function (err, args) {
 
 				// assert
-				a.should.equal(14);
+				a.should.equal(12);
 				should.not.exist(err);
 				should.exist(args.duration[0]);
 				args.message.indexOf('succe').should.be.above(-1);
@@ -70,14 +70,14 @@ describe('lib/run/', function() {
 				cb(null);
 			});
 			orchestrator.onAny(function () {
-				a++; // start, taskStart, taskEnd, end
+				a++; // taskStart, taskEnd
 			});
 
 			// act
 			orchestrator.run(task1Name, function (err, args) {
 
 				// assert
-				a.should.equal(218);
+				a.should.equal(214);
 				should.not.exist(err);
 				should.exist(args.duration[0]);
 				args.message.indexOf('succe').should.be.above(-1);
@@ -98,14 +98,14 @@ describe('lib/run/', function() {
 				cb(expectedErr);
 			});
 			orchestrator.onAny(function () {
-				a++; // start, taskStart, taskError, taskEnd, error, end
+				a++; // taskStart, taskError, taskEnd
 			});
 
 			// act
 			orchestrator.run(taskName, function (err, args) {
 
 				// assert
-				a.should.equal(16);
+				a.should.equal(13);
 				err.should.equal(expectedErr);
 				should.exist(args.duration[0]);
 				args.message.indexOf('fail').should.be.above(-1);
@@ -126,14 +126,14 @@ describe('lib/run/', function() {
 				cb(null);
 			});
 			orchestrator.onAny(function () {
-				a++; // error, end (never starts)
+				a++;
 			});
 
 			// act
 			orchestrator.run(taskName, function (err, args) {
 
 				// assert
-				a.should.equal(2);
+				a.should.equal(0); // never starts anything
 				err.missingTasks.length.should.equal(1);
 				err.missingTasks[0].should.equal(missingTaskName);
 				should.exist(args.duration[0]);
@@ -155,14 +155,14 @@ describe('lib/run/', function() {
 				cb(null);
 			});
 			orchestrator.onAny(function () {
-				a++; // error, end (never starts)
+				a++;
 			});
 
 			// act
 			orchestrator.run(taskName, function (err, args) {
 
 				// assert
-				a.should.equal(2);
+				a.should.equal(0); // never starts anything
 				err.missingTasks.length.should.equal(1);
 				err.missingTasks[0].should.equal(missingTaskName);
 				should.exist(args.duration[0]);
@@ -188,14 +188,14 @@ describe('lib/run/', function() {
 				cb(null);
 			});
 			orchestrator.onAny(function () {
-				a++; // start, end
+				a++;
 			});
 
 			// act
 			orchestrator.run(task1Name, function (err, args) {
 
 				// assert
-				a.should.equal(2);
+				a.should.equal(0); // never starts anything
 				err.recursiveTasks.length.should.equal(3);
 				err.recursiveTasks[0].should.equal(task1Name);
 				err.recursiveTasks[1].should.equal(task2Name);

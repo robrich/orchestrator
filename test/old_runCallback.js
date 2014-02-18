@@ -115,19 +115,12 @@ describe('orchestrator', function() {
 			// no 'test' task defined
 
 			// act
-			orchestrator.on('error', function (e) {
-				a++;
-				should.exist(e.err);
-				e.err.missingTasks.length.should.equal(1);
-				e.err.missingTasks[0].should.equal(name);
-				e.err.message.should.match(/not defined/i, e.message+' should include not defined');
-				expectedErr = e.err;
-			});
-			orchestrator.run(name, function(actualErr) {
+			orchestrator.run(name, function(err) {
 				// assert
-				a.should.equal(1);
-				should.exist(actualErr);
-				actualErr.should.equal(expectedErr);
+				should.exist(err);
+				err.missingTasks.length.should.equal(1);
+				err.missingTasks[0].should.equal(name);
+				err.message.should.match(/not defined/i, err.message+' should include not defined');
 				done();
 			});
 		});
@@ -142,19 +135,12 @@ describe('orchestrator', function() {
 			orchestrator.task(name, [name]);
 
 			// act
-			orchestrator.on('error', function (e) {
-				a++;
-				e.err.recursiveTasks.length.should.equal(2);
-				e.err.recursiveTasks[0].should.equal(name);
-				e.err.recursiveTasks[1].should.equal(name);
-				e.err.message.should.match(/recursive/i, e.message+' should include recursive');
-				expectedErr = e.err;
-			});
-			orchestrator.run(name, function(actualErr) {
+			orchestrator.run(name, function(err) {
 				// assert
-				a.should.equal(1);
-				should.exist(actualErr);
-				actualErr.should.equal(expectedErr);
+				err.recursiveTasks.length.should.equal(2);
+				err.recursiveTasks[0].should.equal(name);
+				err.recursiveTasks[1].should.equal(name);
+				err.message.should.match(/recursive/i, err.message+' should include recursive');
 				done();
 			});
 		});
