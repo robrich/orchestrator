@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('util');
-var EventEmitter = require('EventEmitter2').EventEmitter2;
+var EventEmitter = require('eventemitter2').EventEmitter2;
 
 function Orchestrator () {
 	EventEmitter.call(this, {maxListeners:0});
