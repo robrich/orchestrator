@@ -13,7 +13,7 @@
     "compose"
   ],
   "dependencies": {
-    "sequencify": "~1.0.0",
+    "sequencify": "git://github.com/robrich/sequencify#master",
     "async": "~0.2.10"
   },
   "devDependencies": {
