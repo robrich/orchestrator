@@ -20,15 +20,15 @@ describe('lib/task/', function() {
 			var orchestrator = new Orchestrator();
 			orchestrator.task(name1, fn);
 			orchestrator.task(name2, fn);
-			orchestrator.hasTask(name1).should.equal(true);
-			orchestrator.hasTask(name2).should.equal(true);
+			orchestrator.task(name1).should.be.ok;
+			orchestrator.task(name2).should.be.ok;
 
 			// act
 			orchestrator.reset();
 
 			// assert
-			orchestrator.hasTask(name1).should.equal(false);
-			orchestrator.hasTask(name2).should.equal(false);
+			(typeof orchestrator.task(name1)).should.equal('undefined');
+			(typeof orchestrator.task(name2)).should.equal('undefined');
 
 			done();
 		});
