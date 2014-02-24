@@ -1,13 +1,13 @@
 'use strict';
 
 var util = require('util');
-var EventEmitter = require('EventEmitter2').EventEmitter2;
+var EventEmitter = require('eventemitter2').EventEmitter2;
 
-var Orchestrator = function () {
+function Orchestrator () {
 	EventEmitter.call(this, {maxListeners:0});
 	this.tasks = {};
 	this.taskTimeout = 20*1000; // ms until the task fails
-};
+}
 util.inherits(Orchestrator, EventEmitter);
 
 Orchestrator.prototype.task = require('./lib/task/task');
