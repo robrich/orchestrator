@@ -106,7 +106,7 @@ describe('orchestrator', function() {
 		});
 
 		it('should have error on missing task', function(done) {
-			var orchestrator, name, a, expectedErr;
+			var orchestrator, name, a;
 
 			// arrange
 			name = 'test';
@@ -126,7 +126,7 @@ describe('orchestrator', function() {
 		});
 
 		it('should have error on recursive tasks', function(done) {
-			var orchestrator, name, a, expectedErr;
+			var orchestrator, name, a;
 
 			// arrange
 			name = 'test';

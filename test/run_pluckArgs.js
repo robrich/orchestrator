@@ -92,27 +92,6 @@ describe('lib/run/', function() {
 			});
 		});
 
-		it('takes task names as mixed string and array', function (done) {
-			
-			// arrange
-			var args = makeArgs(['zero','one'],'two');
-
-			// act
-			pluckArgs(args, function (err) {
-
-				// assert
-				should.exist(args.runTaskNames);
-				args.runTaskNames.length.should.equal(3);
-				args.runTaskNames[0].should.equal('zero');
-				args.runTaskNames[1].should.equal('one');
-				args.runTaskNames[2].should.equal('two');
-				should.not.exist(args.doneCallback);
-				should.not.exist(err);
-
-				done();
-			});
-		});
-
 		it('does not accept object task names', function (done) {
 			
 			// arrange
