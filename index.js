@@ -4,7 +4,10 @@ var util = require('util');
 var EventEmitter = require('eventemitter2').EventEmitter2;
 
 function Orchestrator () {
-	EventEmitter.call(this, {maxListeners:0});
+	EventEmitter.call(this, {
+    maxListeners: 0,
+    wildcard: true
+  });
 	this.tasks = {};
 	this.taskTimeout = 20*1000; // ms until the task fails
 }
