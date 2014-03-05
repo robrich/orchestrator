@@ -19,7 +19,7 @@ describe('orchestrator', function() {
 			done();
 		});
 	});
-	describe('run() integration tests', function() {
+	describe('runParallel() integration tests', function() {
 		it('should run multiple tasks', function(done) {
 			var a, fn, fn2;
 			a = 0;
@@ -31,14 +31,14 @@ describe('orchestrator', function() {
 			};
 			gulp.task('test', fn);
 			gulp.task('test2', fn2);
-			gulp.run('test', 'test2', function (err) {
+			gulp.runParallel('test', 'test2', function (err) {
 				a.should.equal(2);
 				should.not.exist(err);
 				gulp.reset();
 				done();
 			});
 		});
-		it('should run all tasks when call run() multiple times', function(done) {
+		it('should run all tasks when call runParallel() multiple times', function(done) {
 			var a, fn, fn2;
 			a = 0;
 			fn = function() {
@@ -49,8 +49,8 @@ describe('orchestrator', function() {
 			};
 			gulp.task('test', fn);
 			gulp.task('test2', fn2);
-			gulp.run('test');
-			gulp.run('test2');
+			gulp.runParallel('test');
+			gulp.runParallel('test2');
 			setTimeout(function () {
 				a.should.equal(2);
 				gulp.reset();
@@ -78,8 +78,8 @@ describe('orchestrator', function() {
 			};
 			gulp.task('test', fn);
 			gulp.task('test2', fn2);
-			gulp.run('test');
-			gulp.run('test2', function () {
+			gulp.runParallel('test');
+			gulp.runParallel('test2', function () {
 				a.should.equal(2);
 				gulp.reset();
 				done();
@@ -102,8 +102,8 @@ describe('orchestrator', function() {
 			};
 			gulp.task('test', fn);
 			gulp.task('test2', fn2);
-			gulp.run('test');
-			gulp.run('test2', function () {
+			gulp.runParallel('test');
+			gulp.runParallel('test2', function () {
 				a.should.equal(2);
 				gulp.reset();
 				done();
@@ -117,7 +117,7 @@ describe('orchestrator', function() {
 				err.missingTasks.length.should.equal(1);
 				err.missingTasks[0].should.equal('test');
 			});
-			gulp.run('test', function (err) {
+			gulp.runParallel('test', function (err) {
 				should.exist(err);
 				gulp.reset();
 				done();

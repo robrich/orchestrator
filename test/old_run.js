@@ -8,7 +8,7 @@ require('should');
 require('mocha');
 
 describe('orchestrator', function() {
-	describe('run()', function() {
+	describe('runParallel()', function() {
 
 		it('should run multiple tasks', function(done) {
 			var orchestrator, a, fn, fn2;
@@ -26,14 +26,14 @@ describe('orchestrator', function() {
 			orchestrator.task('test2', fn2);
 
 			// act
-			orchestrator.run('test', 'test2');
+			orchestrator.runParallel('test', 'test2');
 
 			// assert
 			a.should.equal(2);
 			done();
 		});
 
-		it('should run multiple tasks as array', function(done) {
+		it('should run all tasks when call runParallel() multiple times', function(done) {
 			var orchestrator, a, fn, fn2;
 
 			// arrange
@@ -49,31 +49,8 @@ describe('orchestrator', function() {
 			orchestrator.task('test2', fn2);
 
 			// act
-			orchestrator.run(['test', 'test2']);
-
-			// assert
-			a.should.equal(2);
-			done();
-		});
-
-		it('should run all tasks when call run() multiple times', function(done) {
-			var orchestrator, a, fn, fn2;
-
-			// arrange
-			orchestrator = new Orchestrator();
-			a = 0;
-			fn = function() {
-				++a;
-			};
-			fn2 = function() {
-				++a;
-			};
-			orchestrator.task('test', fn);
-			orchestrator.task('test2', fn2);
-
-			// act
-			orchestrator.run('test');
-			orchestrator.run('test2');
+			orchestrator.runParallel('test');
+			orchestrator.runParallel('test2');
 
 			// assert
 			a.should.equal(2);
@@ -88,7 +65,7 @@ describe('orchestrator', function() {
 			a = 0;
 			fn = function() {
 				++a;
-				orchestrator.run('test3');
+				orchestrator.runParallel('test3');
 			};
 			fn2 = function() {
 				++a;
@@ -103,7 +80,7 @@ describe('orchestrator', function() {
 			orchestrator.task('test3', fn3);
 
 			// act
-			orchestrator.run('test', 'test2');
+			orchestrator.runParallel('test', 'test2');
 
 			// assert
 			aAtFn3.should.equal(2); // 1 and 3 ran
@@ -113,7 +90,7 @@ describe('orchestrator', function() {
 			done();
 		});
 
-		it('should run all tasks when call run() multiple times', function(done) {
+		it('should run all tasks when call runParallel() multiple times', function(done) {
 			var orchestrator, a, fn, fn2;
 
 			// arrange
@@ -129,15 +106,15 @@ describe('orchestrator', function() {
 			orchestrator.task('test2', fn2);
 
 			// act
-			orchestrator.run('test');
-			orchestrator.run('test2');
+			orchestrator.runParallel('test');
+			orchestrator.runParallel('test2');
 
 			// assert
 			a.should.equal(2);
 			done();
 		});
 
-		it('should run no tasks when call run() with no arguments', function(done) {
+		it('should run no tasks when call runParallel() with no arguments', function(done) {
 			var orchestrator, a, fn, fn2;
 
 			// arrange
@@ -153,7 +130,7 @@ describe('orchestrator', function() {
 			orchestrator.task('test2', fn2);
 
 			// act
-			orchestrator.run(function () {
+			orchestrator.runParallel(function () {
 
 				// assert
 				a.should.equal(0);
@@ -187,8 +164,8 @@ describe('orchestrator', function() {
 			orchestrator.task('test2', fn2);
 
 			// act
-			orchestrator.run('test');
-			orchestrator.run('test2', function () {
+			orchestrator.runParallel('test');
+			orchestrator.runParallel('test2', function () {
 				// assert
 				a.should.equal(2);
 				done();
@@ -217,8 +194,8 @@ describe('orchestrator', function() {
 			orchestrator.task('test2', fn2);
 
 			// act
-			orchestrator.run('test');
-			orchestrator.run('test2', function () {
+			orchestrator.runParallel('test');
+			orchestrator.runParallel('test2', function () {
 				// assert
 				a.should.equal(2);
 				done();
@@ -239,7 +216,7 @@ describe('orchestrator', function() {
 			orchestrator.task('test', fn);
 
 			// act
-			orchestrator.run('test', function () {
+			orchestrator.runParallel('test', function () {
 
 				// assert
 				a.should.equal(1);
@@ -247,9 +224,9 @@ describe('orchestrator', function() {
 			});
 		});
 
-		// FRAGILE: It resets task.done at `.run()` so if task isn't finished when you call `start()` again, it won't run again
+		// FRAGILE: It resets task.done at `.runParallel()` so if task isn't finished when you call `start()` again, it won't run again
 
-		it('should run task multiple times when call run(task) multiple times', function(done) {
+		it('should run task multiple times when call runParallel(task) multiple times', function(done) {
 			var orchestrator, a, fn;
 
 			// arrange
@@ -261,8 +238,8 @@ describe('orchestrator', function() {
 			orchestrator.task('test', fn);
 
 			// act
-			orchestrator.run('test');
-			orchestrator.run('test');
+			orchestrator.runParallel('test');
+			orchestrator.runParallel('test');
 
 			setTimeout(function () {
 				// assert
@@ -271,7 +248,7 @@ describe('orchestrator', function() {
 			}, 30);
 		});
 
-		it('should run task dependencies multiple times when call run(task) multiple times', function(done) {
+		it('should run task dependencies multiple times when call runParallel(task) multiple times', function(done) {
 			var orchestrator, a, fn, dep;
 
 			// arrange
@@ -286,8 +263,8 @@ describe('orchestrator', function() {
 			orchestrator.task('test', ['dep'], fn);
 
 			// act
-			orchestrator.run('test');
-			orchestrator.run('test');
+			orchestrator.runParallel('test');
+			orchestrator.runParallel('test');
 
 			setTimeout(function () {
 				// assert
@@ -296,7 +273,7 @@ describe('orchestrator', function() {
 			}, 30);
 		});
 
-		it('should run task multiple times when call run() (default) multiple times', function(done) {
+		it('should run task multiple times when call runParallel() (default) multiple times', function(done) {
 			var orchestrator, a, fn;
 
 			// arrange
@@ -309,9 +286,9 @@ describe('orchestrator', function() {
 			orchestrator.task('default', ['test'], function () {});
 
 			// act
-			orchestrator.run('default', function () {
+			orchestrator.runParallel('default', function () {
 				// Finished first run, now run a second time
-				orchestrator.run('default', function () {
+				orchestrator.runParallel('default', function () {
 
 					// assert
 					a.should.equal(2);

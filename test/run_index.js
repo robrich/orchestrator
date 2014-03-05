@@ -13,9 +13,10 @@ describe('lib/run/', function() {
 
 			// arrange
 			var orchestrator = new Orchestrator();
+			var builder = orchestrator.parallel(); // zero tasks
 
 			// act
-			orchestrator.run(function (err) {
+			orchestrator.run(builder, function (err) {
 
 				// assert
 				should.not.exist(err);
@@ -39,7 +40,8 @@ describe('lib/run/', function() {
 			});
 
 			// act
-			orchestrator.run(taskName, function (err, args) {
+			var builder = orchestrator.parallel(taskName);
+			orchestrator.run(builder, function (err, args) {
 
 				// assert
 				a.should.equal(12);
@@ -59,7 +61,7 @@ describe('lib/run/', function() {
 			var task1Name = 'runOne';
 			orchestrator.task(task1Name, function (cb) {
 				a += 100;
-				orchestrator.run(task2Name, function (err) {
+				orchestrator.runParallel(task2Name, function (err) {
 					a += 100;
 					cb(err);
 				});
@@ -69,12 +71,13 @@ describe('lib/run/', function() {
 				a += 10;
 				cb(null);
 			});
-			orchestrator.onAny(function () {
+			orchestrator.onAny(function (args) {
 				a++; // taskStart, taskEnd
 			});
 
 			// act
-			orchestrator.run(task1Name, function (err, args) {
+			var builder = orchestrator.parallel(task1Name);
+			orchestrator.run(builder, function (err, args) {
 
 				// assert
 				a.should.equal(214);
@@ -102,7 +105,8 @@ describe('lib/run/', function() {
 			});
 
 			// act
-			orchestrator.run(taskName, function (err, args) {
+			var builder = orchestrator.parallel(taskName);
+			orchestrator.run(builder, function (err, args) {
 
 				// assert
 				a.should.equal(13);
@@ -130,7 +134,8 @@ describe('lib/run/', function() {
 			});
 
 			// act
-			orchestrator.run(taskName, function (err, args) {
+			var builder = orchestrator.parallel(taskName);
+			orchestrator.run(builder, function (err, args) {
 
 				// assert
 				a.should.equal(0); // never starts anything
@@ -159,7 +164,8 @@ describe('lib/run/', function() {
 			});
 
 			// act
-			orchestrator.run(taskName, function (err, args) {
+			var builder = orchestrator.parallel(taskName);
+			orchestrator.run(builder, function (err, args) {
 
 				// assert
 				a.should.equal(0); // never starts anything
@@ -192,7 +198,8 @@ describe('lib/run/', function() {
 			});
 
 			// act
-			orchestrator.run(task1Name, function (err, args) {
+			var builder = orchestrator.parallel(task1Name);
+			orchestrator.run(builder, function (err, args) {
 
 				// assert
 				a.should.equal(0); // never starts anything
