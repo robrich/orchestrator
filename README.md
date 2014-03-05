@@ -150,19 +150,6 @@ orchestrator.task('two', ['one'], function () {
 orchestrator.run('one', 'two');
 ```
 
-### orchestrator.hasTask(name);
-
-Have you defined a task with this name?
-
-#### name
-Type: `String`
-
-The task name to query
-
-#### returns `Bool`
-
-Is there a task?
-
 ### orchestrator.run(tasks...[, cb]);
 
 Start running the tasks
