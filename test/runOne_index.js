@@ -24,6 +24,7 @@ describe('lib/runOne/', function() {
 					cb();
 				}
 			};
+			var runOptions = {};
 			var orchestrator = {
 				taskTimeout: 2000, // ms
 				emit: function (name, emitArgs) {
@@ -43,7 +44,7 @@ describe('lib/runOne/', function() {
 					}
 				}
 			};
-			var args = makeArgs(task, orchestrator);
+			var args = makeArgs(task, runOptions, orchestrator);
 
 			// act
 			runOne(args, function (err) {
@@ -73,6 +74,7 @@ describe('lib/runOne/', function() {
 					cb(expectedErr);
 				}
 			};
+			var runOptions = {};
 			var orchestrator = {
 				taskTimeout: 2000, // ms
 				emit: function (name, emitArgs) {
@@ -94,7 +96,7 @@ describe('lib/runOne/', function() {
 					}
 				}
 			};
-			var args = makeArgs(task, orchestrator);
+			var args = makeArgs(task, runOptions, orchestrator);
 
 			// act
 			runOne(args, function (err) {
@@ -127,6 +129,7 @@ describe('lib/runOne/', function() {
 					}, timeout * 2);
 				}
 			};
+			var runOptions = {};
 			var orchestrator = {
 				taskTimeout: timeout, // ms
 				emit: function (name, emitArgs) {
@@ -148,7 +151,7 @@ describe('lib/runOne/', function() {
 					}
 				}
 			};
-			var args = makeArgs(task, orchestrator);
+			var args = makeArgs(task, runOptions, orchestrator);
 
 			// act
 			runOne(args, function (err) {
@@ -159,6 +162,62 @@ describe('lib/runOne/', function() {
 				a.should.equal(4); // fn, taskStart, taskError, taskEnd
 				should.exist(err);
 				err.message.indexOf('timed out').should.be.above(-1);
+
+				done();
+			});
+		});
+
+		it('supresses the error callback when option specifies', function (done) {
+
+			// arrange
+			var a = 0;
+			var expectedErr = 'task fail error';
+			var task = {
+				name: 'failing',
+				dep: [],
+				fn: function(cb) {
+					a++;
+					should.exist(this);
+					this.should.equal(task);
+					cb(expectedErr);
+				}
+			};
+			var runOptions = {
+				continueOnError: true
+			};
+			var orchestrator = {
+				taskTimeout: 2000, // ms
+				emit: function (name, emitArgs) {
+					a++;
+
+					// assert
+					emitArgs.should.equal(task);
+					switch(name) {
+						case 'taskStart':
+							break;
+						case 'taskEnd':
+							break;
+						case 'taskError':
+							break;
+						default:
+							// fail
+							name.should.equal('taskStart');
+							break;
+					}
+				}
+			};
+			var args = makeArgs(task, runOptions, orchestrator);
+
+			// act
+			runOne(args, function (err) {
+
+				// assert
+				task.isDone.should.equal(true);
+				task.runMethod.should.equal('callback');
+				a.should.equal(4); // fn, taskStart, taskError, taskEnd
+				should.not.exist(err);
+				should.exist(task.err);
+				task.err.should.equal(expectedErr);
 
 				done();
 			});

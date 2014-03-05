@@ -15,7 +15,8 @@ describe('lib/runOne/', function() {
 
 			// arrange
 			var task = {};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			timeTask.start(args, function (err) {
@@ -38,7 +39,8 @@ describe('lib/runOne/', function() {
 
 			// arrange
 			var task = {};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			timeTask.start(args, function (/*err*/) {
@@ -55,7 +57,8 @@ describe('lib/runOne/', function() {
 
 			// arrange
 			var task = {};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			timeTask.start(args, function (/*err*/) {
@@ -77,7 +80,8 @@ describe('lib/runOne/', function() {
 			var lag = 25; // how many ms should this test take?
 			var lowLag = 1; // not sure how setTimeout could happen faster than duration but ok
 			var task = {};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			timeTask.start(args, function (/*err*/) {

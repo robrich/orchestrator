@@ -22,7 +22,8 @@ describe('lib/runOne/', function() {
 					cb();
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			timeoutTask.run(task.fn, args, function (err) {
@@ -51,10 +52,11 @@ describe('lib/runOne/', function() {
 				}
 			};
 
+			var runOptions = {};
 			var orchestrator = {
 				taskTimeout: taskTimeout
 			};
-			var args = makeArgs(task, orchestrator);
+			var args = makeArgs(task, runOptions, orchestrator);
 
 			// act
 			timeoutTask.run(task.fn, args, function (/*err*/) {
@@ -95,10 +97,11 @@ describe('lib/runOne/', function() {
 				}
 			};
 
+			var runOptions = {};
 			var orchestrator = {
 				taskTimeout: taskTimeout
 			};
-			var args = makeArgs(task, orchestrator);
+			var args = makeArgs(task, runOptions, orchestrator);
 
 			// act
 			timeoutTask.run(task.fn, args, function (/*err*/) {
@@ -132,10 +135,11 @@ describe('lib/runOne/', function() {
 				}
 			};
 
+			var runOptions = {};
 			var orchestrator = {
 				taskTimeout: taskTimeout
 			};
-			var args = makeArgs(task, orchestrator);
+			var args = makeArgs(task, runOptions, orchestrator);
 
 			// act
 			timeoutTask.run(task.fn, args, function (/*err*/) {

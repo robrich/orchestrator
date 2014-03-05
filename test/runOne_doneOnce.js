@@ -15,7 +15,8 @@ describe('lib/runOne/', function() {
 
 			// arrange
 			var task = {};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			doneOnce.run(args, function (err) {
@@ -31,7 +32,8 @@ describe('lib/runOne/', function() {
 
 			// arrange
 			var task = {};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			doneOnce.run(args, function (/*err*/) {
@@ -51,7 +53,8 @@ describe('lib/runOne/', function() {
 				isDone: true,
 				name: 'set err'
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			doneOnce.run(args, function (/*err*/) {
@@ -72,7 +75,8 @@ describe('lib/runOne/', function() {
 				isDone: true,
 				err: expectedErr
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			doneOnce.run(args, function (/*err*/) {
@@ -91,7 +95,8 @@ describe('lib/runOne/', function() {
 			var task = {
 				name: 'done twice'
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			doneOnce.run(args, function (/*err*/) {

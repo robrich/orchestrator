@@ -17,7 +17,8 @@ describe('lib/runOne/', function() {
 
 			// arrange
 			var task = {};
-			var args = makeArgs(task, fakeOrchestrator);
+			var runOptions = {};
+			var args = makeArgs(task, runOptions, fakeOrchestrator);
 
 			// act
 			emitTask.end(args, function (err) {
@@ -38,10 +39,11 @@ describe('lib/runOne/', function() {
 				a++;
 				name.should.equal('taskEnd');
 			};
+			var runOptions = {};
 			var orchestrator = {
 				emit: emit
 			};
-			var args = makeArgs(task, orchestrator);
+			var args = makeArgs(task, runOptions, orchestrator);
 
 			// act
 			emitTask.end(args, function (/*err*/) {
@@ -76,10 +78,11 @@ describe('lib/runOne/', function() {
 						break;
 				}
 			};
+			var runOptions = {};
 			var orchestrator = {
 				emit: emit
 			};
-			var args = makeArgs(task, orchestrator);
+			var args = makeArgs(task, runOptions, orchestrator);
 
 			// act
 			emitTask.end(args, function (/*err*/) {
@@ -100,10 +103,11 @@ describe('lib/runOne/', function() {
 				a++;
 				emitArgs.should.equal(task);
 			};
+			var runOptions = {};
 			var orchestrator = {
 				emit: emit
 			};
-			var args = makeArgs(task, orchestrator);
+			var args = makeArgs(task, runOptions, orchestrator);
 
 			// act
 			emitTask.end(args, function (/*err*/) {
@@ -129,10 +133,11 @@ describe('lib/runOne/', function() {
 				// assert
 				task.message.should.equal(task.name+' '+task.runMethod);
 			};
+			var runOptions = {};
 			var orchestrator = {
 				emit: emit
 			};
-			var args = makeArgs(task, orchestrator);
+			var args = makeArgs(task, runOptions, orchestrator);
 
 			// act
 			emitTask.end(args, function (/*err*/) {

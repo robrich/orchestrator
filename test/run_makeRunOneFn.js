@@ -9,11 +9,12 @@ require('mocha');
 describe('lib/run/', function() {
 	describe('makeRunOneFn()', function() {
 
-		var makeArgs = function (tasks, runOneFn, orchestrator) {
+		var makeArgs = function (tasks, runOneFn, orchestrator, runOptions) {
 			return {
 				runTasks: tasks,
 				runOneFn: runOneFn,
-				orchestrator: orchestrator
+				orchestrator: orchestrator,
+				runOptions: runOptions
 			};
 		};
 
@@ -52,7 +53,8 @@ describe('lib/run/', function() {
 			};
 			var runOneFn = function () {};
 			var orchestrator = {};
-			var args = makeArgs(tasks, runOneFn, orchestrator);
+			var runOptions = {};
+			var args = makeArgs(tasks, runOneFn, orchestrator, runOptions);
 
 			// act
 			makeRunOneFn(args, function (err) {
@@ -86,7 +88,8 @@ describe('lib/run/', function() {
 				cb(null);
 			};
 			var orchestrator = {};
-			var args = makeArgs(tasks, runOneFn, orchestrator);
+			var runOptions = {};
+			var args = makeArgs(tasks, runOneFn, orchestrator, runOptions);
 
 			// act
 			makeRunOneFn(args, function (err) {

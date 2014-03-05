@@ -71,7 +71,7 @@ describe('lib/run/', function() {
 				a += 10;
 				cb(null);
 			});
-			orchestrator.onAny(function (args) {
+			orchestrator.onAny(function (/*args*/) {
 				a++; // taskStart, taskEnd
 			});
 
@@ -113,6 +113,34 @@ describe('lib/run/', function() {
 				err.should.equal(expectedErr);
 				should.exist(args.duration[0]);
 				args.message.indexOf('fail').should.be.above(-1);
+
+				done();
+			});
+		});
+
+		it('succeeds on run one erroring task when flagged to not stop', function(done) {
+
+			// arrange
+			var a = 0;
+			var taskName = 'runFailed';
+			var expectedErr = new Error('test to prove failing task');
+			var orchestrator = new Orchestrator();
+			orchestrator.task(taskName, function (cb) {
+				a += 10;
+				cb(expectedErr);
+			});
+			orchestrator.onAny(function () {
+				a++; // taskStart, taskError, taskEnd
+			});
+
+			// act
+			var builder = orchestrator.parallel(taskName);
+			orchestrator.run(builder, {continueOnError: true}, function (err, args) {
+
+				// assert
+				a.should.equal(13);
+				should.not.exist(err);
+				should.exist(args.duration[0]);
 
 				done();
 			});

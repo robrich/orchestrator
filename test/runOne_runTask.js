@@ -12,6 +12,7 @@ require('mocha');
 
 describe('lib/runOne/', function() {
 	describe('runTask()', function() {
+		var fakeRunOptions = {};
 		var fakeOrchestrator = {};
 
 		it('runs fn scoped to task', function(done) {
@@ -30,7 +31,7 @@ describe('lib/runOne/', function() {
 					cb();
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/*err*/) {
@@ -55,7 +56,7 @@ describe('lib/runOne/', function() {
 					cb(newErr);
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/*err*/) {
@@ -78,9 +79,9 @@ describe('lib/runOne/', function() {
 				fn: function(cb) {
 					a++;
 					cb();
-				},
+				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/*err*/) {
@@ -103,7 +104,7 @@ describe('lib/runOne/', function() {
 					a++;
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/*err*/) {
@@ -128,7 +129,7 @@ describe('lib/runOne/', function() {
 					throw new Error(message);
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/*err*/) {
@@ -158,7 +159,7 @@ describe('lib/runOne/', function() {
 					return deferred.promise;
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/*err*/) {
@@ -188,7 +189,7 @@ describe('lib/runOne/', function() {
 					return deferred.promise;
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/*err*/) {
@@ -216,7 +217,7 @@ describe('lib/runOne/', function() {
 					});
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/*err*/) {
@@ -244,7 +245,7 @@ describe('lib/runOne/', function() {
 					});
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/*err*/) {
@@ -277,7 +278,7 @@ describe('lib/runOne/', function() {
 					}));
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/*err*/) {
@@ -311,7 +312,7 @@ describe('lib/runOne/', function() {
 					}));
 				}
 			};
-			var args = makeArgs(task, fakeOrchestrator);
+			var args = makeArgs(task, fakeRunOptions, fakeOrchestrator);
 
 			// act
 			runTask(args, function (/ *err* /) {
