@@ -16,8 +16,9 @@ describe('orchestrator', function() {
 			// arrange
 			orchestrator = new Orchestrator();
 			a = 0;
-			orchestrator.task('test', function() {
+			orchestrator.task('test', function(cb) {
 				++a;
+				cb(null);
 			});
 
 			// act

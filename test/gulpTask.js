@@ -23,11 +23,13 @@ describe('orchestrator', function() {
 		it('should run multiple tasks', function(done) {
 			var a, fn, fn2;
 			a = 0;
-			fn = function() {
+			fn = function(cb) {
 				++a;
+				cb(null);
 			};
-			fn2 = function() {
+			fn2 = function(cb) {
 				++a;
+				cb(null);
 			};
 			gulp.task('test', fn);
 			gulp.task('test2', fn2);
@@ -41,11 +43,13 @@ describe('orchestrator', function() {
 		it('should run all tasks when call runParallel() multiple times', function(done) {
 			var a, fn, fn2;
 			a = 0;
-			fn = function() {
+			fn = function(cb) {
 				++a;
+				cb(null);
 			};
-			fn2 = function() {
+			fn2 = function(cb) {
 				++a;
+				cb(null);
 			};
 			gulp.task('test', fn);
 			gulp.task('test2', fn2);

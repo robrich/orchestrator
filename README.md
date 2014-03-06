@@ -53,8 +53,9 @@ API
 Define a task
 
 ```javascript
-orchestrator.task('thing1', function(){
+orchestrator.task('thing1', function(callback){
   // do stuff
+  callback(null);
 });
 ```
 
@@ -80,7 +81,7 @@ are correctly using the async run hints: take in a callback or return a promise 
 #### fn
 Type: `function`
 
-The function that performs the task's operations.  You need to provide a hint when the task is complete:
+The function that performs the task's operations.  You **must** provide a hint when the task is complete:
 
 - Take in a callback
 - Return a stream or a promise
@@ -128,10 +129,10 @@ orchestrator.task('thing4', function(){
 ```
 
 **Note:** By default, tasks run with maximum concurrency -- e.g. it launches all the tasks at once and waits for nothing.
-If you want to create a series where tasks run in a particular order, you need to do two things:
+If you want to create a series where tasks run in a particular order, you need to either:
 
-- give it a hint to tell it when the task is done,
-- and give it a hint that a task depends on completion of another.
+- give it a hint that a task depends on completion of another
+- or use `#series()`
 
 For these examples, let's presume you have two tasks, "one" and "two" that you specifically want to run in this order:
 

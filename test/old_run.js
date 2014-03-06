@@ -16,11 +16,13 @@ describe('orchestrator', function() {
 			// arrange
 			orchestrator = new Orchestrator();
 			a = 0;
-			fn = function() {
+			fn = function(cb) {
 				++a;
+				cb(null);
 			};
-			fn2 = function() {
+			fn2 = function(cb) {
 				++a;
+				cb(null);
 			};
 			orchestrator.task('test', fn);
 			orchestrator.task('test2', fn2);
@@ -39,11 +41,13 @@ describe('orchestrator', function() {
 			// arrange
 			orchestrator = new Orchestrator();
 			a = 0;
-			fn = function() {
+			fn = function(cb) {
 				++a;
+				cb(null);
 			};
-			fn2 = function() {
+			fn2 = function(cb) {
 				++a;
+				cb(null);
 			};
 			orchestrator.task('test', fn);
 			orchestrator.task('test2', fn2);
@@ -63,17 +67,19 @@ describe('orchestrator', function() {
 			// arrange
 			orchestrator = new Orchestrator();
 			a = 0;
-			fn = function() {
+			fn = function(cb) {
 				++a;
-				orchestrator.runParallel('test3');
+				orchestrator.runParallel('test3', cb);
 			};
-			fn2 = function() {
+			fn2 = function(cb) {
 				++a;
 				aAtFn2 = a;
+				cb(null);
 			};
-			fn3 = function() {
+			fn3 = function(cb) {
 				++a;
 				aAtFn3 = a;
+				cb(null);
 			};
 			orchestrator.task('test', fn);
 			orchestrator.task('test2', fn2);
@@ -96,11 +102,13 @@ describe('orchestrator', function() {
 			// arrange
 			orchestrator = new Orchestrator();
 			a = 0;
-			fn = function() {
+			fn = function(cb) {
 				++a;
+				cb(null);
 			};
-			fn2 = function() {
+			fn2 = function(cb) {
 				++a;
+				cb(null);
 			};
 			orchestrator.task('test', fn);
 			orchestrator.task('test2', fn2);
@@ -120,11 +128,13 @@ describe('orchestrator', function() {
 			// arrange
 			orchestrator = new Orchestrator();
 			a = 0;
-			fn = function() {
+			fn = function(cb) {
 				++a;
+				cb(null);
 			};
-			fn2 = function() {
+			fn2 = function(cb) {
 				++a;
+				cb(null);
 			};
 			orchestrator.task('test', fn);
 			orchestrator.task('test2', fn2);
@@ -208,10 +218,11 @@ describe('orchestrator', function() {
 			// arrange
 			orchestrator = new Orchestrator();
 			a = 0;
-			fn = function() {
+			fn = function(cb) {
 				this.name.should.equal('test');
 				this.fn.should.equal(fn);
 				++a;
+				cb(null);
 			};
 			orchestrator.task('test', fn);
 
@@ -232,8 +243,9 @@ describe('orchestrator', function() {
 			// arrange
 			orchestrator = new Orchestrator();
 			a = 0;
-			fn = function() {
+			fn = function(cb) {
 				++a;
+				cb(null);
 			};
 			orchestrator.task('test', fn);
 
@@ -254,10 +266,12 @@ describe('orchestrator', function() {
 			// arrange
 			orchestrator = new Orchestrator();
 			a = 0;
-			dep = function() {
+			dep = function(cb) {
 				++a;
+				cb(null);
 			};
-			fn = function() {
+			fn = function(cb) {
+				cb(null);
 			};
 			orchestrator.task('dep', dep);
 			orchestrator.task('test', ['dep'], fn);
@@ -279,8 +293,9 @@ describe('orchestrator', function() {
 			// arrange
 			orchestrator = new Orchestrator();
 			a = 0;
-			fn = function() {
+			fn = function(cb) {
 				++a;
+				cb(null);
 			};
 			orchestrator.task('test', fn);
 			orchestrator.task('default', ['test'], function () {});

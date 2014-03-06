@@ -95,7 +95,7 @@ describe('lib/runOne/', function() {
 		});
 
 
-		it('sync task succeeds', function(done) {
+		it('sync task fails', function(done) {
 
 			// arrange
 			var a = 0;
@@ -110,8 +110,9 @@ describe('lib/runOne/', function() {
 			runTask(args, function (/*err*/) {
 
 				// assert
-				should.not.exist(task.err);
+				should.exist(task.err);
 				task.runMethod.should.equal('sync');
+				task.err.syncTaskFail.should.equal(true);
 				a.should.equal(1);
 
 				done();
