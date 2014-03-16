@@ -14,15 +14,15 @@
   ],
   "dependencies": {
     "sequencify": "git://github.com/robrich/sequencify#master",
-    "async": "~0.2.10"
+    "async": "^0.2.10"
   },
   "devDependencies": {
-    "mocha": "~1.17.1",
-    "should": "~3.1.2",
-    "q": "~1.0.0",
-    "event-stream": "~3.1.0",
-    "map-stream": "~0.1.0",
-    "eventemitter2": "~0.4.13"
+    "mocha": "^1.18.0",
+    "should": "^3.1.2",
+    "q": "^1.0.0",
+    "event-stream": "^3.1.0",
+    "map-stream": "^0.1.0",
+    "eventemitter2": "^0.4.13"
   },
   "scripts": {
     "test": "mocha"
