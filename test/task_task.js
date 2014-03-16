@@ -73,6 +73,49 @@ describe('lib/task/', function() {
 			done();
 		});
 
+		it('should create a task if passed dependencies as second arg', function(done) {
+
+			// arrange
+			var name = 'task1';
+			var dep = ['dep'];
+
+			// the thing under test
+			var orchestrator = new Orchestrator();
+
+			// act
+			var actual = orchestrator.task(name, dep);
+
+			// assert
+			should.not.exist(actual);
+			should.exist(orchestrator.tasks[name]);
+			orchestrator.tasks[name].name.should.equal(name);
+
+			done();
+		});
+
+		it('should create a task that runs successfully if passed a dependency', function(done) {
+
+			// arrange
+			var name = 'task1';
+			var dep = ['dep'];
+
+			// the thing under test
+			var orchestrator = new Orchestrator();
+			orchestrator.task('dep', function (cb) {cb(null);});
+
+			// act
+			orchestrator.task(name, dep);
+			orchestrator.runParallel('task1', function (err, meta) {
+
+				// assert
+				should.not.exist(err);
+				meta.tasks.indexOf('task1').should.be.above(-1);
+				meta.message.indexOf('succe').should.be.above(-1);
+
+				done();
+			});
+		});
+
 		it('should create a task with dependencies if passed a third arg', function(done) {
 
 			// arrange
