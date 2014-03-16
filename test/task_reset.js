@@ -12,23 +12,21 @@ describe('lib/task/', function() {
 		it('should clear all tasks', function(done) {
 
 			// arrange
-			var name1 = 'task1';
-			var name2 = 'task2';
 			var fn = function() {};
 
 			// the thing under test
 			var orchestrator = new Orchestrator();
-			orchestrator.task(name1, fn);
-			orchestrator.task(name2, fn);
-			should.exist(orchestrator.tasks.name1);
-			should.exist(orchestrator.tasks.name2);
+			orchestrator.task('task1', fn);
+			orchestrator.task('task2', fn);
+			should.exist(orchestrator.tasks.task1);
+			should.exist(orchestrator.tasks.task2);
 
 			// act
 			orchestrator.reset();
 
 			// assert
-			should.not.exist(orchestrator.tasks.name1);
-			should.not.exist(orchestrator.tasks.name2);
+			should.not.exist(orchestrator.tasks.task1);
+			should.not.exist(orchestrator.tasks.task2);
 
 			done();
 		});

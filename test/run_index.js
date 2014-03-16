@@ -59,17 +59,17 @@ describe('lib/run/', function() {
 			var a = 0;
 			var orchestrator = new Orchestrator();
 			var task1Name = 'runOne';
-			orchestrator.task(task1Name, function (cb) {
-				a += 100;
-				orchestrator.runParallel(task2Name, function (err) {
-					a += 100;
-					cb(err);
-				});
-			});
 			var task2Name = 'runTwo';
 			orchestrator.task(task2Name, function (cb) {
 				a += 10;
 				cb(null);
+			});
+			orchestrator.task(task1Name, function (cb) {
+				a += 100;
+				orchestrator.run(orchestrator.parallel(task2Name), function (err) {
+					a += 100;
+					cb(err);
+				});
 			});
 			orchestrator.onAny(function (/*args*/) {
 				a++; // taskStart, taskEnd

@@ -32,15 +32,15 @@ orchestrator.task('thing2', function(cb){
 ### 3. Run the tasks in maximum concurrency:
 
 ```javascript
-orchestrator.runParallel('thing1', 'thing2', function (err, stats) {
+orchestrator.run(orchestrator.parallel('thing1', 'thing2'), function (err, stats) {
   // all done
 });
 ```
 
-or run the tasks in sequence (slower):
+or run the tasks in series (slower):
 
 ```javascript
-orchestrator.runSeries('thing1', 'thing2', function (err, stats) {
+orchestrator.run(orchestrator.series('thing1', 'thing2'), function (err, stats) {
   // all done
 });
 ```
@@ -203,32 +203,6 @@ var builder = orchestrator.series('task1, 'task2', nestedBuilder);
 orchestrator.run(builder, function (err, stats) {
 ```
 
-### orchestrator.runParallel('array','of','tasks'[, cb]);
-
-Sugar for calling `.parallel()` and passing the results to `.run()`
-
-```js
-orchestrator.runParallel('task1', 'task2', function (err, stats) {
-```
-is identical to
-```js
-var builder = orchestrator.parallel('task1, 'task2');
-orchestrator.run(builder, function (err, stats) {
-```
-
-### orchestrator.runSeries('array','of','tasks'[, cb]);
-
-Sugar for calling `.series()` and passing the results to `.run()`
-
-```js
-orchestrator.runSeries('task1', 'task2', function (err, stats) {
-```
-is identical to
-```js
-var builder = orchestrator.series('task1, 'task2');
-orchestrator.run(builder, function (err, stats) {
-```
-
 ### orchestrator.run(builder[, options][, cb]);
 
 Start running the tasks
@@ -288,7 +262,7 @@ to your callback
 **FRAGILE:** Orchestrator will ensure each task and each dependency is run once during an orchestration run
 even if you specify it to run more than once. (e.g. `orchestrator.run(orchestrator.parallel('thing1', 'thing1'))`
 will only run 'thing1' once.) If you need it to run a task multiple times, call `.run()` a second time.
-(e.g. `orchestrator.runParallel('thing1', function () {orchestrator.runParallel('thing1');})`.)
+(e.g. `orchestrator.run(orchestrator.parallel('thing1', function () {orchestrator.run(orchestrator.parallel('thing1'));}))`.)
 Alternatively create a second orchestrator instance.
 
 **Note:** Orchestrator descends from [`EventEmitter2`](https://github.com/asyncly/EventEmitter2). See EventEmitter2's [docs](https://github.com/asyncly/EventEmitter2) for more event listeners.

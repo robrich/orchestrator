@@ -19,7 +19,5 @@ Orchestrator.prototype.reset = require('./lib/task/reset');
 Orchestrator.prototype.run = require('./lib/run');
 Orchestrator.prototype.series = require('./lib/builder/series');
 Orchestrator.prototype.parallel = require('./lib/builder/parallel');
-Orchestrator.prototype.runSeries = require('./lib/builder/runSeries');
-Orchestrator.prototype.runParallel = require('./lib/builder/runParallel');
 
 module.exports = Orchestrator;

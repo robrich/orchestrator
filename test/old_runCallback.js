@@ -8,7 +8,7 @@ var should = require('should');
 require('mocha');
 
 describe('orchestrator', function() {
-	describe('runParallel() callback', function() {
+	describe('run(parallel(), callback)', function() {
 
 		it('should have empty error on succeeding tasks', function(done) {
 			var orchestrator, a;
@@ -22,7 +22,7 @@ describe('orchestrator', function() {
 			});
 
 			// act
-			orchestrator.runParallel('test', function(err) {
+			orchestrator.run(orchestrator.parallel('test'), function(err) {
 				// assert
 				a.should.equal(1);
 				should.not.exist(err);
@@ -45,7 +45,7 @@ describe('orchestrator', function() {
 			});
 
 			// act
-			orchestrator.runParallel('test', function(err) {
+			orchestrator.run(orchestrator.parallel('test'), function(err) {
 				// assert
 				a.should.equal(1);
 				should.exist(err);
@@ -69,7 +69,7 @@ describe('orchestrator', function() {
 			});
 
 			// act
-			orchestrator.runParallel('test', function(err) {
+			orchestrator.run(orchestrator.parallel('test'), function(err) {
 				// assert
 				a.should.equal(1);
 				should.exist(err);
@@ -97,7 +97,7 @@ describe('orchestrator', function() {
 			});
 
 			// act
-			orchestrator.runParallel('test', function(actualErr) {
+			orchestrator.run(orchestrator.parallel('test'), function(actualErr) {
 				// assert
 				a.should.equal(1);
 				should.exist(actualErr);
@@ -116,7 +116,7 @@ describe('orchestrator', function() {
 			// no 'test' task defined
 
 			// act
-			orchestrator.runParallel(name, function(err) {
+			orchestrator.run(orchestrator.parallel(name), function(err) {
 				// assert
 				should.exist(err);
 				err.missingTasks.length.should.equal(1);
@@ -136,7 +136,7 @@ describe('orchestrator', function() {
 			orchestrator.task(name, [name]);
 
 			// act
-			orchestrator.runParallel(name, function(err) {
+			orchestrator.run(orchestrator.parallel(name), function(err) {
 				// assert
 				err.recursiveTasks.length.should.equal(2);
 				err.recursiveTasks[0].should.equal(name);
@@ -158,7 +158,7 @@ describe('orchestrator', function() {
 			});
 
 			// act
-			orchestrator.runParallel('test', function(err) {
+			orchestrator.run(orchestrator.parallel('test'), function(err) {
 				// assert
 				should.not.exist(err);
 				a++;
@@ -185,7 +185,7 @@ describe('orchestrator', function() {
 			});
 
 			// act
-			orchestrator.runParallel('test', function(err) {
+			orchestrator.run(orchestrator.parallel('test'), function(err) {
 				// assert
 				should.exist(err);
 				err.should.equal(expectedErr);

@@ -19,7 +19,7 @@ describe('orchestrator', function() {
 			done();
 		});
 	});
-	describe('runParallel() integration tests', function() {
+	describe('run(parallel()) integration tests', function() {
 		it('should run multiple tasks', function(done) {
 			var a, fn, fn2;
 			a = 0;
@@ -33,14 +33,14 @@ describe('orchestrator', function() {
 			};
 			gulp.task('test', fn);
 			gulp.task('test2', fn2);
-			gulp.runParallel('test', 'test2', function (err) {
+			gulp.run(gulp.parallel('test', 'test2'), function (err) {
 				a.should.equal(2);
 				should.not.exist(err);
 				gulp.reset();
 				done();
 			});
 		});
-		it('should run all tasks when call runParallel() multiple times', function(done) {
+		it('should run all tasks when call run(parallel()) multiple times', function(done) {
 			var a, fn, fn2;
 			a = 0;
 			fn = function(cb) {
@@ -53,8 +53,8 @@ describe('orchestrator', function() {
 			};
 			gulp.task('test', fn);
 			gulp.task('test2', fn2);
-			gulp.runParallel('test');
-			gulp.runParallel('test2');
+			gulp.run(gulp.parallel('test'));
+			gulp.run(gulp.parallel('test2'));
 			setTimeout(function () {
 				a.should.equal(2);
 				gulp.reset();
@@ -82,8 +82,8 @@ describe('orchestrator', function() {
 			};
 			gulp.task('test', fn);
 			gulp.task('test2', fn2);
-			gulp.runParallel('test');
-			gulp.runParallel('test2', function () {
+			gulp.run(gulp.parallel('test')); // FRAGILE: ASSUME: test finishes before test2
+			gulp.run(gulp.parallel('test2'), function () {
 				a.should.equal(2);
 				gulp.reset();
 				done();
@@ -106,8 +106,8 @@ describe('orchestrator', function() {
 			};
 			gulp.task('test', fn);
 			gulp.task('test2', fn2);
-			gulp.runParallel('test');
-			gulp.runParallel('test2', function () {
+			gulp.run(gulp.parallel('test')); // FRAGILE: ASSUME: test finishes before test2
+			gulp.run(gulp.parallel('test2'), function () {
 				a.should.equal(2);
 				gulp.reset();
 				done();
@@ -121,7 +121,7 @@ describe('orchestrator', function() {
 				err.missingTasks.length.should.equal(1);
 				err.missingTasks[0].should.equal('test');
 			});
-			gulp.runParallel('test', function (err) {
+			gulp.run(gulp.parallel('test'), function (err) {
 				should.exist(err);
 				gulp.reset();
 				done();

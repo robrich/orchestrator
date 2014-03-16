@@ -105,7 +105,7 @@ describe('lib/task/', function() {
 
 			// act
 			orchestrator.task(name, dep);
-			orchestrator.runParallel('task1', function (err, meta) {
+			orchestrator.run(orchestrator.parallel('task1'), function (err, meta) {
 
 				// assert
 				should.not.exist(err);
