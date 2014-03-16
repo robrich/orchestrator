@@ -161,19 +161,6 @@ orchestrator.task('two', ['one'], function () {
 orchestrator.run('one', 'two');
 ```
 
-### orchestrator.hasTask(name);
-
-Have you defined a task with this name?
-
-#### name
-Type: `String`
-
-The task name to query
-
-#### returns `Bool`
-
-Is there a task?
-
 ### orchestrator.parallel('array','of','task','names');
 
 Create a task builder that will run a set of tasks in maximum concurrency, respecting task dependencies (see above)

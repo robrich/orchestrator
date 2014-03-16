@@ -3,7 +3,7 @@
 'use strict';
 
 var Orchestrator = require('../');
-require('should');
+var should = require('should');
 require('mocha');
 
 describe('lib/task/', function() {
@@ -20,15 +20,15 @@ describe('lib/task/', function() {
 			var orchestrator = new Orchestrator();
 			orchestrator.task(name1, fn);
 			orchestrator.task(name2, fn);
-			orchestrator.hasTask(name1).should.equal(true);
-			orchestrator.hasTask(name2).should.equal(true);
+			should.exist(orchestrator.tasks.name1);
+			should.exist(orchestrator.tasks.name2);
 
 			// act
 			orchestrator.reset();
 
 			// assert
-			orchestrator.hasTask(name1).should.equal(false);
-			orchestrator.hasTask(name2).should.equal(false);
+			should.not.exist(orchestrator.tasks.name1);
+			should.not.exist(orchestrator.tasks.name2);
 
 			done();
 		});
