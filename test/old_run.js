@@ -4,7 +4,7 @@
 
 var Orchestrator = require('../');
 var Q = require('q');
-require('should');
+var should = require('should');
 require('mocha');
 
 describe('orchestrator', function() {
@@ -28,15 +28,17 @@ describe('orchestrator', function() {
 			orchestrator.task('test2', fn2);
 
 			// act
-			orchestrator.run(orchestrator.parallel('test', 'test2'));
+			orchestrator.run(orchestrator.parallel('test', 'test2'), function (err/*, meta*/) {
 
-			// assert
-			a.should.equal(2);
-			done();
+				// assert
+				a.should.equal(2);
+				should.not.exist(err);
+				done();
+			});
 		});
 
 		it('should run all tasks when call run(parallel()) multiple times', function(done) {
-			var orchestrator, a, fn, fn2;
+			var orchestrator, a, fn, fn2, timeout = 20;
 
 			// arrange
 			orchestrator = new Orchestrator();
@@ -55,11 +57,14 @@ describe('orchestrator', function() {
 			// act
 			orchestrator.run(orchestrator.parallel('test'));
 			orchestrator.run(orchestrator.parallel('test2'));
-			// FRAGILE: ASSUME: tasks run synchronously
 
-			// assert
-			a.should.equal(2);
-			done();
+			setTimeout(function () {
+
+				// assert
+				a.should.equal(2);
+
+				done();
+			}, timeout);
 		});
 
 		it('should add new tasks at the front of the queue', function(done) {
@@ -83,22 +88,24 @@ describe('orchestrator', function() {
 				cb(null);
 			};
 			orchestrator.task('test', fn);
-			orchestrator.task('test2', fn2);
+			orchestrator.task('test2', ['test'], fn2);
 			orchestrator.task('test3', fn3);
 
 			// act
-			orchestrator.run(orchestrator.parallel('test', 'test2'));
+			orchestrator.run(orchestrator.parallel('test', 'test2'), function (err/*, stats*/) {
 
-			// assert
-			aAtFn3.should.equal(2); // 1 and 3 ran
-			aAtFn2.should.equal(3); // 1, 3, and 2 ran
-			a.should.equal(3);
+				// assert
+				aAtFn3.should.equal(2); // 1 and 3 ran
+				aAtFn2.should.equal(3); // 1, 3, and 2 ran
+				a.should.equal(3);
+				should.not.exist(err);
 
-			done();
+				done();
+			});
 		});
 
 		it('should run all tasks when call run(parallel()) multiple times', function(done) {
-			var orchestrator, a, fn, fn2;
+			var orchestrator, a, fn, fn2, timeout = 20;
 
 			// arrange
 			orchestrator = new Orchestrator();
@@ -117,11 +124,13 @@ describe('orchestrator', function() {
 			// act
 			orchestrator.run(orchestrator.parallel('test'));
 			orchestrator.run(orchestrator.parallel('test2'));
-			// FRAGILE: ASSUME: tasks run synchronously
 
-			// assert
-			a.should.equal(2);
-			done();
+			setTimeout(function () {
+
+				// assert
+				a.should.equal(2);
+				done();
+			}, timeout);
 		});
 
 		it('should run no tasks when call run(parallel()) with no arguments', function(done) {
