@@ -124,5 +124,57 @@ describe('orchestrator', function() {
 			done();
 		});
 
+		it('should accept optional `desc` argument with only dep', function (done) {
+			var orchestrator, name, dep, desc;
+
+			// Arrange
+			name = "name";
+			dep = ['name'];
+            desc = 'description';
+
+			// Act
+			orchestrator = new Orchestrator();
+			orchestrator.add(name, dep, desc);
+
+			// Assert
+			should(orchestrator.tasks.name).have.property('desc', 'description');
+			done();
+		});
+
+		it('should accept optional `desc` argument with only fn', function (done) {
+			var orchestrator, name, fn, desc;
+
+			// Arrange
+			name = "name";
+            fn = function() {};
+            desc = 'description';
+
+			// Act
+			orchestrator = new Orchestrator();
+			orchestrator.add(name, fn, desc);
+
+			// Assert
+			should(orchestrator.tasks.name).have.property('desc', 'description');
+			done();
+		});
+
+		it('should accept optional `desc` argument with both deps and fn', function (done) {
+			var orchestrator, name, dep, fn, desc;
+
+			// Arrange
+			name = "name";
+            dep = ['name']
+            fn = function() {};
+            desc = 'description';
+
+			// Act
+			orchestrator = new Orchestrator();
+			orchestrator.add(name, dep, fn, desc);
+
+			// Assert
+			should(orchestrator.tasks.name).have.property('desc', 'description');
+			done();
+		});
+
 	});
 });
