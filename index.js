@@ -27,11 +27,18 @@ util.inherits(Orchestrator, EventEmitter);
 		this.doneCallback = undefined;
 		return this;
 	};
-	Orchestrator.prototype.add = function (name, dep, fn) {
-		if (!fn && typeof dep === 'function') {
-			fn = dep;
+	Orchestrator.prototype.add = function (name, dep, fn, desc) {
+        if (!desc && typeof fn === 'string') {
+            desc = fn;
+        }
+		if ((!fn || typeof fn === 'string') && typeof dep === 'function') {
+            desc = fn;
+		 	fn = dep;
 			dep = undefined;
 		}
+        if (typeof fn === 'string') {
+            fn = undefined;
+        }
 		dep = dep || [];
 		fn = fn || function () {}; // no-op
 		if (!name) {
@@ -55,14 +62,15 @@ util.inherits(Orchestrator, EventEmitter);
 		this.tasks[name] = {
 			fn: fn,
 			dep: dep,
-			name: name
+			name: name,
+            desc: desc
 		};
 		return this;
 	};
-	Orchestrator.prototype.task = function (name, dep, fn) {
+	Orchestrator.prototype.task = function (name, dep, fn, desc) {
 		if (dep || fn) {
 			// alias for add, return nothing rather than this
-			this.add(name, dep, fn);
+			this.add(name, dep, fn, desc);
 		} else {
 			return this.tasks[name];
 		}
