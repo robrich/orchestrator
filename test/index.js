@@ -6,7 +6,8 @@ var expect = chai.expect;
 
 var Orchestrator = require('../');
 
-var prettyTime = require('pretty-hrtime');
+var fs = require('fs');
+var through = require('through2');
 
 describe('description', function(){
 
@@ -18,19 +19,28 @@ describe('description', function(){
     cb(null, 1);
   });
 
-  o.task('task2', function(cb){
+  o.task('task2', function(){
     console.log('task2');
 
-    cb(null, 2);
+    return fs.createReadStream('./index.js')
+      .pipe(through(function(buf, enc, done){
+        this.push(buf);
+        done();
+      }, function(){
+        this.emit('end', 2);
+      }));
   });
 
-  it('description', function(){
-    function logTime(time){
-      console.log(prettyTime(time));
+  it('description', function(done){
+    function logTime(name, evt){
+      console.log(name, evt.duration);
     }
-    o.registry.on('start', logTime);
-    o.registry.on('end', logTime);
-    o.series('task1', 'task2')(console.log);
+    o.registry.on('start', logTime.bind(null, 'start'));
+    o.registry.on('stop', logTime.bind(null, 'stop'));
+    o.series('task1', 'task2')(function(err, res){
+      console.log(err, res);
+      done();
+    });
     // expect(target);
   });
 });
