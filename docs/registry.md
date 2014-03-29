@@ -19,6 +19,10 @@ The method used by Orchestrator to add a task to the registry.
 
 The method used by Orchestrator to time task execution.
 
+### `tasks` : Object | Array
+
+An object where tasks are stored in some format.
+
 ### Events
 
 The events that must be emitted on the registry instance.
