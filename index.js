@@ -10,13 +10,14 @@ var DefaultRegistry = require('./registry/Default');
 
 function Orchestrator(registry){
   this.registry = registry || new DefaultRegistry();
+  validateRegistry(this.registry);
 }
 
 Orchestrator.prototype.task = function(taskName, fn){
   var registry = this.registry;
 
   if(fn){
-    return registry.set.apply(registry, arguments);
+    return registry.set(taskName, fn);
   }
 
   return registry.get(taskName);
