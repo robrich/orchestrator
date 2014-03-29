@@ -13,7 +13,6 @@
     "compose"
   ],
   "dependencies": {
-    "lodash": "^2.4.1",
     "bach": "0.0.1",
     "async-done": "^0.2.0"
   },

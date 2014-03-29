@@ -3,8 +3,6 @@
 var chai = require('chai');
 var expect = chai.expect;
 
-var _ = require('lodash');
-
 var Orchestrator = require('../');
 
 describe('setRegistry()', function(){
