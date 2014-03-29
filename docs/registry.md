@@ -19,7 +19,7 @@ The method used by Orchestrator to add a task to the registry.
 
 The method used by Orchestrator to retrieve a list of all tasks from the registry.
 
-### `time` : Function
+### `time(name | taskDefinition)` : Function
 
 The method used by Orchestrator to time task execution.
 
