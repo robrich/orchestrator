@@ -43,4 +43,8 @@ describe('description', function(){
     });
     // expect(target);
   });
+
+  it('should return all tasks', function(){
+    console.log(o.registry.all());
+  });
 });

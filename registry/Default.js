@@ -22,10 +22,7 @@ DefaultRegistry.prototype.get = function(name){
 };
 
 DefaultRegistry.prototype.set = function(name, fn){
-  var evt = {
-    name: name,
-    fn: fn
-  };
+  var evt = this.normalize(name, fn);
 
   if(this.tasks[name]){
     evt.oldFn = this.tasks[name];
@@ -37,24 +34,10 @@ DefaultRegistry.prototype.set = function(name, fn){
   this.tasks[name] = fn;
 };
 
-DefaultRegistry.prototype.normalize = function(task){
-  var name = null;
-  var fn = task;
-
-  if(typeof task === 'string'){
-    name = task;
-    fn = this.get(task);
-  }
-
-  if(typeof task === 'function' && task.name){
-    name = task.name;
-    fn = task;
-  }
-
-  return {
-    name: name,
-    fn: fn
-  };
+DefaultRegistry.prototype.all = function(){
+  var tasks = this.tasks;
+  var taskNames = Object.keys(tasks);
+  return taskNames.map(this.normalize, this);
 };
 
 DefaultRegistry.prototype.time = function(task){
@@ -77,6 +60,28 @@ DefaultRegistry.prototype.time = function(task){
   }
 
   return timeTask;
+};
+
+DefaultRegistry.prototype.normalize = function(name, fn){
+  if(typeof name === 'function'){
+    fn = name;
+    name = fn.name || null;
+  }
+
+  if(typeof name === 'string'){
+    name = name;
+  }
+
+  if(typeof fn === 'function'){
+    fn = fn;
+  } else {
+    fn = this.tasks[name];
+  }
+
+  return {
+    name: name,
+    fn: fn
+  };
 };
 
 module.exports = DefaultRegistry;
