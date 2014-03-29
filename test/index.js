@@ -9,7 +9,7 @@ var Orchestrator = require('../');
 var fs = require('fs');
 var through = require('through2');
 
-describe('description', function(){
+describe.skip('description', function(){
 
   var o = new Orchestrator();
 

@@ -26,7 +26,7 @@ describe('orchestrator', function() {
 			expect(actual).to.equal(task1);
 		});
 
-		it('should return false if there is no such task', function() {
+		it('should return nothing if there is no such task', function() {
 			var orchestrator, actual;
 
 			// the thing under test
