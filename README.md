@@ -253,7 +253,7 @@ Type: `function`: `function (e) {`
 Passes single argument: `e`: event details
 
 ```javascript
-orchestrator.onAll(orchestrator, function (e) {
+orchestrator.onAll(function (e) {
   // e is the original event args
   // e.src is event name
 });
