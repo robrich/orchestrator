@@ -1,7 +1,13 @@
 'use strict';
 
-var chai = require('chai');
-var expect = chai.expect;
+var lab = require('lab');
+var describe = lab.experiment;
+var it = lab.test;
+var before = lab.before;
+var beforeEach = lab.beforeEach;
+var after = lab.after;
+var afterEach = lab.afterEach;
+var expect = lab.expect;
 
 var DefaultRegistry = require('../registry/Default');
 

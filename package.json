@@ -17,12 +17,12 @@
     "async-done": "^0.2.0"
   },
   "devDependencies": {
-    "chai": "^1.9.1",
-    "mocha": "^1.18.2",
-    "through2": "^0.4.1"
+    "through2": "^0.4.1",
+    "lab": "^3.1.1",
+    "when": "^3.1.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "lab -v"
   },
   "engines": {
     "node": ">= 0.8"
