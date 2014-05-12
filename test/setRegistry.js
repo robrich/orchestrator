@@ -31,7 +31,7 @@ describe('setRegistry()', function(){
     };
   }
 
-  beforeEach(function(){
+  beforeEach(function(done){
     orchestrator = new Orchestrator();
 
     newRegistry = {
@@ -48,41 +48,47 @@ describe('setRegistry()', function(){
 
     orchestrator.task('task1', noop);
     orchestrator.task('task2', noop);
+    done();
   });
 
-  afterEach(function(){
+  afterEach(function(done){
     orchestrator = null;
     newRegistry = null;
+    done();
   });
 
-  it('should transfer all tasks to the new registry', function(){
+  it('should transfer all tasks to the new registry', function(done){
     orchestrator.setRegistry(newRegistry);
 
     expect(orchestrator.registry).to.equal(newRegistry);
     expect(orchestrator.registry.tasks.task1).to.equal(noop);
     expect(orchestrator.registry.tasks.task2).to.equal(noop);
+    done();
   });
 
   var requiredMethods = ['get', 'set', 'time', 'all'];
 
   // generative testing for registry required methods
   requiredMethods.forEach(function(key){
-    it('should throw if no ' + key + ' property', function(){
+    it('should throw if no ' + key + ' property', function(done){
       var fn = missingKey(key);
       expect(fn).to.throw(Error);
       expect(fn).to.throw(new RegExp(key));
+      done();
     });
 
-    it('should throw if ' + key + ' is not a method', function(){
+    it('should throw if ' + key + ' is not a method', function(done){
       var fn = notMethod(key);
       expect(fn).to.throw(Error);
       expect(fn).to.throw(new RegExp(key));
+      done();
     });
   });
 
-  it('should throw if no tasks object', function(){
+  it('should throw if no tasks object', function(done){
     var fn = missingKey('tasks');
     expect(fn).to.throw(Error);
     expect(fn).to.throw(/tasks/);
+    done();
   });
 });

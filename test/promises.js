@@ -58,6 +58,7 @@ describe('Returning a promise', function(){
       done(err);
     });
   });
+
   it('should complete when multiple tasks are fulfilled', function(done){
     orchestrator.parallel('fulfilled', 'fulfilled')(function(err, res){
       expect(err).to.not.exist;

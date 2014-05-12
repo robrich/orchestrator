@@ -12,15 +12,17 @@ var expect = lab.expect;
 var DefaultRegistry = require('../registry/Default');
 
 describe('DefaultRegistry', function() {
+
 	describe('set()', function() {
 
 		var registry;
 
-		beforeEach(function(){
+		beforeEach(function(done){
 			registry = new DefaultRegistry();
+			done();
 		});
 
-		it('should define a task', function() {
+		it('should define a task', function(done) {
 			// Arrange
 			var fn = function() {};
 
@@ -30,6 +32,8 @@ describe('DefaultRegistry', function() {
 			// Assert
 			expect(registry.tasks.test).to.exist;
 			expect(registry.tasks.test).to.equal(fn);
+
+			done();
 		});
 	});
 });
