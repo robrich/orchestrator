@@ -25,6 +25,7 @@ util.inherits(Orchestrator, EventEmitter);
 		this.seq = [];
 		this.isRunning = false;
 		this.doneCallback = undefined;
+		this.removeAllListeners();
 		return this;
 	};
 	Orchestrator.prototype.add = function (name, dep, fn) {
