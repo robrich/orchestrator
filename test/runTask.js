@@ -1,9 +1,10 @@
 /*jshint node:true */
 /*global describe:false, it:false */
 
-"use strict";
+'use strict';
 
 var Orchestrator = require('../');
+var fs = require('fs');
 var should = require('should');
 require('mocha');
 
@@ -105,5 +106,28 @@ describe('orchestrator', function() {
 			done();
 		});
 
+		it('pass error from stream', function(done) {
+			var orchestrator, task, a = 0;
+
+			// Arrange
+			task = {
+				name: 'test',
+				fn: function() {
+					return fs.createReadStream('a.js');
+				}
+			};
+
+			orchestrator = new Orchestrator();
+			orchestrator.on('task_err', function (e) {
+				should.exists(e);
+				++a;
+			});
+			orchestrator.on('err', function (e) {
+				should.exists(e);
+				a.should.equal(1);
+				done();
+			});
+			orchestrator._runTask(task);
+		});
 	});
 });

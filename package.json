@@ -23,7 +23,7 @@
     "map-stream": "~0.1.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -R spec"
   },
   "engines": {
     "node": ">= 0.8"
