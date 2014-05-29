@@ -12,48 +12,55 @@ var expect = lab.expect;
 var Orchestrator = require('../');
 
 var fs = require('fs');
-var through = require('through2');
-
-function transform(buf, enc, done){
-  this.push(buf);
-  done();
-}
-
-function end(){
-  this.emit('end', 'ended');
-}
-
-function close(){
-  this.emit('close', 'closed');
-}
-
-function exit(){
-  this.emit('exit', 'exited');
-}
+var net = require('net');
 
 describe('Returning a stream', function(){
 
   var orchestrator;
-  var error = new Error('rejected');
+  var server;
+
+  before(function(done){
+    server = net.createServer().listen(30000, done);
+  });
 
   beforeEach(function(done){
     orchestrator = new Orchestrator();
 
-    orchestrator.task('end', function(){
-      return fs.createReadStream('./index.js')
-        .pipe(through(transform, end));
+    orchestrator.task('read stream', function(){
+      var rs = fs.createReadStream(__filename);
+      rs.close();
+      return rs;
     });
 
-    orchestrator.task('close', function(){
-      return fs.createReadStream('./index.js')
-        .pipe(through(transform, close));
+    orchestrator.task('write stream', function(){
+      var ws = fs.createWriteStream('/dev/null');
+      ws.close();
+      return ws;
     });
 
-    orchestrator.task('exit', function(){
+    orchestrator.task('piped stream', function(){
       return fs.createReadStream('./index.js')
-        .pipe(through(transform, exit));
+        .pipe(fs.createWriteStream('/dev/null'));
     });
 
+    orchestrator.task('request stream', function(){
+      var client = net.connect(30000, function(){
+        client.end();
+      });
+
+      return client;
+    });
+
+    orchestrator.task('error stream', function(){
+      return fs.createReadStream('./not/exist');
+    });
+
+    done();
+  });
+
+  after(function(done){
+    server.close();
+    server = null;
     done();
   });
 
@@ -62,36 +69,38 @@ describe('Returning a stream', function(){
     done();
   });
 
-  it('should complete the task when the stream emits "end"', function(done){
-    orchestrator.parallel('end')(function(err, res){
+  it('should complete the task when a read stream is done', function(done){
+    orchestrator.parallel('read stream')(function(err){
       expect(err).to.not.exist;
-
-      expect(res).to.be.an.instanceof(Array);
-      expect(res).to.contain('ended');
-
       done(err);
     });
   });
 
-  it('should complete the task when the stream emits "close"', function(done){
-    orchestrator.parallel('close')(function(err, res){
+  it('should complete the task when a write stream is done', function(done){
+    orchestrator.parallel('write stream')(function(err){
       expect(err).to.not.exist;
-
-      expect(res).to.be.an.instanceof(Array);
-      expect(res).to.contain('closed');
-
       done(err);
     });
   });
 
-  it('should complete the task when the stream emits "exit"', function(done){
-    orchestrator.parallel('exit')(function(err, res){
+  it('should complete the task when a piped stream is done', function(done){
+    orchestrator.parallel('piped stream')(function(err){
       expect(err).to.not.exist;
-
-      expect(res).to.be.an.instanceof(Array);
-      expect(res).to.contain('exited');
-
       done(err);
+    });
+  });
+
+  it('should complete the task when a request stream is done', function(done){
+    orchestrator.parallel('request stream')(function(err){
+      expect(err).to.not.exist;
+      done(err);
+    });
+  });
+
+  it('should error the task when a stream errors', function(done){
+    orchestrator.parallel('error stream')(function(err){
+      expect(err).to.be.instanceof(Error);
+      done();
     });
   });
 });
