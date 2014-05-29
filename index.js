@@ -15,6 +15,15 @@ function Orchestrator(registry){
 Orchestrator.prototype.task = function(taskName, fn){
   var registry = this.registry;
 
+  if(typeof taskName === 'function'){
+    fn = taskName;
+    taskName = fn.name;
+  }
+
+  if(!taskName){
+    throw new Error('Task name must be supplied');
+  }
+
   if(fn){
     return registry.set(taskName, fn);
   }

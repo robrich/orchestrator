@@ -11,58 +11,60 @@ var expect = lab.expect;
 
 var Orchestrator = require('../');
 
-describe('task', function() {
+describe('Task()', function(){
 
-	it('should return task if there is a task', function(done) {
-		var orchestrator, name, task1, actual;
+  var orchestrator;
 
-		// Arrange
-		name = 'task1';
-		task1 = function(){};
+  function noop(){}
 
-		// the thing under test
-		orchestrator = new Orchestrator();
-		orchestrator.registry.tasks[name] = task1;
+  beforeEach(function(done){
+    orchestrator = new Orchestrator();
 
-		// Act
-		actual = orchestrator.task(name);
+    orchestrator.task('task1', noop);
+    done();
+  });
 
-		// Assert
-		expect(actual).to.equal(task1);
-		done();
-	});
+  it('should return task if there is a task', function(done) {
+    var task = orchestrator.task('task1');
 
-	it('should return nothing if there is no such task', function(done) {
-		var orchestrator, actual;
+    expect(task).to.equal(noop);
+    done();
+  });
 
-		// the thing under test
-		orchestrator = new Orchestrator();
+  it('should return nothing if there is no such task', function(done) {
+    var task = orchestrator.task('notexist');
 
-		// Act
-		actual = orchestrator.task('notexist');
+    expect(task).not.exist;
+    done();
+  });
 
-		// Assert
-		expect(actual).not.exist;
-		done();
-	});
+  it('should create a task if passed a second arg', function(done) {
+    var name = 'task2';
+    orchestrator.task(name, noop);
 
-	it('should create a task if passed a second arg', function(done) {
-		var orchestrator, name, fn, actual;
+    expect(orchestrator.registry.tasks[name]).to.exist;
+    expect(orchestrator.registry.tasks[name]).to.equal(noop);
+    done();
+  });
 
-		// Arrange
-		name = 'task1';
-		fn = function () {};
+  it('should create a task if passed a named function as first arg', function(done){
+    function task3(){}
+    orchestrator.task(task3);
 
-		// the thing under test
-		orchestrator = new Orchestrator();
+    expect(orchestrator.registry.tasks.task3).to.exist;
+    expect(orchestrator.registry.tasks.task3).to.equal(task3);
+    done();
+  });
 
-		// Act
-		orchestrator.task(name, fn);
+  it('should error if passed an anonymous function as first arg', function(done){
+    var task3 = function(){};
 
-		// Assert
-		expect(orchestrator.registry.tasks[name]).to.exist;
-		expect(orchestrator.registry.tasks[name]).to.equal(fn);
-		done();
-	});
+    expect(function(){
+      orchestrator.task(task3);
+    }).to.throw(Error);
+
+    expect(orchestrator.registry.tasks.task3).to.not.exist;
+    done();
+  });
 
 });
