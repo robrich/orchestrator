@@ -13,6 +13,7 @@
     "compose"
   ],
   "dependencies": {
+    "end-of-stream": "^0.1.5",
     "sequencify": "~0.0.7"
   },
   "devDependencies": {
