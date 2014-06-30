@@ -4,6 +4,7 @@
 
 var Orchestrator = require('../');
 var Q = require('q');
+var fs = require('fs');
 var should = require('should');
 require('mocha');
 
@@ -95,6 +96,25 @@ describe('orchestrator', function() {
 				a.should.equal(1);
 				should.exist(actualErr);
 				actualErr.should.equal(expectedErr);
+				orchestrator.isRunning.should.equal(false);
+				done();
+			});
+		});
+
+		it('should have error on stream error', function(done) {
+			var orchestrator;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			orchestrator.add('test', function () {
+				return fs.createReadStream('./index.js')
+					.pipe(fs.createWriteStream('./something/that/does/not/exist'));
+			});
+
+			// Act
+			orchestrator.start('test', function(actualErr) {
+				// Assert
+				should.exist(actualErr);
 				orchestrator.isRunning.should.equal(false);
 				done();
 			});
