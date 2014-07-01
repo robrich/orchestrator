@@ -17,11 +17,14 @@
     "sequencify": "~0.0.7"
   },
   "devDependencies": {
+    "event-stream": "~3.1.5",
+    "gulp-jshint": "~1.6.3",
+    "map-stream": "~0.1.0",
+    "merge-stream": "~0.1.2",
     "mocha": "~1.17.0",
-    "should": "~3.0.1",
     "q": "~1.0.0",
-    "event-stream": "~3.1.0",
-    "map-stream": "~0.1.0"
+    "should": "~3.0.1",
+    "vinyl-fs": "~0.3.4"
   },
   "scripts": {
     "test": "mocha"

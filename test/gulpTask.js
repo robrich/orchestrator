@@ -4,6 +4,10 @@
 
 var Orchestrator = require('../');
 var Q = require('q');
+var vfs = require('vinyl-fs');
+var es = require('event-stream');
+var ms = require('merge-stream');
+var jshint = require('gulp-jshint');
 var should = require('should');
 require('mocha');
 
@@ -114,7 +118,50 @@ describe('orchestrator tasks integration tests', function() {
       });
       gulp.isRunning.should.equal(true);
     });
+    it('should run all async stream tasks', function(done){
+      var a, fn, fn2, fn3, fn4;
+      a = 0;
+      fn = function(cb) {
+        return vfs.src('./index.js')
+          .pipe(jshint())
+          .pipe(jshint.reporter('default'));
+      };
+      fn2 = function(cb) {
+        var stream1 = vfs.src('./index.js')
+          .pipe(vfs.dest('./test/.tmp'));
+        var stream2 = vfs.src('./index.js')
+          .pipe(vfs.dest('./test/.tmp'));
+        return es.concat(stream1, stream2);
+      };
+      fn3 = function(cb) {
+        var stream1 = vfs.src('./index.js')
+          .pipe(vfs.dest('./test/.tmp'));
+        var stream2 = vfs.src('./index.js')
+          .pipe(vfs.dest('./test/.tmp'));
+        return ms(stream1, stream2);
+      };
+      fn4 = function(cb) {
+        return vfs.src('./index.js')
+          .pipe(vfs.dest('./test/.tmp'));
+      };
+      gulp.task('test', fn);
+      gulp.task('test2', fn2);
+      gulp.task('test3', fn3);
+      gulp.task('test4', fn4);
+      gulp.on('task_stop', function(){
+        ++a;
+      });
+      gulp.start('test');
+      gulp.start('test2');
+      gulp.start('test3');
+      gulp.start('test4', function () {
+        gulp.isRunning.should.equal(false);
+        a.should.equal(4);
+        done();
+      });
+    });
     it('should emit task_not_found and throw an error when task is not defined', function(done) {
+      gulp.reset();
       var aErr;
       gulp.on('task_not_found', function(err){
         should.exist(err);
