@@ -14,7 +14,8 @@
   ],
   "dependencies": {
     "end-of-stream": "~0.1.5",
-    "sequencify": "~0.0.7"
+    "sequencify": "~0.0.7",
+    "stream-consume": "~0.1.0"
   },
   "devDependencies": {
     "event-stream": "~3.1.5",
