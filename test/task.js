@@ -67,4 +67,17 @@ describe('Task()', function(){
     done();
   });
 
+  it('should allow combining parallel and sequential tasks', function (done) {
+    orchestrator.task('task2', noop);
+    orchestrator.task('task3', noop);
+    orchestrator.task('task4', noop);
+
+    orchestrator.parallel(
+      orchestrator.series('task1', 'task2'),
+      orchestrator.series('task3', 'task4'))(function (err) {
+        expect(err).to.not.exist;
+        done(err);
+    });
+  });
+
 });
