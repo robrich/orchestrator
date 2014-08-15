@@ -13,8 +13,8 @@
     "compose"
   ],
   "dependencies": {
-    "bach": "0.0.1",
-    "async-done": "git://github.com/phated/async-done#master"
+    "bach": "~0.1.0",
+    "async-done": "~0.3.0"
   },
   "devDependencies": {
     "lab": "^3.1.1",
