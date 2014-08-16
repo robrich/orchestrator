@@ -15,7 +15,7 @@ describe('Task()', function(){
 
   var orchestrator;
 
-  function noop(){}
+  function noop(done){ done(); }
 
   beforeEach(function(done){
     orchestrator = new Orchestrator();
