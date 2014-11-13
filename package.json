@@ -23,8 +23,8 @@
     "map-stream": "~0.0.5",
     "merge-stream": "~0.1.2",
     "mocha": "~2.0.1",
-    "q": "~1.0.0",
-    "should": "~4.1.0",
+    "q": "~1.1.1",
+    "should": "~4.3.0",
     "vinyl-fs": "~0.3.4"
   },
   "scripts": {
