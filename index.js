@@ -175,6 +175,7 @@ util.inherits(Orchestrator, EventEmitter);
 			delete task.duration;
 			delete task.hrDuration;
 			delete task.args;
+			delete task.output;
 		}
 	};
 	Orchestrator.prototype._resetAllTasks = function() {
