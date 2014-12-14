@@ -242,11 +242,12 @@ util.inherits(Orchestrator, EventEmitter);
 		}
 		return ready;
 	};
-	Orchestrator.prototype._stopTask = function (task, meta) {
+	Orchestrator.prototype._stopTask = function (task, meta, output) {
 		task.duration = meta.duration;
 		task.hrDuration = meta.hrDuration;
 		task.running = false;
 		task.done = true;
+		task.output = output;
 	};
 	Orchestrator.prototype._emitTaskDone = function (task, message, err) {
 		if (!task.args) {
@@ -270,14 +271,14 @@ util.inherits(Orchestrator, EventEmitter);
 		this.emit('task_start', task.args);
 		task.running = true;
 
-		runTask(task.fn.bind(this), function (err, meta) {
-			that._stopTask.call(that, task, meta);
+		runTask(task.fn.bind(this), function (err, meta, output) {
+			that._stopTask.call(that, task, meta, output);
 			that._emitTaskDone.call(that, task, meta.runMethod, err);
 			if (err) {
 				return that.stop.call(that, err);
 			}
 			that._runStep.call(that);
-		});
+		}, getDependencyData.call(this,task));
 	};
 
 // FRAGILE: ASSUME: this list is an exhaustive list of events emitted
@@ -299,6 +300,22 @@ var listenToEvent = function (target, event, callback) {
 		for (i = 0; i < events.length; i++) {
 			listenToEvent(this, events[i], callback);
 		}
+	};
+
+//Returns output from dependent tasks
+	var getDependencyData = function(task) {
+		if(!task || !task.dep || !task.dep.length) return;
+		var data = {};
+
+		for (var i = 0; i < task.dep.length; i++) {
+			var taskName = task.dep[i];
+			var t = this.tasks[taskName];
+			
+			if(t && t.output !== undefined) {
+				data[taskName] = t.output;
+			}
+		}
+		return data;
 	};
 
 module.exports = Orchestrator;

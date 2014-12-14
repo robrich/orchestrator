@@ -174,5 +174,35 @@ describe('orchestrator', function() {
 			orchestrator.isRunning.should.equal(true);
 		});
 
+		it('verify datadependency between tasks: output of dependent task is passed & read', function(done) {
+			var orchestrator, a = 3, b = a * a, c = a + b;
+
+			orchestrator = new Orchestrator();
+
+			//add tasks that represents above variables a, b & c 
+			orchestrator.add('a', function(){
+				return {'val':3};
+			});
+
+			//as b is dependent on a; check if a's value is passed as method parameter
+			orchestrator.add('b', ['a'], function(cb,ip) {
+				cb(null, {'val': ip['a'].val * ip['a'].val});
+			});
+
+			//as c is dependent on a & b; check if both dependencies output are passed
+			orchestrator.add('c', ['a','b'], function(cb, ip) {
+				cb(null, {'val':ip['a'].val + ip['b'].val});
+			});
+
+			orchestrator.start('a','b','c');
+
+
+			orchestrator.task('a').output.val.should.equal(a);
+			orchestrator.task('b').output.val.should.equal(b);
+			orchestrator.task('c').output.val.should.equal(c);
+
+			done();
+		});
+
 	});
 });
