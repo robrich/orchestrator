@@ -117,6 +117,24 @@ orchestrator.add('thing4', function(){
 });
 ```
 
+#### Data dependencies
+Output data from dependent tasks are passed as input to the current task once its dependencies are executed
+
+```javascript
+orchestrator.add('two', ['one'], function (cb, ip) {
+    // task two can now access output data from its dependency one
+    // task 'one' is done and its output is passed in the second argument
+    //ip : {'one': <return value from one>}
+
+    // do stuff 
+    // (optional) return output of this function 
+    
+    cb(null, {'val': (ip.one.val + 2) });
+
+    //it is completely up to task 'two' whether to return data or not
+});
+```
+
 **Note:** By default, tasks run with maximum concurrency -- e.g. it launches all the tasks at once and waits for nothing.
 If you want to create a series where tasks run in a particular order, you need to do two things:
 
