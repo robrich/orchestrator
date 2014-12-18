@@ -180,8 +180,15 @@ describe('orchestrator', function() {
 			orchestrator = new Orchestrator();
 
 			//add tasks that represents above variables a, b & c 
-			orchestrator.add('a', function(){
-				return {'val':3};
+			orchestrator.add('a', function(cb) {
+				var deferred = Q.defer();
+				 // do async stuff
+				  setTimeout(function () {
+				    deferred.resolve({'val':3});
+				  }, 10);
+				
+				return deferred.promise;
+
 			});
 
 			//as b is dependent on a; check if a's value is passed as method parameter
@@ -196,12 +203,13 @@ describe('orchestrator', function() {
 
 			orchestrator.start('a','b','c');
 
-
-			orchestrator.task('a').output.val.should.equal(a);
-			orchestrator.task('b').output.val.should.equal(b);
-			orchestrator.task('c').output.val.should.equal(c);
-
-			done();
+			 setTimeout(function () {
+			 	orchestrator.task('a').output.val.should.equal(a);
+				orchestrator.task('b').output.val.should.equal(b);
+				orchestrator.task('c').output.val.should.equal(c);
+				done();
+			 }, 20);
+			
 		});
 
 	});
