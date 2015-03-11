@@ -3,7 +3,7 @@
 "use strict";
 
 var Orchestrator = require('../');
-var Q = require('q');
+var Promise = require('promise');
 var fs = require('fs');
 var should = require('should');
 require('mocha');
@@ -82,12 +82,12 @@ describe('orchestrator', function() {
 			orchestrator = new Orchestrator();
 			a = 0;
 			orchestrator.add('test', function () {
-				var deferred = Q.defer();
-				setTimeout(function () {
-					++a;
-					deferred.reject(expectedErr);
-				},1);
-				return deferred.promise;
+				return new Promise(function (resolve, reject) {
+					setTimeout(function () {
+						++a;
+						reject(expectedErr);
+					},1);
+				});
 			});
 
 			// Act
@@ -96,6 +96,32 @@ describe('orchestrator', function() {
 				a.should.equal(1);
 				should.exist(actualErr);
 				actualErr.should.equal(expectedErr);
+				orchestrator.isRunning.should.equal(false);
+				done();
+			});
+		});
+
+		it('should have error on promise rejected with empty reason', function(done) {
+			var orchestrator, a;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			a = 0;
+			orchestrator.add('test', function () {
+				return new Promise(function (resolve, reject) {
+					setTimeout(function () {
+						++a;
+						reject();
+					},1);
+				});
+			});
+
+			// Act
+			orchestrator.start('test', function(actualErr) {
+				// Assert
+				a.should.equal(1);
+				should.exist(actualErr);
+				actualErr.should.not.be.false;
 				orchestrator.isRunning.should.equal(false);
 				done();
 			});
