@@ -4,6 +4,8 @@
 Orchestrator
 ============
 
+**This project is unmaintained and will be removed in Gulp 4.**
+
 A module for sequencing and executing tasks and dependencies in maximum concurrency
 
 Usage
