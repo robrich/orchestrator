@@ -7,7 +7,7 @@ var Q = require('q');
 var vfs = require('vinyl-fs');
 var es = require('event-stream');
 var ms = require('merge-stream');
-var jshint = require('gulp-jshint');
+var uglify = require('gulp-uglify');
 var should = require('should');
 require('mocha');
 
@@ -123,8 +123,7 @@ describe('orchestrator tasks integration tests', function() {
       a = 0;
       fn = function(cb) {
         return vfs.src('./index.js')
-          .pipe(jshint())
-          .pipe(jshint.reporter('default'));
+          .pipe(uglify());
       };
       fn2 = function(cb) {
         var stream1 = vfs.src('./index.js')
