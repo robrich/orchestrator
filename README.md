@@ -1,5 +1,5 @@
-[![Build Status](https://secure.travis-ci.org/orchestrator/orchestrator.svg?branch=master)](https://travis-ci.org/orchestrator/orchestrator)
-[![Dependency Status](https://david-dm.org/orchestrator/orchestrator.svg)](https://david-dm.org/orchestrator/orchestrator)
+[![Build Status](https://secure.travis-ci.org/robrich/orchestrator.svg?branch=master)](https://travis-ci.org/robrich/orchestrator)
+[![Dependency Status](https://david-dm.org/robrich/orchestrator.svg)](https://david-dm.org/robrich/orchestrator)
 
 Orchestrator
 ============
