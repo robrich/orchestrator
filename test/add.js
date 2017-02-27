@@ -124,5 +124,39 @@ describe('orchestrator', function() {
 			done();
 		});
 
+		it('should accept a description', function (done) {
+			var orchestrator, name, dep, fn;
+
+			// Arrange
+			fn = function() {};
+
+			// Act
+			orchestrator = new Orchestrator();
+			orchestrator.add('test', fn, 'this is a test tasks');
+
+			// Assert
+			should.exist(orchestrator.tasks.test);
+			orchestrator.tasks.test.fn.should.equal(fn);
+			orchestrator.tasks.test.desc.should.equal('this is a test tasks');
+			done();
+		});
+
+		it('should accept a description when used with dep', function (done) {
+			var orchestrator, name, dep;
+
+			// Arrange
+			name = "name";
+			dep = ['name'];
+
+			// Act
+			orchestrator = new Orchestrator();
+			orchestrator.add(name, dep, 'this is a test tasks');
+
+			// Assert
+			should.exist(orchestrator.tasks.name);
+			orchestrator.tasks.name.dep.should.equal(dep);
+			orchestrator.tasks.name.desc.should.equal('this is a test tasks');
+			done();
+		});
 	});
 });

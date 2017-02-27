@@ -26,7 +26,11 @@ util.inherits(Orchestrator, EventEmitter);
 		this.doneCallback = undefined;
 		return this;
 	};
-	Orchestrator.prototype.add = function (name, dep, fn) {
+	Orchestrator.prototype.add = function (name, dep, fn, desc) {
+		if (typeof fn === 'string' && typeof desc === 'undefined') {
+			desc = fn;
+			fn = undefined;
+		}
 		if (!fn && typeof dep === 'function') {
 			fn = dep;
 			dep = undefined;
@@ -46,6 +50,9 @@ util.inherits(Orchestrator, EventEmitter);
 		if (!Array.isArray(dep)) {
 			throw new Error('Task '+name+' can\'t support dependencies that is not an array of strings');
 		}
+		if (typeof desc !== 'string' && typeof desc !== 'undefined') {
+			throw new Error('Description '+name+' must be a valid string');
+		}
 		dep.forEach(function (item) {
 			if (typeof item !== 'string') {
 				throw new Error('Task '+name+' dependency '+item+' is not a string');
@@ -54,14 +61,15 @@ util.inherits(Orchestrator, EventEmitter);
 		this.tasks[name] = {
 			fn: fn,
 			dep: dep,
-			name: name
+			name: name,
+			desc: desc
 		};
 		return this;
 	};
-	Orchestrator.prototype.task = function (name, dep, fn) {
+	Orchestrator.prototype.task = function (name, dep, fn, desc) {
 		if (dep || fn) {
 			// alias for add, return nothing rather than this
-			this.add(name, dep, fn);
+			this.add(name, dep, fn, desc);
 		} else {
 			return this.tasks[name];
 		}
