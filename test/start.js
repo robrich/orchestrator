@@ -60,6 +60,37 @@ describe('orchestrator', function() {
 			done();
 		});
 
+		it('should run multiple tasks with combination of array and string', function(done) {
+			var orchestrator, a, fn, fn2, fn3, fn4;
+
+			// Arrange
+			orchestrator = new Orchestrator();
+			a = '';
+			fn = function() {
+				a += 'fn';
+			};
+			fn2 = function() {
+				a += 'fn2';
+			};
+			fn3 = function() {
+				throw new Error('run wrong task');
+			};
+			fn4 = function() {
+				a += 'fn4';
+			};
+			orchestrator.add('test', fn);
+			orchestrator.add('test2', fn2);
+			orchestrator.add('test3', fn3);
+			orchestrator.add('test4', fn4);
+
+			// Act
+			orchestrator.start(['test', 'test2'], 'test4');
+
+			// Assert
+			a.should.equal('fnfn2fn4');
+			done();
+		});
+
 		it('should run all tasks when call run() multiple times', function(done) {
 			var orchestrator, a, fn, fn2;
 
