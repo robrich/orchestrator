@@ -71,7 +71,7 @@ util.inherits(Orchestrator, EventEmitter);
 	};
 	// tasks and optionally a callback
 	Orchestrator.prototype.start = function() {
-		var args, arg, names = [], lastTask, i, seq = [];
+		var args, arg, names = [], lastTask, i, seq = [], setNames;
 		args = Array.prototype.slice.call(arguments, 0);
 		if (args.length) {
 			lastTask = args[args.length-1];
@@ -79,16 +79,21 @@ util.inherits(Orchestrator, EventEmitter);
 				this.doneCallback = lastTask;
 				args.pop();
 			}
-			for (i = 0; i < args.length; i++) {
-				arg = args[i];
-				if (typeof arg === 'string') {
-					names.push(arg);
-				} else if (Array.isArray(arg)) {
-					names = names.concat(arg); // FRAGILE: ASSUME: it's an array of strings
-				} else {
-					throw new Error('pass strings or arrays of strings');
+			// recursively set names
+			setNames = function setNames(names, args) {
+				var i;
+				for (i = 0; i < args.length; i++) {
+					arg = args[i];
+					if (typeof arg === 'string') {
+						names.push(arg);
+					} else if (Array.isArray(arg)) {
+						setNames(names, arg)
+					} else {
+						throw new TypeError('pass strings or arrays of strings');
+					}
 				}
 			}
+			setNames(names, args)
 		}
 		if (this.isRunning) {
 			// reset specified tasks (and dependencies) as not run
