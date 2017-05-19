@@ -4,9 +4,9 @@
 
 var Orchestrator = require("../");
 var Q = require("q");
-var Stream = require('stream');
+var Stream = require("stream");
 var should = require("should");
-require('mocha');
+require("mocha");
 
 describe("orchestrator", function() {
 	describe("when given a promise that resolves into a stream", function() {
@@ -29,16 +29,16 @@ describe("orchestrator", function() {
 					}, 0);
 
 
-					// return stream;
+					return stream;
 				});
 			});
 
 			// Act
 			orchestrator.start("test", function(err) {
-
 				// process.nextTick is used because all errors in the
 				// start callback are swallowed by Q
 				process.nextTick(function () {
+					
 					// Assert
 					streamClosed.should.equal(true);
 					should.not.exist(err);
