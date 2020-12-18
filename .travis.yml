@@ -1,3 +1,6 @@
+arch:
+    - amd64
+    - ppc64le
 language: node_js
 node_js:
   - "0.10"
@@ -6,3 +9,11 @@ node_js:
   - "5"
   - "6"
   - "7"
+#Excluding below versions since they are not supported by ppc64le    
+jobs: 
+  exclude:
+    - node_js: "0.10"
+      arch: ppc64le
+    - node_js: "0.12"
+      arch: ppc64le
+  
